@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MeterInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="meterInfoSerarchVO" type="egovframework.appn.asset.meter.service.MeterInfoDefaultVO"/>
+
+	<resultMap id="meterInfo" class="egovframework.appn.asset.meter.service.MeterInfoVO">
+		<result property="meterManagenum" column="meter_managenum" columnIndex="1"/>
+		<result property="customerNum" column="customer_num" columnIndex="2"/>
+		<result property="customerName" column="customer_name" columnIndex="3"/>
+		<result property="meterName" column="meter_name" columnIndex="4"/>
+		<result property="chargerNm" column="charger_nm" columnIndex="5"/>
+		<result property="submeterManagenum" column="submeter_managenum" columnIndex="6"/>
+		<result property="manageBizplc" column="manage_bizplc" columnIndex="7"/>
+		<result property="lat" column="lat" columnIndex="8"/>
+		<result property="lot" column="lot" columnIndex="9"/>
+		<result property="locationDetail" column="location_detail" columnIndex="10"/>
+		<result property="locationPhoto" column="location_photo" columnIndex="11"/>
+		<result property="purchaseYear" column="purchase_year" columnIndex="12"/>
+		<result property="standardCode" column="standard_code" columnIndex="13"/>
+		<result property="spec" column="spec" columnIndex="14"/>
+		<result property="useYn" column="use_yn" columnIndex="15"/>
+	</resultMap>
+
+	<insert id="meterInfoDAO.insertMeterInfo">
+		<![CDATA[
+			INSERT INTO meter_info
+				( meter_managenum
+				  , customer_num
+				  , customer_name
+				  , meter_name
+				  , charger_nm
+				  , submeter_managenum
+				  , manage_bizplc
+				  , lat
+				  , lot
+				  , location_detail
+				  , location_photo
+				  , purchase_year
+				  , standard_code
+				  , spec
+				  , use_yn )
+			VALUES ( #meterManagenum#
+				  , #customerNum#
+				  , #customerName#
+				  , #meterName#
+				  , #chargerNm#
+				  , #submeterManagenum#
+				  , #manageBizplc#
+				  , #lat#
+				  , #lot#
+				  , #locationDetail#
+				  , #locationPhoto#
+				  , #purchaseYear#
+				  , #standardCode#
+				  , #spec#
+				  , #useYn# )
+		]]>
+	</insert>
+
+	<update id="meterInfoDAO.updateMeterInfo">
+		<![CDATA[
+			UPDATE meter_info
+			SET meter_managenum=#meterManagenum#
+				, customer_num=#customerNum#
+				, customer_name=#customerName#
+				, meter_name=#meterName#
+				, charger_nm=#chargerNm#
+				, submeter_managenum=#submeterManagenum#
+				, manage_bizplc=#manageBizplc#
+				, lat=#lat#
+				, lot=#lot#
+				, location_detail=#locationDetail#
+				, location_photo=#locationPhoto#
+				, purchase_year=#purchaseYear#
+				, standard_code=#standardCode#
+				, spec=#spec#
+				, use_yn=#useYn#
+			WHERE meter_managenum=#meterManagenum#
+		]]>
+	</update>
+
+	<delete id="meterInfoDAO.deleteMeterInfo">
+		<![CDATA[
+			DELETE FROM meter_info
+			WHERE meter_managenum=#meterManagenum#
+		]]>
+	</delete>
+
+	<select id="meterInfoDAO.selectMeterInfo" resultMap="meterInfo">
+		<![CDATA[
+			SELECT
+				meter_managenum
+				, customer_num
+				, customer_name
+				, meter_name
+				, charger_nm
+				, submeter_managenum
+				, manage_bizplc
+				, lat
+				, lot
+				, location_detail
+				, location_photo
+				, purchase_year
+				, standard_code
+				, spec
+				, use_yn
+			FROM meter_info
+			WHERE meter_managenum=#meterManagenum#
+		]]>
+	</select>
+
+	<select id="meterInfoDAO.selectMeterInfoList" parameterClass="meterInfoSerarchVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT
+                meter_managenum
+                , customer_num
+                , customer_name
+                , meter_name
+                , charger_nm
+                , submeter_managenum
+                , manage_bizplc
+                , lat
+                , lot
+                , location_detail
+                , location_photo
+                , purchase_year
+                , standard_code
+                , spec
+                , use_yn
+            FROM meter_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[meter_managenum LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[customer_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[meter_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+        <![CDATA[
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	<select id="meterInfoDAO.selectMeterInfoListTotCnt" parameterClass="meterInfoSerarchVO" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) totcnt
+            FROM meter_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[meter_managenum LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[customer_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[meter_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+	</select>
+
+</sqlMap>

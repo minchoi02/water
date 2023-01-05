@@ -1,0 +1,131 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="custld" uri="/WEB-INF/tld/custld.tld"%>
+
+<script type="text/javaScript" language="javascript" defer="defer">
+<!--
+/* 글 목록 화면 function */
+function fn_List() {
+    document.meterInfoVO.action = "<c:url value='/asset/meter/MeterInfoList.do'/>";
+    document.meterInfoVO.submit();
+}
+
+/* 글 등록 function */
+function fn_Save() {
+    document.meterInfoVO.submit();
+}
+
+// -->
+</script>
+
+<h2 class="hidden">컨텐츠영역</h2>
+<!-- panel -->
+<section class="panel-wrap">
+    <div class="panel-header">
+        <h3>계량기 등록</h3>
+    </div>
+    <form:form commandName="meterInfoVO" name="meterInfoVO" action="${pageContext.request.contextPath}/asset/meter/addmeterInfo.do" method="post">
+
+     <div class="panel-body">
+         <div class="table-box table-row table-col-6 y-scroll content-height-1">
+            <table>
+                <tr>
+                    <th scope="col" class="essential"><span>계량기관리번호</span></th>
+                    <td colspan="4">
+                        <form:input path="meterManagenum" id="meterManagenum" title="계량기관리번호"/>
+                        <form:errors path="meterManagenum" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>고객번호</span></th>
+                    <td colspan="3">
+                        <form:input path="customerNum" id="customerNum" title="고객번호"/>
+                        <form:errors path="customerNum" cssClass="error" />
+                    <td style="text-align: center;"><button type="button" class="btn btn-gray btn-lg">고객번호 찾기</button></td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>위치정보</span></th>
+                    <td style="text-align: center;">X : </td>
+                    <td>
+                        <form:input path="lat" id="lat" title="위도"/>
+                        <form:errors path="lat" cssClass="error" />
+                    </td>
+                    <td style="text-align: center;">Y : </td>
+                    <td>
+                        <form:input path="lot" id="lot" title="경도"/>
+                        <form:errors path="lot" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col"><span>명칭</span></th>
+                    <td colspan="4">
+                        <form:input path="meterName" id="meterName" title="명칭"/>
+                        <form:errors path="meterName" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>구입년도</span></th>
+                    <td colspan="4">
+                        <form:input path="purchaseYear" id="purchaseYear" title="구입년도"/>
+                        <form:errors path="purchaseYear" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>규격 및 스펙</span></th>
+                    <td colspan="2">
+                        <form:input path="standardCode" id="standardCode" title="규격 "/>
+                        <form:errors path="standardCode" cssClass="error" />
+                    </td>
+                    <td colspan="2">
+                        <form:input path="spec" id="spec" title="스펙"/>
+                        <form:errors path="spec" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>대체계량기 관리번호</span></th>
+                    <td colspan="4">
+                        <form:input path="submeterManagenum" id="submeterManagenum" title="대체계량기 관리번호"/>
+                        <form:errors path="submeterManagenum" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>관리사업소</span></th>
+                    <td colspan="4">
+                        <select name="manageBizplc" id="manageBizplc">
+                            <option value="" label="--선택하세요--"/>
+                            <c:forEach var="result" items="${manageBizplc_result}" varStatus="status">
+                                <option value="${result.codeNm}">${result.codeNm}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="essential"><span>담당자명</span></th>
+                    <td colspan="3">
+                        <form:input path="chargerNm" id="chargerNm" title="담당자명"/>
+                        <form:errors path="chargerNm" cssClass="error" />
+                    </td>
+                    <td style="text-align: center;"><button type="button" class="btn btn-gray btn-lg">담당자 검색</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 검색조건 유지 -->
+    <input type="hidden" name="searchCondition" value="<c:out value='${searchVO.searchCondition}'/>"/>
+    <input type="hidden" name="searchKeyword" value="<c:out value='${searchVO.searchKeyword}'/>"/>
+    <input type="hidden" name="pageIndex" value="<c:out value='${searchVO.pageIndex}'/>"/>
+
+    </form:form>
+    <div class="panel-footer">
+        <div class="btn-area">
+            <button type="button" class="btn btn-primary btn-lg" onclick="javaScript:fn_Save(); return false;">등록</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="javaScript:fn_List(); return false;">목록</button>
+        </div>
+    </div>
+</section>

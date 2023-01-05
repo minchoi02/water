@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BannerManage">
+
+	<typeAlias  alias="egovMap"      type = "egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="BannerManageVO" type = "egovframework.appn.sys.bwm.service.BannerManageVO"/>
+
+	<!-- ::ResultMap 선언 -->
+	<resultMap id="BannerManageVOs" class="egovframework.appn.sys.bwm.service.BannerManageVO">
+		<result property="bannerId" column="BANNER_ID" columnIndex="1"/>
+		<result property="bannerTitleNm" column="BANNER_NM" columnIndex="2"/>
+		<result property="fileUrl" column="LINK_URL" columnIndex="3"/>
+		<result property="bannerHlc" column="BANNER_VRTICL_LC" columnIndex="4"/>
+		<result property="bannerWlc" column="BANNER_WIDTH_LC" columnIndex="5"/>
+		<result property="bannerHSize" column="BANNER_VRTICL_SZ" columnIndex="6"/>
+		<result property="bannerWSize" column="BANNER_WIDTH_SZ" columnIndex="7"/>
+		<result property="ntceBgnde" column="NTCE_BGN_DATE" columnIndex="8"/>
+		<result property="ntceEndde" column="NTCE_END_DATE" columnIndex="9"/>
+		<result property="stopVewAt" column="STOPVIEW_SETUP_YN" columnIndex="10"/>
+		<result property="ntceAt" column="NTCE_YN" columnIndex="11"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="12"/>
+		<result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="13"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDT_DT" columnIndex="14"/>
+		<result property="lastUpdusrId" column="LAST_UPDTUSR_ID" columnIndex="15"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="16"/>
+		<result property="fileSn" column="FILE_SN" columnIndex="16"/>
+		<result property="bannerDc" column="BANNER_DC" columnIndex="16"/>
+	</resultMap>
+
+	<!-- 배너창관리:: 메인 게시물정보 -->
+	<select id="bannerManage.selectBannerManageMain" parameterClass="BannerManageVO" resultMap="BannerManageVOs">
+	 <![CDATA[
+		SELECT
+			A.BANNER_ID,
+			A.BANNER_NM,
+			A.LINK_URL,
+			A.BANNER_VRTICL_LC,
+			A.BANNER_WIDTH_LC,
+			A.BANNER_VRTICL_SZ,
+			A.BANNER_WIDTH_SZ,
+			A.NTCE_BGN_DATE,
+			A.NTCE_END_DATE,
+			A.STOPVIEW_SETUP_YN,
+			A.NTCE_YN,
+			to_char(A.FRST_REG_DT,'YYYY-MM-DD') FRST_REG_DT,
+			A.FRST_REGUSR_ID,
+			to_char(A.LAST_UPDT_DT,'YYYY-MM-DD') LAST_UPDT_DT,
+			A.LAST_UPDTUSR_ID,
+			A.ATCH_FILE_ID,
+			(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+			A.BANNER_DC
+		FROM Z_BANNER_INFO A
+			WHERE 1=1
+			AND A.NTCE_YN = 'Y'
+			AND to_char(now(),'YYYYMMDDHHMI') >= NTCE_BGN_DATE
+			AND to_char(now(),'YYYYMMDDHHMI') <=  NTCE_END_DATE
+	 ]]>
+	</select>
+
+	<!-- 배너창관리: 화이트 리스트 정보 -->
+	<select id="bannerManage.selectBannerWhiteList" resultClass="egovMap">
+		SELECT
+			LINK_URL
+		FROM Z_BANNER_INFO
+	</select>
+
+	<!-- 배너창관리::목록조회 게시물정보 -->
+	<select id="bannerManage.selectBannerManage"  parameterClass="BannerManageVO" resultMap="BannerManageVOs">
+		SELECT
+			A.BANNER_ID,
+			A.BANNER_NM,
+			A.LINK_URL,
+			A.BANNER_VRTICL_LC,
+			A.BANNER_WIDTH_LC,
+			A.BANNER_VRTICL_SZ,
+			A.BANNER_WIDTH_SZ,
+			A.NTCE_BGN_DATE,
+			A.NTCE_END_DATE,
+			A.STOPVIEW_SETUP_YN,
+			A.NTCE_YN,
+			to_char(A.FRST_REG_DT,'YYYY-MM-DD') FRST_REG_DT,
+			A.FRST_REGUSR_ID,
+			to_char(A.LAST_UPDT_DT,'YYYY-MM-DD') LAST_UPDT_DT,
+			A.LAST_UPDTUSR_ID,
+			A.ATCH_FILE_ID,
+			(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+			A.BANNER_DC
+		FROM Z_BANNER_INFO A
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[BANNER_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="2">
+			<![CDATA[LINK_URL LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		ORDER BY A.FRST_REG_DT DESC
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+
+	<!-- 배너창관리::목록조회_게시물 총갯수  -->
+	<select id="bannerManage.selectBannerManageCnt"  parameterClass="BannerManageVO" resultClass="int">
+		SELECT
+		COUNT(*) totcnt
+		FROM Z_BANNER_INFO
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[BANNER_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="2">
+			<![CDATA[LINK_URL LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+	</select>
+
+    <!-- 배너창관리::삭제  -->
+	<delete id="bannerManage.deleteBannerManage" parameterClass="BannerManageVO">
+			DELETE FROM Z_BANNER_INFO
+			WHERE BANNER_ID=#bannerId#
+	</delete>
+
+	<!-- 배너창관리::수정  -->
+	<update id="bannerManage.updateBannerManage" parameterClass="BannerManageVO">
+		UPDATE Z_BANNER_INFO
+		SET
+		BANNER_NM=#bannerTitleNm#,
+		LINK_URL=#fileUrl#,
+		BANNER_VRTICL_LC=CAST (#bannerHlc# AS INTEGER),
+		BANNER_WIDTH_LC=CAST (#bannerWlc# AS INTEGER),
+		BANNER_VRTICL_SZ=CAST (#bannerHSize# AS INTEGER),
+		BANNER_WIDTH_SZ=CAST (#bannerWSize# AS INTEGER),
+		NTCE_BGN_DATE=#ntceBgnde#,
+		NTCE_END_DATE=#ntceEndde#,
+		STOPVIEW_SETUP_YN=#stopVewAt#,
+		NTCE_YN=#ntceAt#,
+		LAST_UPDT_DT =now(),
+		LAST_UPDTUSR_ID=#lastUpdusrId#,
+		ATCH_FILE_ID = #atchFileId#,
+		BANNER_DC = #bannerDc#
+		WHERE BANNER_ID=#bannerId#
+	</update>
+
+	<!-- 배너창관리::상세보기 -->
+	<select id="bannerManage.selectBannerManageDetail" parameterClass="BannerManageVO" resultMap="BannerManageVOs">
+	SELECT
+		A.BANNER_ID,
+		A.BANNER_NM,
+		A.LINK_URL,
+		A.BANNER_VRTICL_LC,
+		A.BANNER_WIDTH_LC,
+		A.BANNER_VRTICL_SZ,
+		A.BANNER_WIDTH_SZ,
+		A.NTCE_BGN_DATE,
+		A.NTCE_END_DATE,
+		A.STOPVIEW_SETUP_YN,
+		A.NTCE_YN,
+		A.FRST_REG_DT,
+		A.FRST_REGUSR_ID,
+		A.LAST_UPDT_DT,
+		A.LAST_UPDTUSR_ID,
+		A.ATCH_FILE_ID,
+		(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+		A.BANNER_DC
+	FROM Z_BANNER_INFO A
+		WHERE 1=1
+		AND A.BANNER_ID=#bannerId#
+	</select>
+
+	<!-- 배너창관리::입력  -->
+	<insert id="bannerManage.insertBannerManage" parameterClass="BannerManageVO">
+	INSERT INTO Z_BANNER_INFO (
+		BANNER_ID,
+		BANNER_NM,
+		LINK_URL,
+		BANNER_VRTICL_LC,
+		BANNER_WIDTH_LC,
+		BANNER_VRTICL_SZ,
+		BANNER_WIDTH_SZ,
+		NTCE_BGN_DATE,
+		NTCE_END_DATE,
+		STOPVIEW_SETUP_YN,
+		NTCE_YN,
+		FRST_REG_DT,
+		FRST_REGUSR_ID,
+		LAST_UPDT_DT,
+		LAST_UPDTUSR_ID,
+		ATCH_FILE_ID,
+		BANNER_DC
+	)VALUES(
+		#bannerId#,
+		#bannerTitleNm#,
+		#fileUrl#,
+		CAST (#bannerHlc# AS INTEGER),
+		CAST (#bannerWlc# AS INTEGER),
+		CAST (#bannerHSize# AS INTEGER),
+		CAST (#bannerWSize# AS INTEGER),
+		#ntceBgnde#,
+		#ntceEndde#,
+		#stopVewAt#,
+		#ntceAt#,
+		now(),
+		#frstRegisterId#,
+		now(),
+		#lastUpdusrId#,
+		#atchFileId#,
+		#bannerDc#
+		)
+	</insert>
+
+</sqlMap>

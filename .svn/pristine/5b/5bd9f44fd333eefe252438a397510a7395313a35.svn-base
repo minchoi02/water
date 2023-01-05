@@ -1,0 +1,188 @@
+package egovframework.appn.asset.terminal.web;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+
+import egovframework.appn.asset.terminal.service.TerminalInfoService;
+import egovframework.appn.asset.meter.service.MeterInfoDefaultVO;
+import egovframework.appn.asset.terminal.service.TerminalInfoDefaultVO;
+import egovframework.appn.asset.terminal.service.TerminalInfoVO;
+import egovframework.com.cmm.ComDefaultCodeVO;
+import egovframework.com.cmm.service.CmmUseService;
+
+/**
+ * @Class Name : TerminalInfoController.java
+ * @Description : TerminalInfo Controller class
+ * @Modification Information
+ *
+ * @author 차주병
+ * @since 2022.04.26
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C)  All right reserved.
+ */
+
+@Controller
+@SessionAttributes(types=TerminalInfoVO.class)
+public class TerminalInfoController {
+
+    @Resource(name = "terminalInfoService")
+    private TerminalInfoService terminalInfoService;
+
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    protected EgovPropertyService propertiesService;
+
+	/** cmmUseService */
+	@Resource(name = "CmmUseService")
+	private CmmUseService cmmUseService;
+
+    /**
+	 * terminal_info 목록을 조회한다. (pageing)
+	 * @param searchVO - 조회할 정보가 담긴 TerminalInfoDefaultVO
+	 * @return "/terminalInfo/TerminalInfoList"
+	 * @exception Exception
+	 */
+    @RequestMapping(value="/asset/terminal/TerminalInfoList.do")
+    public String selectTerminalInfoList(@ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, ModelMap model) throws Exception {
+
+    	/** EgovPropertyService.sample */
+    	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
+    	searchVO.setPageSize(propertiesService.getInt("pageSize"));
+
+    	/** pageing */
+    	PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
+		paginationInfo.setPageSize(searchVO.getPageSize());
+
+		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+//        List<?> terminalInfoList = terminalInfoService.selectTerminalInfoList(searchVO);
+//        model.addAttribute("resultList", terminalInfoList);
+
+		model.addAttribute("resultList", new ObjectMapper().writeValueAsString(terminalInfoService.selectTerminalInfoList(searchVO)));
+
+        int totCnt = terminalInfoService.selectTerminalInfoListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+        model.addAttribute("paginationInfo", paginationInfo);
+
+        return "asset/terminal/TerminalInfoList";
+    }
+
+    @RequestMapping("/asset/terminal/addTerminalInfoView.do")
+    public String addTerminalInfoView( @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, Model model) throws Exception {
+    	ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM002");
+		model.addAttribute("manageBizplc_result", cmmUseService.selectCmmCodeDetail(vo));
+
+		vo.setCodeId("COM004");
+		model.addAttribute("year_result", cmmUseService.selectCmmCodeDetail(vo));
+
+		vo.setCodeId("COM005");
+		model.addAttribute("standard_result", cmmUseService.selectCmmCodeDetail(vo));
+
+        model.addAttribute("terminalInfoVO", new TerminalInfoVO());
+        return "asset/terminal/TerminalInfoRegister";
+    }
+
+    @RequestMapping("/asset/terminal/addTerminalInfo.do")
+    public String addTerminalInfo( TerminalInfoVO terminalInfoVO, @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        terminalInfoService.insertTerminalInfo(terminalInfoVO);
+        status.setComplete();
+        return "forward:/asset/terminal/TerminalInfoList.do";
+    }
+
+    @RequestMapping("/asset/terminal/updateTerminalInfoView.do")
+    public String updateTerminalInfoView( @RequestParam("terminalManagenum") java.lang.Integer terminalManagenum , @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, Model model) throws Exception {
+    	ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM002");
+		model.addAttribute("manageBizplc_result", cmmUseService.selectCmmCodeDetail(vo));
+
+		vo.setCodeId("COM004");
+		model.addAttribute("year_result", cmmUseService.selectCmmCodeDetail(vo));
+
+		vo.setCodeId("COM005");
+		model.addAttribute("standard_result", cmmUseService.selectCmmCodeDetail(vo));
+
+        TerminalInfoVO terminalInfoVO = new TerminalInfoVO();
+        terminalInfoVO.setTerminalManagenum(terminalManagenum);
+        // 변수명은 CoC 에 따라 terminalInfoVO
+        model.addAttribute(selectTerminalInfo(terminalInfoVO, searchVO));
+        return "asset/terminal/TerminalInfoDetail";
+    }
+
+    @RequestMapping("/asset/terminal/selectTerminalInfo.do")
+    public @ModelAttribute("terminalInfoVO")
+    TerminalInfoVO selectTerminalInfo( TerminalInfoVO terminalInfoVO, @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO) throws Exception {
+        return terminalInfoService.selectTerminalInfo(terminalInfoVO);
+    }
+
+    @RequestMapping("/asset/terminal/updateTerminalInfo.do")
+    public String updateTerminalInfo( TerminalInfoVO terminalInfoVO, @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        terminalInfoService.updateTerminalInfo(terminalInfoVO);
+        status.setComplete();
+        return "forward:/asset/terminal/TerminalInfoList.do";
+    }
+
+    @RequestMapping("/asset/terminal/deleteTerminalInfo.do")
+    public String deleteTerminalInfo( TerminalInfoVO terminalInfoVO, @ModelAttribute("searchVO") TerminalInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        terminalInfoService.deleteTerminalInfo(terminalInfoVO);
+        status.setComplete();
+        return "forward:/asset/terminal/TerminalInfoList.do";
+    }
+
+    /**
+     * 비동기식 검색
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/terminal/searchTerminalList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String searchTerminalList( @RequestBody TerminalInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(terminalInfoService.selectTerminalInfoList(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지 건 수 수정
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/terminal/pageterminalList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String pageterminalList( @RequestBody TerminalInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(terminalInfoService.selectTerminalInfoListTotCnt(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지네이션
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/terminal/TerminalListPage.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String TerminalListPage( @RequestBody TerminalInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(terminalInfoService.selectTerminalInfoList(searchVO));
+	 }
+
+}

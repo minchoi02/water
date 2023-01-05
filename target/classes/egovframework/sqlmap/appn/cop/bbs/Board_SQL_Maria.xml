@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Board">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Board" type="egovframework.appn.cop.bbs.service.Board"/>
+	<typeAlias  alias="BoardVO" type="egovframework.appn.cop.bbs.service.BoardVO"/>
+
+	<resultMap id="boardList" class="egovframework.appn.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="4"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="5"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="6"/>
+		<result property="inqireCo" column="INQ_CNT" columnIndex="7"/>
+		<result property="parnts" column="PARNTS_NO" columnIndex="8"/>
+		<result property="replyAt" column="CMNT_YN" columnIndex="9"/>
+		<result property="replyLc" column="CMNT_LC" columnIndex="10"/>
+		<result property="useAt" column="USE_YN" columnIndex="11"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="12"/>
+		<result property="ntceBgnde" column="NTCE_BGN_DATE" columnIndex="13"/>
+		<result property="ntceEndde" column="NTCE_END_DATE" columnIndex="14"/>
+		<result property="atchFileCnt" column="ATCH_FILE_CNT" columnIndex="15"/>
+	</resultMap>
+
+	<resultMap id="boardListForMain" class="egovframework.appn.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="nttCn" column="NTT_CN" columnIndex="4"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="5"/>
+	</resultMap>
+
+	<resultMap id="boardDetail" class="egovframework.appn.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="ntcrId" column="NTCR_ID" columnIndex="4"/>
+		<result property="ntcrNm" column="NTCR_NM" columnIndex="5"/>
+		<result property="nttNo" column="NTT_NO" columnIndex="6"/>
+		<result property="nttCn" column="NTT_CN" columnIndex="7"/>
+		<result property="password" column="PASSWORD" columnIndex="8"/>
+		<result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="9"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="10"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="11"/>
+		<result property="ntceBgnde" column="NTCE_BGN_DATE" columnIndex="12"/>
+		<result property="ntceEndde" column="NTCE_END_DATE" columnIndex="13"/>
+		<result property="inqireCo" column="INQ_CNT" columnIndex="14"/>
+		<result property="useAt" column="USE_YN" columnIndex="15"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="16"/>
+		<result property="parnts" column="PARNTS_NO" columnIndex="17"/>
+		<result property="replyAt" column="CMNT_YN" columnIndex="18"/>
+		<result property="replyLc" column="CMNT_LC" columnIndex="19"/>
+		<result property="sortOrdr" column="SORT_ORDR" columnIndex="19"/>
+		<result property="bbsNm" column="BBS_NM" columnIndex="20"/>
+		<result property="cmtAt" column="REPLY_YN" columnIndex="20"/>
+		<result property="bbsTy" column="BBS_TY" columnIndex="20"/>
+	</resultMap>
+
+	<resultMap id="sortList" class="egovframework.appn.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="sortOrdr" column="SORT_ORDR" columnIndex="3"/>
+		<result property="parnts" column="PARNTS_NO" columnIndex="4"/>
+		<result property="nttNo" column="NTT_NO" columnIndex="5"/>
+		<result property="replyLc" column="CMNT_LC" columnIndex="6"/>
+	</resultMap>
+
+	<resultMap id="guestList" class="egovframework.appn.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="ntcrNm" column="NTCR_NM" columnIndex="4"/>
+		<result property="password" column="PASSWORD" columnIndex="5"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="6"/>
+		<result property="nttCn" column="NTT_CN" columnIndex="7"/>
+		<result property="useAt" column="USE_YN" columnIndex="8"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="9"/>
+		<result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="10"/>
+	</resultMap>
+
+ 	<select id="BBSManage.selectMaxNttId" resultClass="java.lang.Long">
+ 		<![CDATA[
+			SELECT coalesce(MAX(NTT_ID),0)+1 AS NTT_ID  FROM Z_BBS_INFO
+ 		]]>
+ 	</select>
+
+	<insert id="BBSManage.insertBoardArticle" parameterClass="Board" >
+		<selectKey resultClass="java.lang.Long" keyProperty="nttNo">
+			SELECT coalesce(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM Z_BBS_INFO
+			WHERE BBS_ID = #bbsId#
+		</selectKey>
+		<![CDATA[
+			INSERT INTO Z_BBS_INFO
+			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR,
+			 NTCR_ID, NTCR_NM, PASSWORD, INQ_CNT,
+			 NTCE_BGN_DATE, NTCE_END_DATE, CMNT_YN,
+			 PARNTS_NO, NTT_NO, CMNT_LC, ATCH_FILE_ID,
+			 FRST_REGUSR_ID, FRST_REG_DT, USE_YN
+			 )
+			VALUES
+			( #nttId#, #bbsId#, #nttSj#, #nttCn#, #nttNo#,
+			  #ntcrId#, #ntcrNm#, #password#, #inqireCo#,
+			  #ntceBgnde#, #ntceEndde#, #replyAt#,
+			  CAST (#parnts# AS INTEGER), 1, CAST (#replyLc# AS INTEGER), #atchFileId#,
+			  #frstRegisterId#, now(), 'Y'
+			 )
+		]]>
+	</insert>
+
+	<insert id="BBSManage.replyBoardArticle" parameterClass="Board" >
+		<selectKey resultClass="java.lang.Long" keyProperty="nttNo">
+			SELECT coalesce(MAX(NTT_NO),0)+1 AS NTT_NO  FROM Z_BBS_INFO
+			WHERE BBS_ID = #bbsId# AND SORT_ORDR = #sortOrdr#
+		</selectKey>
+		<![CDATA[
+			INSERT INTO Z_BBS_INFO
+			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR,
+			 NTCR_ID, NTCR_NM, PASSWORD, INQ_CNT,
+			 NTCE_BGN_DATE, NTCE_END_DATE, CMNT_YN,
+			 PARNTS_NO, NTT_NO, CMNT_LC, ATCH_FILE_ID,
+			 FRST_REGUSR_ID, FRST_REG_DT, USE_YN
+			 )
+			VALUES
+			( #nttId#, #bbsId#, #nttSj#, #nttCn#, #sortOrdr#,
+			  #ntcrId#, #ntcrNm#, #password#, #inqireCo#,
+			  #ntceBgnde#, #ntceEndde#, #replyAt#,
+			  CAST (#parnts# AS INTEGER), 1, CAST (#replyLc# AS INTEGER), #atchFileId#,
+			  #frstRegisterId#, now(), 'Y'
+			 )
+		]]>
+	</insert>
+
+	<select id="BBSManage.selectNoticeListForSort" parameterClass="Board" resultMap="sortList">
+		<![CDATA[
+			SELECT
+				a.BBS_ID, a.NTT_ID, a.SORT_ORDR, a.PARNTS_NO, a.NTT_NO, a.CMNT_LC
+			FROM
+				LETTNBBS a
+			WHERE
+				a.BBS_ID = #bbsId#
+			AND
+				a.SORT_ORDR = #sortOrdr#
+			ORDER BY  a.SORT_ORDR DESC, a.NTT_NO ASC
+		]]>
+	</select>
+
+
+	<select id="BBSManage.selectBoardArticleList" parameterClass="BoardVO" resultMap="boardList" >
+		<![CDATA[
+			SELECT
+                NTT_ID, NTT_SJ, FRST_REGUSR_ID, NTCR_NM as FRST_REGISTER_NM,
+                to_char(FRST_REG_DT, 'YYYY-MM-DD') as FRST_REG_DT,
+                INQ_CNT, PARNTS_NO, CMNT_YN, CMNT_LC, USE_YN, ATCH_FILE_ID,
+                BBS_ID, NTCE_BGN_DATE, NTCE_END_DATE,
+                (SELECT COUNT(ATCH_FILE_ID) FROM CMM_FILEDETAIL WHERE Z_BBS_INFO.ATCH_FILE_ID = CMM_FILEDETAIL.ATCH_FILE_ID) ATCH_FILE_CNT
+            FROM
+                Z_BBS_INFO
+			WHERE
+				BBS_ID = #bbsId#
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+<!-- 			<isEqual prepend="AND" property="searchCnd" compareValue="1"> -->
+<!-- 				<![CDATA[	NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]> -->
+<!-- 			</isEqual> -->
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	NTCR_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+		<![CDATA[
+            ORDER BY FRST_REG_DT DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+
+	<select id="BBSManage.selectBoardArticleListForMain" parameterClass="BoardVO" resultMap="boardListForMain" >
+		<![CDATA[
+			SELECT
+                BBS_ID, NTT_ID, NTT_SJ, NTT_CN,
+                to_char(FRST_REG_DT, 'YYYY-MM-DD') as FRST_REG_DT
+            FROM
+                Z_BBS_INFO
+			WHERE
+				BBS_ID = #bbsId#
+			  AND
+			    CMNT_YN = 'N'
+			ORDER BY SORT_ORDR DESC, NTT_NO ASC
+			LIMIT 5
+		]]>
+	</select>
+
+	<select id="BBSManage.selectBoardArticleListCnt" parameterClass="BoardVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(NTT_ID)
+			FROM
+				Z_BBS_INFO
+			WHERE
+				BBS_ID = #bbsId#
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+<!-- 			<isEqual prepend="AND" property="searchCnd" compareValue="1"> -->
+<!-- 				<![CDATA[	NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]> -->
+<!-- 			</isEqual> -->
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	NTCR_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+	</select>
+
+	<select id="BBSManage.selectBoardArticle" parameterClass="BoardVO" resultMap="boardDetail" >
+		<![CDATA[
+			SELECT
+				NTT_SJ, NTCR_ID, NTCR_NM, NTT_NO, NTT_CN,
+				PASSWORD, FRST_REGUSR_ID, NTCR_NM as FRST_REGISTER_NM,
+				to_char(FRST_REG_DT, 'YYYY-MM-DD') as FRST_REG_DT,
+				NTCE_BGN_DATE, NTCE_END_DATE, INQ_CNT,
+				USE_YN, ATCH_FILE_ID, BBS_ID, NTT_ID,
+				PARNTS_NO, CMNT_YN, CMNT_LC, SORT_ORDR,
+				(SELECT CODE_NM FROM SYS_CMMNDETAILCODE WHERE USE_YN = 'Y' AND CODE_ID = 'COM011' AND CODE = BBS_ID) BBS_NM,
+				(SELECT REPLY_YN FROM Z_BBS_MASTER WHERE BBS_ID = #bbsId#) REPLY_YN,
+				(SELECT BBS_TY FROM Z_BBS_MASTER WHERE BBS_ID = #bbsId#) BBS_TY
+			FROM
+				Z_BBS_INFO
+			WHERE
+				BBS_ID = #bbsId#
+			AND
+				NTT_ID = #nttId#
+		]]>
+	</select>
+
+ 	<update id="BBSManage.updateBoardArticle" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE Z_BBS_INFO SET
+				NTT_SJ = #nttSj#,
+				NTT_CN = #nttCn#,
+				PASSWORD = #password#,
+				NTCE_BGN_DATE = #ntceBgnde#,
+				NTCE_END_DATE = #ntceEndde#,
+				LAST_UPDTUSR_ID = #lastUpdusrId#,
+				ATCH_FILE_ID = #atchFileId#,
+				LAST_UPDT_DT = now()
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</update>
+
+ 	<update id="BBSManage.updateDeleteBoardArticle" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE Z_BBS_INFO SET
+				NTT_SJ = #nttSj#,
+				USE_YN = 'N',
+				LAST_UPDTUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_DT = now()
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</update>
+
+ 	<delete id="BBSManage.deleteBoardArticle" parameterClass="Board">
+ 		<![CDATA[
+			DELETE FROM Z_BBS_INFO
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</delete>
+
+ 	<select id="BBSManage.selectMaxInqireCo" resultClass="java.lang.Integer" parameterClass="BoardVO">
+ 		<![CDATA[
+			SELECT coalesce(MAX(INQ_CNT),0)+1 AS INQ_CNT FROM Z_BBS_INFO
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</select>
+
+ 	<select id="BBSManage.selectNoticeItemForSort" resultClass="java.lang.Long" parameterClass="Board">
+ 		<![CDATA[
+			SELECT
+				coalesce(MAX(NTT_NO),0)+1 AS NTT_NO
+			FROM
+				LETTNBBS
+			WHERE
+				BBS_ID = #bbsId#
+			AND
+				SORT_ORDR = #sortOrdr#
+			AND
+				NTT_ID = #nttId#
+ 		]]>
+ 	</select>
+
+ 	<update id="BBSManage.updateInqireCo" parameterClass="BoardVO">
+ 		<![CDATA[
+			UPDATE Z_BBS_INFO SET
+				INQ_CNT = #inqireCo#,
+				LAST_UPDTUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_DT = now()
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</update>
+
+	<update id="BBSManage.updateSortOrder" parameterClass="BoardVO">
+ 		<![CDATA[
+			UPDATE LETTNBBS SET
+				NTT_NO = #nttNo#
+			WHERE NTT_ID = #nttId#
+ 		]]>
+	</update>
+
+	<select id="BBSManage.selectGuestList" parameterClass="BoardVO" resultMap="guestList" >
+		<![CDATA[
+			SELECT
+				a.NTT_ID, a.NTT_SJ, a.NTCR_NM, a.PASSWORD,
+				to_char(a.FRST_REG_DT, 'YYYY-MM-DD HH:Mi:SS')
+				as FRST_REG_DT,
+				a.NTT_CN, a.USE_YN, a.BBS_ID, b.USER_NM as FRST_REGISTER_NM, a.FRST_REGUSR_ID
+			FROM
+				LETTNBBS a, COMVNUSERMASTER b
+			WHERE
+				a.BBS_ID = #bbsId#
+			AND
+				a.FRST_REGUSR_ID = b.ESNTL_ID
+			AND
+				a.USE_YN = 'Y'
+			ORDER BY a.SORT_ORDR DESC, a.NTT_NO ASC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+
+	<select id="BBSManage.selectGuestListCnt" parameterClass="BoardVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(NTT_ID)
+			FROM
+				LETTNBBS
+			WHERE
+				BBS_ID = #bbsId#
+			AND
+				USE_YN = 'Y'
+		]]>
+	</select>
+
+	<update id="BBSManage.deleteGuestList" parameterClass="BoardVO">
+		<![CDATA[
+			UPDATE LETTNBBS
+			SET USE_YN = 'N'
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+		]]>
+	</update>
+
+	<select id="BBSManage.getPasswordInf" parameterClass="Board" resultClass="java.lang.String">
+		<![CDATA[
+			SELECT
+				PASSWORD
+			FROM
+				LETTNBBS
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+		]]>
+	</select>
+
+	<select id="BBSManage.getParentNttNo" parameterClass="Board" resultClass="java.lang.Long">
+		<![CDATA[
+			SELECT NTT_NO  FROM Z_BBS_INFO
+			WHERE BBS_ID = #bbsId# AND NTT_ID = #parnts#::numeric
+		]]>
+	</select>
+
+ 	<update id="BBSManage.updateOtherNttNo" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE Z_BBS_INFO SET
+				NTT_NO = NTT_NO + 1
+			WHERE BBS_ID = #bbsId# AND SORT_ORDR = #sortOrdr#
+			AND NTT_NO > #nttNo#
+ 		]]>
+ 	</update>
+
+ 	 	<update id="BBSManage.updateNttNo" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE Z_BBS_INFO SET
+				NTT_NO = #nttNo#
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</update>
+ 	<update id="BBSManage.deleteAllComment" parameterClass="Board">
+		<![CDATA[
+			DELETE FROM COMMENT_INFO
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+		]]>
+	</update>
+
+</sqlMap>

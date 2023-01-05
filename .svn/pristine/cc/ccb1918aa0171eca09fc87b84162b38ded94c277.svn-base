@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link type="text/css" rel="shortcut icon" href="../images/favicon.ico" />	
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=1920" />
+<title>상수도 원격검침 시스템</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+</head>
+<body>
+<div class="admin-wrap">
+	<!-- skip -->
+	<div>
+		<a href="#gnb" class="skip">주메뉴 바로가기</a>
+		<a href="#contents" class="skip">본문 내용바로가기</a>
+	</div>	
+	<!-- skip -->
+	<!-- header --> 
+	<header class="header-wrap">      
+		<div class="header-logo">
+			<h1><a href="#" title="상수도 원격검침 시스템"><em class="hidden">상수도 원격검침 시스템</em></a></h1>
+		</div>
+		<ul class="user-wrap">
+			<li><a href="#modal-user" data-bs-toggle="modal"><i class="fas fa-user-circle"></i>유성구 사업소 관리자</a></li>
+			<li><a href="#"><i class="fas fa-sign-out-alt"></i>LOGOUT</a></li>
+		</ul>
+	</header>
+	<!-- header -->	    
+	<!-- container -->
+	<div class="container container-wrap">		
+		<!-- left menu -->
+		<nav id="sidebar">	
+            <div class="sidebar-header">
+                <h2>시스템관리</h2>
+            </div>
+            <ul>
+                <li class="depth-none active">
+                    <a href="17,18.html">회원관리</a>
+                </li>
+                <li class="depth-none">
+                    <a href="23.html">권한관리</a>
+                </li>
+				<li class="depth-none">
+                    <a href="31.html">메뉴관리</a>
+                </li>
+				<li class="depth-none">
+                    <a href="40.html">콘텐츠관리</a>
+                </li>
+				<li class="depth-none">
+                    <a href="54.html">게시판관리</a>
+                </li>
+                <li class="depth-none">
+                    <a href="27.html">코드관리</a>
+                </li>
+                <li class="depth-none">
+                    <a href="#menu7">연계관리</a>
+                </li>
+                <li class="depth-none">
+                    <a href="46.html">팝업관리</a>
+                </li>
+                <li class="depth-none">
+                    <a href="50.html">배너관리</a>
+                </li>
+            </ul>
+        </nav>   
+		<!-- left menu -->		
+		<!-- main -->
+		<main id="contents">
+			<div class="content-wrap">
+				<h2 class="hidden">컨텐츠영역</h2>
+				<!-- panel -->
+				<section class="panel-wrap">
+					<div class="panel-header">
+						<h3>회원 등록</h3>
+					</div>
+					<div class="panel-body">
+						<div class="table-box table-row table-col-6 y-scroll content-height-1">
+							<table>
+								<caption>회원 등록</caption>
+								<colgroup>
+									<col style="width:300px;">		
+									<col style="width:auto;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row">이름</th>
+										<td>
+											<div>
+												<input type="text" placeholder="홍길동" />
+											</div>	
+										</td>
+									</tr>
+									<tr>
+                                        <th scope="row">이메일</th>
+                                        <td>
+                                            <div>
+                                                <input type="text" placeholder="입력하세요." />@
+                                                <input type="text" placeholder="입력하세요." />
+                                                <button type="button" class="btn btn-default">중복확인</button>
+                                            </div>	
+                                        </td>
+                                    </tr>
+									<tr>
+                                        <th scope="row">패스워드</th>
+                                        <td class="flex">
+                                            <div>
+                                                <input type="text" placeholder="입력하세요." />
+                                            </div>
+                                            <div>
+                                                <span class="red font-md ml10">* 영문 대/소문자, 숫자, 특수문자를 조합하여 8~16자리로 입력하세요</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">패스워드 확인</th>
+                                        <td class="flex">
+                                            <div>
+                                                <input type="text" placeholder="입력하세요." />
+                                            </div>
+                                            <div>
+                                                <span class="red font-md ml10">* 비밀번호가 서로 다릅니다.</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">휴대전화</th>
+                                        <td>
+                                            <div>
+                                                <select>
+                                                    <option value="">010</option>
+                                                    <option value="1">011</option>
+                                                    <option value="2">016</option>
+                                                </select>-
+                                                <input type="tel" placeholder="입력하세요." />-
+                                                <input type="tel" placeholder="입력하세요." />
+                                            </div>	
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">소속</th>
+                                        <td>
+                                            <div>
+                                                <select>
+                                                    <option value="">소속기관</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                </select>
+                                                <select>
+                                                    <option value="">부서</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                </select>
+                                            </div>	
+                                        </td>
+                                    </tr>
+									<tr>
+                                        <th scope="row">기기 오류 알림</th>
+                                        <td>
+                                            <div class="label-input">
+                                                <label><input type="checkbox" />허용하시려면 체크해주세요.</label>
+                                                <span class="gray font-md">* 허용 시 기기 오류 등의 알림이 입력한 번호로 전송됩니다.</span>
+                                            </div>	
+                                        </td>
+                                    </tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">						
+						<div class="btn-area">							
+							<button type="button" class="btn btn-primary btn-lg">등록</button>
+                            <button type="button" class="btn btn-default btn-lg">목록</button>
+						</div>
+					</div>
+				</section>	
+				<!-- panel -->
+				<!-- footer -->
+				<footer>
+				35278 대전광역시 서구 신갈마로 141번길 80 대표전화 042-715-6114 야간, 휴일당직실이용 042-715-6900<br />Copyright(c) 대전광역시 상수도사업본부. All Rights Reserved.
+				</footer>
+				<!-- footer -->
+			</div>	
+		</main>		
+		<!-- main -->		
+	</div>
+	<!-- container -->
+	<!-- modal -->
+	<div class="modal fade" id="modal-user" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>회원 정보</h3>
+				</div>
+				<div class="modal-body">
+					<h4>상세정보</h4>
+					<button type="button" class="btn btn-secondary btn-xsm float-right">수정</button>
+					<div class="border-list-default">
+						<div class="flex">
+							<div class="thumbnail thumbnail-sm"></div>
+							<div class="list-area">
+								<ul class="list-area-item">
+									<li>홍길동 회원님</li>
+									<li>ID : abc@korea.kr(관리자)</li>
+									<li>기관 1 / 부서 1</li>
+									<li>010-1234-1234</li>
+								</ul>
+							</div>	
+						</div>
+					</div>					
+					<h4>최근게시물</h4>
+					<div class="table-box table-hover">
+						<table>
+							<caption>테이블 기본</caption>
+							<colgroup>
+								<col style="width:5%;">						
+								<col style="width:15%;">								
+								<col style="width:auto;">
+								<col style="width:15%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">순번</th>
+									<th scope="col">게시판명</th>
+									<th scope="col">제목</th>
+									<th scope="col">댓/답글</th>
+									<th scope="col">작성일시</th>
+									<th scope="col">본문</th>
+								</tr>    
+							</thead>
+							<tbody>
+								<tr>
+									<td>5</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr>    
+								<tr>
+									<td>4</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>3</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>2</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>1</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+							</tbody>
+						</table>
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<div class="btn-area">
+						<button type="button" class="btn btn-default btn-lg" data-bs-dismiss="modal">닫기</button>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div> 
+	<!-- modal -->
+    <!-- modal -->	
+	<div class="modal fade" id="modal-find" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>소속찾기</h3>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="tree-area">
+                    조직도 tree
+                    </div>
+				</div>
+				<div class="modal-footer">
+					<div class="btn-area">
+                        <button type="button" class="btn btn-primary btn-lg">선택</button>
+						<button type="button" class="btn btn-default btn-lg" data-bs-dismiss="modal">닫기</button>						
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal -->   
+</div>    
+</body>
+</html>

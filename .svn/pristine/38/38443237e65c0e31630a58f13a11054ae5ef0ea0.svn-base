@@ -1,0 +1,168 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="custld" uri="/WEB-INF/tld/custld.tld"%>
+
+<script type="text/javaScript" language="javascript" defer="defer">
+
+<!--
+/* 글 목록 화면 function */
+function fn_List() {
+    document.customerInfoVO.action = "<c:url value='/asset/customer/CustomerInfoList.do'/>";
+    document.customerInfoVO.submit();
+}
+
+/* 글 등록 function */
+function fn_Save() {
+    document.customerInfoVO.submit();
+}
+
+// -->
+</script>
+
+<h2 class="hidden">컨텐츠영역</h2>
+<!-- panel -->
+<section class="panel-wrap">
+    <div class="panel-header">
+        <h3>고객 상세</h3>
+    </div>
+    <form:form commandName="customerInfoVO" name="customerInfoVO" action="${pageContext.request.contextPath}/asset/customer/updateCustomerInfo.do" method="post">
+
+     <div class="panel-body">
+         <div class="table-box table-row table-col-6">
+            <table>
+                <caption>고객정보 수정</caption>
+                <colgroup>
+	                <col style="width:200px;">
+	                <col style="width:auto;">
+                </colgroup>
+                <tbody>
+	                <tr>
+	                    <th scope="row">고객번호</th>
+	                    <td>
+	                        <div>
+			                    <form:input path="customerNum" id="customerNum" title="고객번호"/>
+			                    <form:errors path="customerNum" cssClass="error" />
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th scope="row">고지자명</th>
+	                    <td>
+	                        <div>
+			                    <form:input path="customerName" id="customerName" title="고지자명"/>
+			                    <form:errors path="customerName" cssClass="error" />
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th scope="row">위치 정보</th>
+	                    <td>
+	                        <div>
+			                    <form:input path="lat" id="lat" title="위도"/>
+			                    <form:errors path="lat" cssClass="error" />
+			                    <form:input path="lot" id="lot" title="경도"/>
+			                    <form:errors path="lot" cssClass="error" />
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th scope="row">도로명 주소</th>
+	                    <td>
+	                        <div>
+	                            <input type="text" />
+	                            <button type="button" class="btn btn-default btn-lg">우편번호 찾기</button>
+	                        </div>
+	                        <div class="mt15">
+			                    <form:input path="detailAddr" id="detailAddr" title="도로명주소"/>
+			                    <form:errors path="detailAddr" cssClass="error" />
+	                        </div>
+	                        <div class="mt15">
+	                            <input type="text" />
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th scope="row">관리사업소</th>
+	                    <td>
+	                        <div>
+			                    <select name="manageBizplc" id="manageBizplc">
+			                        <c:forEach var="result" items="${manageBizplc_result}" varStatus="status">
+			                            <option value="${result.codeNm}" <c:if test="${customerInfoVO.manageBizplc eq result.codeNm}"> selected </c:if>>${result.codeNm}</option>
+			                        </c:forEach>
+			                    </select>
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th scope="row">담당자명</th>
+	                    <td>
+	                        <div>
+			                    <form:input path="chargerNm" id="chargerNm" title="관리사업소"/>
+			                    <form:errors path="chargerNm" cssClass="error" />
+	                            <button type="button" class="btn btn-default btn-lg" data-bs-toggle="modal" data-bs-target="#modal-charge">담당자 검색</button>
+	                        </div>
+	                    </td>
+	                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 검색조건 유지 -->
+    <input type="hidden" name="searchCondition" value="<c:out value='${searchVO.searchCondition}'/>"/>
+    <input type="hidden" name="searchKeyword" value="<c:out value='${searchVO.searchKeyword}'/>"/>
+    <input type="hidden" name="pageIndex" value="<c:out value='${searchVO.pageIndex}'/>"/>
+
+    </form:form>
+    <div class="panel-footer">
+        <div class="btn-area">
+            <button type="button" class="btn btn-primary btn-lg" onclick="javaScript:fn_Save(); return false;">수정</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="javaScript:fn_List(); return false;">목록</button>
+        </div>
+    </div>
+</section>
+
+<!-- modal -->
+<div class="modal fade" id="modal-charge" role="dialog">
+    <div class="modal-dialog modal-default">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>담당자 검색</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-box textC">
+                    <table>
+                        <caption>고객 정보 수정</caption>
+                        <colgroup>
+		                    <col style="width:50%;">
+		                    <col style="width:50%;">
+                        </colgroup>
+                        <tr>
+                            <th scope="row">담당자명</th>
+                            <th scope="row">소속기관</th>
+                        </tr>
+                        <c:forEach var="result" items="${resultList}" varStatus="status">
+                            <tr>
+                                <td>${result.userNm}</td>
+                                <td>${result.pstInst}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-area">
+                    <button type="button" class="btn btn-primary btn-lg">선택</button>
+                    <button type="button" class="btn btn-default btn-lg" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal -->

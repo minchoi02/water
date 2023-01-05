@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MenuManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="menuManageVO" type="egovframework.appn.sys.menu.mlm.service.MenuManageVO"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.com.cmm.ComDefaultVO"/>
+	<resultMap id="menuManageVO" class="egovframework.appn.sys.menu.mlm.service.MenuManageVO">
+		<result property="menuNo" column="MENU_NO" columnIndex="1"/>
+		<result property="menuOrdr" column="MENU_ORDR" columnIndex="2"/>
+		<result property="menuNm" column="MENU_NM" columnIndex="3"/>
+		<result property="upperMenuId" column="UPPER_MENU_ID" columnIndex="4"/>
+		<result property="menuDc" column="MENU_DC" columnIndex="5"/>
+		<result property="relateImagePath" column="REL_IMG_PTH" columnIndex="6"/>
+		<result property="relateImageNm" column="REL_IMG_NM" columnIndex="7"/>
+		<result property="progrmFileNm" column="PROGRM_FILE_NM" columnIndex="8"/>
+		<result property="menuType" column="MENU_TY" columnIndex="9"/>
+		<result property="url" column="URL" columnIndex="10"/>
+		<result property="useAt" column="USE_YN" columnIndex="11"/>
+	</resultMap>
+
+
+	<select id="menuManage.selectMenuManageList" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				  MENU_NO
+				, MENU_ORDR
+				, MENU_NM
+				, UPPER_MENU_NO AS UPPER_MENU_ID
+				, (select  menu_nm from  Z_MENU_INFO where menu_no = A.upper_menu_no ) UPPER_MENU_NM
+				, MENU_DC
+				, REL_IMG_PTH
+				, REL_IMG_NM
+				, PROGRM_FILE_NM
+				, MENU_TY
+				, URL
+				, (CASE WHEN  USE_YN = 'Y' THEN '사용'
+                         ELSE '미사용'
+                     END) AS USE_YN
+			FROM Z_MENU_INFO A
+			order by MENU_ORDR,MENU_NM
+		 ]]>
+	</select>
+
+	<select id="menuManage.selectMenuManageListExcel" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				  CONCAT(MENU_NO) AS MENU_NO
+				, MENU_ORDR
+				, MENU_NM
+				, CONCAT(UPPER_MENU_NO) AS UPPER_MENU_ID
+				, MENU_DC
+				, REL_IMG_PTH
+				, REL_IMG_NM
+				, PROGRM_FILE_NM
+				, MENU_TY
+				, URL
+			FROM Z_MENU_INFO
+			WHERE MENU_NM like CONCAT('%', #searchKeyword#, '%')
+		 ]]>
+	</select>
+
+	<!-- 총건수 조회 -->
+	<select id="menuManage.selectMenuManageListTotCnt" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(MENU_NO) AS totcnt
+		  FROM Z_MENU_INFO
+		 WHERE MENU_NM like CONCAT('%', #searchKeyword#, '%')
+		]]>
+	</select>
+
+
+	<select id="menuManage.selectMenuManage" parameterClass="int" resultMap="menuManageVO">
+		<![CDATA[
+			SELECT
+				  MENU_NO
+				, MENU_ORDR
+				, MENU_NM
+				, UPPER_MENU_NO AS UPPER_MENU_ID
+				, MENU_DC
+				, REL_IMG_PTH
+				, REL_IMG_NM
+				, PROGRM_FILE_NM
+				, MENU_TY
+				, URL
+				, USE_YN
+			FROM Z_MENU_INFO
+			WHERE MENU_NO = #menuNo#
+		]]>
+	</select>
+
+	<insert id="menuManage.insertMenuManage">
+		<![CDATA[
+			INSERT INTO Z_MENU_INFO
+			( MENU_NO
+            , MENU_ORDR
+            , MENU_NM
+            , UPPER_MENU_NO
+            , MENU_DC
+            , REL_IMG_PTH
+            , REL_IMG_NM
+            , PROGRM_FILE_NM
+            , MENU_TY
+            , URL
+            , USE_YN)
+			VALUES
+		  (   #menuNo#
+            , #menuOrdr#
+            , #menuNm#
+            , #upperMenuId#
+            , #menuDc#
+            , #relateImagePath#
+            , #relateImageNm#
+            , #progrmFileNm#
+            , #menuType#
+            , #url#
+            , #useAt#  )
+		]]>
+	</insert>
+
+	<update id="menuManage.updateMenuManage">
+		<![CDATA[
+			UPDATE Z_MENU_INFO
+			SET  MENU_ORDR         = #menuOrdr#
+            , MENU_NM           = #menuNm#
+            , UPPER_MENU_NO     = #upperMenuId#
+            , MENU_DC           = #menuDc#
+            , REL_IMG_PTH = #relateImagePath#
+            , REL_IMG_NM   = #relateImageNm#
+            , PROGRM_FILE_NM    = #progrmFileNm#
+            , MENU_TY =#menuType#
+            , URL =#url#
+            , USE_YN =#useAt#
+			WHERE MENU_NO=#menuNo#
+		]]>
+	</update>
+
+	<delete id="menuManage.deleteMenuManage">
+		<![CDATA[
+			DELETE FROM Z_MENU_INFO
+			WHERE MENU_NO=#menuNo#
+		]]>
+	</delete>
+
+	<!-- 메뉴번호 존재여부 조회 -->
+	<select id="menuManage.selectMenuNoByPk" parameterClass="menuManageVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(MENU_NO) AS totcnt
+		  FROM Z_MENU_INFO
+		 WHERE MENU_NO = #menuNo#
+		]]>
+	</select>
+
+	<!-- 상위 메뉴번호 존재여부 조회 -->
+	<select id="menuManage.selectUpperMenuNoByPk" parameterClass="menuManageVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(MENU_NO) AS totcnt
+		  FROM Z_MENU_INFO
+		 WHERE UPPER_MENU_NO = #menuNo#
+		]]>
+	</select>
+
+	<select id="menuManage.selectMenuListT" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+            SELECT
+			      MENU_NO AS menuNo
+				, MENU_ORDR AS menuOrdr
+				, MENU_NM AS menuNm
+				, UPPER_MENU_NO AS upperMenuId
+				, MENU_DC AS menuDc
+				, REL_IMG_PTH AS relateImagePath
+				, REL_IMG_NM AS relateImageNm
+				, PROGRM_FILE_NM AS progrmFileNm
+			FROM Z_MENU_INFO
+			WHERE Menu_NO > 0
+			ORDER BY MENU_ORDR
+		]]>
+	</select>
+
+	<delete id="menuManage.deleteAllMenuList" >
+		<![CDATA[
+			DELETE FROM Z_MENU_INFO WHERE MENU_NO <> UPPER_MENU_NO
+		]]>
+	</delete>
+
+	<!-- 메뉴정보 총건수 조회 -->
+	<select id="menuManage.selectMenuListTotCnt" parameterClass="menuManageVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(MENU_NO) AS totcnt
+		  FROM Z_MENU_INFO
+		]]>
+	</select>
+
+	<insert id="menuManage.insertPageView">
+		/* menuManage.insertPageView */
+		<![CDATA[
+			INSERT INTO Z_PAGE_VIEW(
+				   PAGE_VIEW_ID
+				 , USER_ID )
+			VALUES ((SELECT coalesce(MAX(PAGE_VIEW_ID)+1,1) FROM Z_PAGE_VIEW ALIAS_FOR_SUBQUERY)
+			     , #tmp_Id#)
+		]]>
+	</insert>
+
+</sqlMap>

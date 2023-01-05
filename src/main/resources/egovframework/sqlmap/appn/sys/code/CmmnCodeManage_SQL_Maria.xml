@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CmmnCodeManage">
+
+	<typeAlias  alias="egovMap"    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CmmnCode"   type="egovframework.appn.sys.code.hcm.service.CmmnCode"/>
+	<typeAlias  alias="CmmnCodeVO" type="egovframework.appn.sys.code.hcm.service.CmmnCodeVO"/>
+
+	<select id="CmmnCodeManage.selectCmmnCodeList" parameterClass="CmmnCodeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  CODE_ID
+			     ,  CODE_NM
+			     ,  USE_YN
+			  FROM  Z_CMM_CODE_INFO
+			 WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[CODE_ID LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[CODE_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			ORDER BY CODE_ID
+			<isNotEqual property="excel" compareValue="Y">
+				LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+			</isNotEqual>
+	</select>
+
+	<select id="CmmnCodeManage.selectCmmnCodeListTotCnt" parameterClass="CmmnCodeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt
+			  FROM  Z_CMM_CODE_INFO
+			 WHERE  1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[CODE_ID LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[CODE_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+	</select>
+
+	<select id="CmmnCodeManage.selectCmmnCodeDetail" parameterClass="CmmnCode" resultClass="CmmnCode">
+		<![CDATA[
+            SELECT  CODE_ID    codeId
+			     ,  CODE_NM codeIdNm
+                 ,  CODE_DC codeIdDc
+                 ,  USE_YN     useAt
+			  FROM  Z_CMM_CODE_INFO
+			 WHERE  CODE_ID = #codeId#
+		]]>
+	</select>
+
+	<insert id="CmmnCodeManage.insertCmmnCode">
+		<![CDATA[
+		    INSERT
+		      INTO  Z_CMM_CODE_INFO
+		         (  CODE_ID
+		         ,  CODE_NM
+		         ,  CODE_DC
+		         ,  USE_YN
+		         ,  FRST_REG_DT
+		         ,  FRST_REGUSR_ID
+		         ,  LAST_UPDT_DT
+		         ,  LAST_UPDTUSR_ID
+		         )
+		    VALUES
+		         (  #codeId#
+		         ,  #codeIdNm#
+		         ,  #codeIdDc#
+		         ,  #useAt#
+		         ,	now()
+		         ,  #frstRegisterId#
+		         ,  now()
+		         ,  #frstRegisterId#
+		         )
+		]]>
+	</insert>
+
+	<update id="CmmnCodeManage.updateCmmnCode">
+		<![CDATA[
+            UPDATE  Z_CMM_CODE_INFO
+               SET  CODE_NM        = #codeIdNm#
+                 ,  CODE_DC        = #codeIdDc#
+                 ,  USE_YN            = #useAt#
+                 ,  LAST_UPDT_DT = now()
+                 ,  LAST_UPDTUSR_ID    = #lastUpdusrId#
+             WHERE  CODE_ID           = #codeId#
+		]]>
+	</update>
+
+	<delete id="CmmnCodeManage.deleteCmmnCode">
+		<![CDATA[
+            UPDATE  Z_CMM_CODE_INFO
+               SET  USE_YN  = 'N'
+             WHERE  CODE_ID = #codeId#
+		]]>
+	</delete>
+
+
+</sqlMap>

@@ -1,0 +1,274 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="custld" uri="/WEB-INF/tld/custld.tld"%>
+
+<%@ page import="egovframework.com.cmm.service.EgovProperties" %>
+
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css">
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<script type="text/javascript" src="<c:url value='/js/EgovBBSMng.js' />" ></script>
+<script type="text/javaScript">
+
+var totalRecordCount = ${paginationInfo.totalRecordCount};          // 총 게시물 건 수
+var recordCountPerPage = 10;                                        // 보여지는 페이지 개수
+var pageSize;                                                       // 페이지 크기
+var currentPageNo = 1;                                              // 현재 페이지 번호
+var pageGroup;                                                      // 페이지 그룹
+var totalPageCount;                                                 // 총 페이지 수
+var lastPageNo;                                                     // 마지막 페이지 번호
+var firstPageNo;                                                    // 첫번째 페이지 번호
+var nextPageNo;                                                     // 다음 페이지 번호
+var prevPageNo;                                                     // 이전 페이지 번호
+var pageHtml = "";
+
+$(document).ready(function(){
+    const gridData = ${resultList};
+    grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      data: gridData,
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ["rowNum"],
+      columns: [
+        {
+          header: '고객번호',
+          name: 'customerNum',
+          align: 'center'
+        },
+        {
+          header: '고지자명',
+          name: 'customerName',
+          align: 'center'
+        },
+        {
+         header: '도로명주소',
+         name: 'detailAddr',
+         align: 'center'
+        },
+        {
+         header: '관리사업소',
+         name: 'manageBizplc',
+         align: 'center'
+        },
+        {
+         header: '담당자명',
+         name: 'chargerNm',
+         align: 'center'
+        }
+      ]
+    });
+
+    tui.Grid.applyTheme('striped', {
+        grid: {
+            border: '#aaa',
+            text: '#333'
+        },
+        cell: {
+            disabled: {
+                text: '#999'
+            }
+        }
+    });
+
+    grid.on('click', function(object) {
+        if(object.rowKey != undefined){
+            fn_detail(grid.getValue(object.rowKey, "customerNum"));
+        }
+    })
+
+    paging(totalRecordCount, recordCountPerPage, pageSize, currentPageNo);
+
+});
+
+<!--
+/* 글 수정 화면 function */
+
+function fn_detail(customerNum) {
+    document.listForm.customerNum.value = customerNum;
+    document.listForm.action = "<c:url value='/asset/customer/updateCustomerInfoView.do'/>";
+    document.listForm.submit();
+}
+
+/* 글 등록 화면 function */
+function fn_addCustomer() {
+    document.listForm.action = "<c:url value='/asset/customer/addCustomerInfoView.do'/>";
+    document.listForm.submit();
+}
+
+/* 검색 function */
+function fnSearch(){
+    var param = {
+        firstIndex : '0',
+        searchCondition : $("#searchCondition").val(),
+        searchKeyword : $("#searchKeyword").val(),
+        recordCountPerPage : $("#recordCountPerPage").val(),
+    }
+    // search_select
+    $.ajax({
+        url : "<c:url value='/asset/customer/searchCustomerList.do'/>",
+        type : "POST",
+        dataType:'json',
+        contentType:"application/json; charset=UTF-8",
+        data : JSON.stringify(param),
+        success : function(data){
+            grid.resetData(data);
+        }
+    });
+
+    // search_page(totalpagination)
+    $.ajax({
+         url : "<c:url value='/asset/customer/pageCustomerList.do'/>",
+         type : "POST",
+         dataType:'json',
+         contentType:"application/json; charset=UTF-8",
+         data : JSON.stringify(param),
+         success : function(data){
+             $("#totalPageCnt").text(data);
+             totalRecordCount = data;
+             pageHtml = "";
+             paging(totalRecordCount, param.recordCountPerPage, pageSize, currentPageNo);
+         }
+     });
+
+}
+
+/* 페이지 function*/
+function fn_select_page(page){
+    var param = {
+            pageIndex : page,
+            firstIndex : "",
+            searchCondition : $("#searchCondition").val(),
+            searchKeyword : $("#searchKeyword").val(),
+            recordCountPerPage : $("#recordCountPerPage").val()
+    }
+    if(param.recordCountPerPage == 30){
+        param.firstIndex = (page - 1) * 30;
+    } else if(param.recordCountPerPage == 50){
+        param.firstIndex = (page - 1) * 50;
+    } else {
+        param.firstIndex = (page - 1) * 10;
+    }
+
+    $.ajax({
+        url : "<c:url value='/asset/customer/CustomerListPage.do'/>",
+        type : "POST",
+        dataType:'json',
+        contentType:"application/json; charset=UTF-8",
+        data : JSON.stringify(param),
+        success : function(data){
+            grid.resetData(data);
+
+        }
+    });
+
+}
+
+function paging(totalRecordCount, recordCountPerPage, pageSize, currentPageNo){
+    totalPageCount = Math.ceil(totalRecordCount / recordCountPerPage);
+
+    if(totalPageCount <= 1){
+        pageSize = 1;
+    } else {
+        pageSize = 5;
+    }
+
+    pageGroup = Math.ceil(currentPageNo / pageSize);
+    lastPageNo = pageGroup * pageSize;
+
+    firstPageNo = lastPageNo - (pageSize - 1);
+
+    if(lastPageNo > totalPageCount){
+        lastPageNo = totalPageCount;
+    }
+
+    nextPageNo = lastPageNo + 1;
+    prevPageNo = firstPageNo - 1;
+
+    if(prevPageNo > 0){
+        pageHtml += "<li><a href='#' id='prev' onclick='javascript:fn_select_page(" + prevPageNo + "); return false;'><i class='fas fa-angle-left'></i></a></li>";
+    }
+
+    for(var i = firstPageNo; i <= lastPageNo; i++){
+        if(currentPageNo == i){
+            pageHtml += "<li class='active'><a href='#'" + i + ">" + i + "</a></li>";
+        } else {
+         pageHtml += "<li><a href='?pageIndex=" + i + "' onclick='javascript:fn_select_page(" + i + "); return false;'>" + i + "</a></li>";
+        }
+    }
+
+    if(lastPageNo < totalPageCount){
+        pageHtml += "<li><a href='?pageIndex=" + nextPageNo + "' id='next' onclick='javascript:fn_select_page(" + nextPageNo + "); return false;'><i class = 'fas fa-angle-right'></i></a></li>";
+    }
+
+    $("#paging").html(pageHtml);
+
+    $("#paging li a").click(function (){
+        var $id = $(this).attr("id");
+        selectedPageNo = $(this).text();
+
+        if($id == "prev") selectedPageNo = prevPageNo;
+        if($id == "next") selectedPageNo = nextPageNo;
+
+        currentPageNo = selectedPageNo;
+
+        pageHtml = "";
+        paging(totalRecordCount, recordCountPerPage, pageSize, selectedPageNo);
+    });
+}
+</script>
+
+<h2 class="hidden">컨텐츠영역</h2>
+<!-- panel -->
+<div class="panel-header">
+    <h3>고객 목록</h3>
+</div>
+<form name="listForm" action ="<c:url value='/asset/customer/CustomerInfoList.do'/>" method="post">
+   <div class="panel-body">
+       <div class="search-area">
+            <input type="hidden" name="customerNum"/>
+
+            <label for="searchCondition" class="hidden">검색조건</label>
+            <select id="searchCondition" name="searchCondition" title="검색조건 선택">
+                <option value="">전체</option>
+                <option value="1">고객번호</option>
+                <option value="2">도로명주소</option>
+                <option value="3">관리사업소</option>
+                <option value="4">담당자명</option>
+            </select>
+            <input type="text" id="searchKeyword" name="searchKeyword" size="35" value='<c:out value="${searchVO.searchKeyword}"/>' maxlength="35" title="검색어 입력"/>
+            <button type="button" class="btn btn-primary" onclick="javascript:fnSearch(); return false;">검색</button>
+       </div>
+       <div class="table-header">
+           <div>총 <strong class="secondary" id="totalPageCnt">${paginationInfo.totalRecordCount}</strong>건이 검색 되었습니다.</div>
+           <div>
+               <select id='recordCountPerPage' name='recordCountPerPage' onchange='fnSearch();'>
+                   <option value='10' <c:if test="${paginationInfo.recordCountPerPage eq 10}"> selected </c:if> >10개씩보기</option>
+                   <option value='30' <c:if test="${paginationInfo.recordCountPerPage eq 30}"> selected </c:if> >30개씩보기</option>
+                   <option value='50' <c:if test="${paginationInfo.recordCountPerPage eq 50}"> selected </c:if> >50개씩보기</option>
+               </select>
+           </div>
+       </div>
+
+       <div class="grid-top">
+           <table>
+               <div id="grid"></div>
+               <div id="fl"></div>
+           </table>
+       </div>
+
+   </div>
+   <div class="panel-footer justify-content-center">
+       <div class="page">
+           <ul id="paging"></ul>
+       </div>
+       <div class="btn-area">
+<!--            <button type="button" class="btn btn-primary btn-lg" onclick="fn_addCustomer(); return false;">등록</button> -->
+       </div>
+   </div>
+</form>

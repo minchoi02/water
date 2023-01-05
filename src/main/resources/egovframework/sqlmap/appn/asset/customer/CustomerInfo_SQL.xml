@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CustomerInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="customerInfoSerarchVO" type="egovframework.appn.asset.customer.service.CustomerInfoDefaultVO"/>
+
+	<resultMap id="customerInfo" class="egovframework.appn.asset.customer.service.CustomerInfoVO">
+		<result property="customerNum" column="customer_num" columnIndex="1"/>
+		<result property="customerName" column="customer_name" columnIndex="2"/>
+		<result property="customerBuildingName" column="customer_building_name" columnIndex="3"/>
+        <result property="manageBizplc" column="manage_bizplc" columnIndex="4"/>
+		<result property="lat" column="lat" columnIndex="5"/>
+		<result property="lot" column="lot" columnIndex="6"/>
+		<result property="zip" column="zip" columnIndex="7"/>
+		<result property="roadNameAddr" column="road_name_addr" columnIndex="8"/>
+		<result property="lotNumberAddr" column="lot_number_addr" columnIndex="9"/>
+		<result property="detailAddr" column="detail_addr" columnIndex="10"/>
+		<result property="useYn" column="use_yn" columnIndex="11"/>
+		<result property="chargerNm" column="charger_nm" columnIndex="12"/>
+	</resultMap>
+
+	<insert id="customerInfoDAO.insertCustomerInfo">
+		<![CDATA[
+			INSERT INTO customer_info
+				( customer_num
+				  , customer_name
+				  , customer_building_name
+				  , manage_bizplc
+				  , lat
+				  , lot
+				  , zip
+				  , road_name_addr
+				  , lot_number_addr
+				  , detail_addr
+				  , use_yn
+				  , charger_nm )
+			VALUES ( #customerNum#
+				  , #customerName#
+				  , #customerBuildingName#
+				  , #manageBizplc#
+				  , #lat#
+				  , #lot#
+				  , #zip#
+				  , #roadNameAddr#
+				  , #lotNumberAddr#
+				  , #detailAddr#
+				  , #useYn#
+				  , #chargerNm# )
+		]]>
+	</insert>
+
+	<update id="customerInfoDAO.updateCustomerInfo">
+		<![CDATA[
+			UPDATE customer_info
+			SET customer_num=#customerNum#
+				, customer_name=#customerName#
+				, customer_building_name=#customerBuildingName#
+				, manage_bizplc=#manageBizplc#
+				, lat=#lat#
+				, lot=#lot#
+				, zip=#zip#
+				, road_name_addr=#roadNameAddr#
+				, lot_number_addr=#lotNumberAddr#
+				, detail_addr=#detailAddr#
+				, use_yn=#useYn#
+				, charger_nm=#chargerNm#
+			WHERE customer_num=#customerNum#
+		]]>
+	</update>
+
+	<delete id="customerInfoDAO.deleteCustomerInfo">
+		<![CDATA[
+			DELETE FROM customer_info
+			WHERE customer_num=#customerNum#
+		]]>
+	</delete>
+
+	<select id="customerInfoDAO.selectCustomerInfo" resultMap="customerInfo">
+		<![CDATA[
+			SELECT
+				customer_num
+				, customer_name
+				, customer_building_name
+				, manage_bizplc
+				, lat
+				, lot
+				, zip
+				, road_name_addr
+				, lot_number_addr
+				, detail_addr
+				, use_yn
+				, charger_nm
+			FROM customer_info
+			WHERE customer_num=#customerNum#
+		]]>
+	</select>
+
+	<select id="customerInfoDAO.selectCustomerInfoList" parameterClass="customerInfoSerarchVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT
+                customer_num
+                , customer_name
+                , customer_building_name
+                , manage_bizplc
+                , lat
+                , lot
+                , zip
+                , road_name_addr
+                , lot_number_addr
+                , detail_addr
+                , use_yn
+                , charger_nm
+            FROM customer_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[detail_addr LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[manage_bizplc LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[charger_nm LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+        <![CDATA[
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	<select id="customerInfoDAO.selectCustomerInfoListTotCnt" parameterClass="customerInfoSerarchVO" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) totcnt
+            FROM customer_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[detail_addr LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[manage_bizplc LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[charger_nm LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+	</select>
+
+</sqlMap>

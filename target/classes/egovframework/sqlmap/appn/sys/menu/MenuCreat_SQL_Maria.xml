@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MenuCreat">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="menuCreatVO" type="egovframework.appn.sys.menu.mcm.service.MenuCreatVO"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.com.cmm.ComDefaultVO"/>
+	<resultMap id="menuCreatVO" class="egovframework.appn.sys.menu.mcm.service.MenuCreatVO">
+		<result property="menuNo" column="MENU_NO" columnIndex="1"/>
+		<result property="menuOrdr" column="MENU_ORDR" columnIndex="2"/>
+		<result property="menuNm" column="MENU_NM" columnIndex="3"/>
+		<result property="upperMenuId" column="UPPER_MENU_ID" columnIndex="4"/>
+		<result property="upperMenuNm" column="UPPER_MENU_NM" columnIndex="4"/>
+		<result property="chkYeoBu" column="CHK_YEO_BU" columnIndex="5"/>
+		<result property="progrmFileNm" column="PROGRM_FILE_NM" columnIndex="6"/>
+		<result property="creatAuthor" column="CRT_AUTHOR_YN" columnIndex="7"/>
+		<result property="readAuthor" column="REDNG_AUTHOR_YN" columnIndex="8"/>
+		<result property="updtAuthor" column="UPDT_AUTHOR_YN" columnIndex="9"/>
+		<result property="deleteAuthor" column="DEL_AUTHOR_YN" columnIndex="10"/>
+	</resultMap>
+
+	<select id="menuManage.selectUsrByPk" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		select count(AUTHOR_CD) from Z_USER_SECURITY_SETTING
+		where SCRTY_STNG_TRGET_ID =
+			(select ESNTL_ID from COMVNUSERMASTER
+			where user_id = #searchKeyword# )
+		]]>
+	</select>
+
+
+	<select id="menuManage.selectAuthorByUsr" parameterClass="comDefaultVO" resultClass="menuCreatVO">
+		<![CDATA[
+		select AUTHOR_CD AS authorCode from Z_USER_SECURITY_SETTING
+		where SCRTY_STNG_TRGET_ID =
+			(select ESNTL_ID from COMVNUSERMASTER
+			where user_id = #searchKeyword# )
+		]]>
+	</select>
+
+	<select id="menuManage.selectMenuCreatManageList" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  AUTHOR_CD,
+					AUTHOR_NM,
+					AUTHOR_DC,
+					AUTHOR_CRT_DT,
+				   (SELECT COUNT(B.AUTHOR_CD)
+					FROM   Z_MENU_CREATE_HISTORY B
+					WHERE  B.AUTHOR_CD = A.AUTHOR_CD ) AS CHK_YEO_BU
+			FROM    Z_AUTHOR_INFO A
+			WHERE   A.AUTHOR_CD like CONCAT('%', #searchKeyword#, '%')
+			LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+
+	<select id="menuManage.selectMenuCreatManageTotCnt" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(AUTHOR_CD) AS totcnt
+			  FROM Z_AUTHOR_INFO
+			 WHERE AUTHOR_CD like CONCAT('%', #searchKeyword#, '%')
+		]]>
+	</select>
+
+	<select id="menuManage.selectMenuCreatList" parameterClass="menuCreatVO" resultMap="menuCreatVO">
+		<![CDATA[
+			SELECT
+				  A.MENU_NO
+				, A.MENU_ORDR
+				, A.MENU_NM
+				, A.UPPER_MENU_NO AS UPPER_MENU_ID
+				, (select  menu_nm from  Z_MENU_INFO where menu_no = a.upper_menu_no ) UPPER_MENU_NM
+			    , (SELECT count(B.MENU_NO)
+			         FROM Z_MENU_CREATE_HISTORY B
+			        WHERE B.MENU_NO  = A.MENU_NO
+			          AND B.AUTHOR_CD =  (select AUTHOR_CD from Z_AUTHOR_INFO where TREE_CD = #treeCode#)) AS CHK_YEO_BU
+			    , PROGRM_FILE_NM
+			    , (SELECT B.CRT_AUTHOR_YN
+			         FROM Z_MENU_CREATE_HISTORY B
+			        WHERE B.MENU_NO = A.MENU_NO
+			          AND B.AUTHOR_CD =
+			              (SELECT AUTHOR_CD
+			         FROM Z_AUTHOR_INFO
+			        WHERE TREE_CD = #treeCode#)) AS CRT_AUTHOR_YN
+			         ,  (SELECT B.REDNG_AUTHOR_YN
+			         FROM Z_MENU_CREATE_HISTORY B
+			        WHERE B.MENU_NO = A.MENU_NO
+			          AND B.AUTHOR_CD =
+			              (SELECT AUTHOR_CD
+			         FROM Z_AUTHOR_INFO
+			        WHERE TREE_CD = #treeCode#)) AS REDNG_AUTHOR_YN
+			         ,  (SELECT B.UPDT_AUTHOR_YN
+			         FROM Z_MENU_CREATE_HISTORY B
+			        WHERE B.MENU_NO = A.MENU_NO
+			          AND B.AUTHOR_CD =
+			              (SELECT AUTHOR_CD
+			         FROM Z_AUTHOR_INFO
+			        WHERE TREE_CD = #treeCode#)) AS UPDT_AUTHOR_YN
+			         ,  (SELECT B.DEL_AUTHOR_YN
+			         FROM Z_MENU_CREATE_HISTORY B
+			        WHERE B.MENU_NO = A.MENU_NO
+			          AND B.AUTHOR_CD =
+			              (SELECT AUTHOR_CD
+			         FROM Z_AUTHOR_INFO
+			        WHERE TREE_CD = #treeCode#)) AS DEL_AUTHOR_YN
+			FROM Z_MENU_INFO A
+			WHERE A.MENU_NO > 0
+			ORDER BY A.MENU_NO
+		 ]]>
+	</select>
+
+	<select id="menuManage.selectMenuCreatCnt" parameterClass="menuCreatVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(AUTHOR_CD) AS totcnt
+			  FROM Z_AUTHOR_INFO
+			 WHERE AUTHOR_CD = #authorCode#
+		]]>
+	</select>
+
+	<delete id="menuManage.deleteMenuCreat">
+		<![CDATA[
+			DELETE FROM Z_MENU_CREATE_HISTORY
+			 WHERE AUTHOR_CD=#authorCode#
+		]]>
+	</delete>
+	<delete id="menuManage.deleteMenuCreatMenuNo">
+		<![CDATA[
+			DELETE FROM Z_MENU_CREATE_HISTORY
+			 WHERE menu_no=#menuNo#
+		]]>
+	</delete>
+
+	<insert id="menuManage.insertMenuCreat">
+		<![CDATA[
+			INSERT INTO Z_MENU_CREATE_HISTORY ( AUTHOR_CD, MENU_NO, CRT_AUTHOR_YN, REDNG_AUTHOR_YN, UPDT_AUTHOR_YN, DEL_AUTHOR_YN )
+			VALUES (  #authorCode#, #menuNo#, #creatAuthor#, #readAuthor#, #updtAuthor#, #deleteAuthor#)
+		]]>
+	</insert>
+
+	<delete id="menuManage.updateMenuCreat">
+		<![CDATA[
+		    UPDATE Z_MENU_CREATE_HISTORY
+		       SET MAPNG_CRT_ID=#mapCreatId#
+		     WHERE AUTHOR_CD=#authorCode#
+		]]>
+	</delete>
+
+</sqlMap>

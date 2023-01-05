@@ -1,0 +1,410 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="custld" uri="/WEB-INF/tld/custld.tld"%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script src="/js/jsTreeMain.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<script type="text/javaScript" defer="defer">
+
+var id = "00";
+var idMaxValue = 0;
+$(document).ready(function(){
+    const treeData =${tree};
+    $('#tree').jstree({ 'core' : { 'data' : treeData, "check_callback" : true }, "plugins" : ["dnd"] });
+    $("#tree").jstree("open_all");
+    $("#tree").jstree("toggle_node", 00);
+    $('#tree').bind('select_node.jstree', function(event, data){
+        id = data.instance.get_node(data.selected).id;        //id 가져오기
+        var type = data.instance.get_node(data.selected).type;    //type 가져오기
+        var path = data.instance.get_node(data.selected).path;    //path 가져오기
+
+    });
+
+    var JSON = ${tree};
+    var idData = JSON.map(function(v){
+       return v.id;
+    });
+    idMaxValue = Math.max.apply(null,idData);
+
+    $('#tree').on("select_node.jstree", function (e, data) {
+        var id = data.instance.get_node(data.selected).id;
+		selectNode(id);
+    });
+    $('#tree').bind("loaded.jstree", function(e) {
+        $('#tree').jstree('open_all');
+    }.bind(this));
+
+    //그리드 시작
+    const gridData =${resultList};
+	grid = new tui.Grid({
+	  el: document.getElementById('grid'),
+	  data: gridData,
+	  scrollX: false,
+	  scrollY: false,
+	  rowHeaders : ["rowNum"],
+	  columns: [
+	    {
+	      header: '유니크아이디',
+	      name: 'uniqId',
+	      sortingType: 'desc',
+	      sortable: true,
+	      hidden :true
+	    },
+	    {
+	      header: '아이디',
+	      name: 'userId',
+	      sortingType: 'desc',
+		  sortable: true
+	    },
+	    {
+	      header: '이름',
+	      name: 'userNm',
+	      filter: 'select',
+		  align: 'center'
+	    },
+	    {
+	      header: '소속기관',
+	      name: 'pstInst',
+		  align: 'center'
+	    },
+	    {
+	      header: '등록일자',
+	      name: 'joinDt',
+		  align: 'center'
+		},
+	    {
+	      header: '가입상태(선택)',
+	      name: 'sttus',
+// 	      formatter: 'listItemText',
+		  align: 'center',
+// 		  editor: {
+// 			  type: 'select',
+// 			  option: {
+// 				  listItems: ${UserStatusCode}
+// 			  }
+// 		  }
+		}
+	  ]
+	});
+	tui.Grid.applyTheme('striped', {
+	    grid: {
+	        border: '#aaa',
+	        text: '#333'
+	    },
+	    cell: {
+	        disabled: {
+	            text: '#999'
+	        }
+	    }
+	});
+	grid.on('click', function(object) {
+	    	fnSelectUser(grid.getValue(object.rowKey,"userTy")+":"+grid.getValue(object.rowKey,"uniqId"));
+	  })
+
+});
+function fnCheckAll() {
+    var checkField = document.listForm.checkField;
+    if(document.listForm.checkAll.checked) {
+        if(checkField) {
+            if(checkField.length > 1) {
+                for(var i=0; i < checkField.length; i++) {
+                    checkField[i].checked = true;
+                }
+            } else {
+                checkField.checked = true;
+            }
+        }
+    } else {
+        if(checkField) {
+            if(checkField.length > 1) {
+                for(var j=0; j < checkField.length; j++) {
+                    checkField[j].checked = false;
+                }
+            } else {
+                checkField.checked = false;
+            }
+        }
+    }
+}
+function fnDeleteUser() {
+    var checkField = document.listForm.checkField;
+    var id = document.listForm.checkId;
+    var checkedIds = "";
+    var checkedCount = 0;
+    if(checkField) {
+        if(checkField.length > 1) {
+            for(var i=0; i < checkField.length; i++) {
+                if(checkField[i].checked) {
+                    checkedIds += ((checkedCount==0? "" : ",") + id[i].value);
+                    checkedCount++;
+                }
+            }
+        } else {
+            if(checkField.checked) {
+                checkedIds = id.value;
+            }
+        }
+    }
+    if(checkedIds.length > 0) {
+        //alert(checkedIds);
+        if(confirm("<spring:message code="common.delete.msg" />")){
+            document.listForm.checkedIdForDel.value=checkedIds;
+            document.listForm.action = "<c:url value='/sys/user/urm/UserDelete.do'/>";
+            document.listForm.submit();
+        }
+    }
+}
+function fnSelectUser(id) {
+    document.listForm.selectedId.value = id;
+    array = id.split(":");
+    if(array[0] == "") {
+    } else {
+        userTy = array[0];
+        userId = array[1];
+    }
+    document.listForm.selectedId.value = userId;
+    document.listForm.action = "<c:url value='/sys/user/urm/UserSelectUpdtView.do'/>";
+    document.listForm.submit();
+
+}
+function fnAddUserView() {
+    document.listForm.insttCode.value = "INS"+id;
+    document.listForm.action = "<c:url value='/sys/user/urm/UserInsertView.do'/>";
+    document.listForm.submit();
+}
+function fnLinkPage(pageNo){
+    document.listForm.pageIndex.value = pageNo;
+    document.listForm.action = "<c:url value='/sys/user/urm/UserManage.do'/>";
+    document.listForm.submit();g
+}
+function fnExcel(){
+    document.listForm.action = "<c:url value='/sys/user/urm/UserManageExcel.do'/>";
+    document.listForm.submit();
+}
+function fnViewCheck(){
+    if(insert_msg.style.visibility == 'hidden'){
+        insert_msg.style.visibility = 'visible';
+    }else{
+        insert_msg.style.visibility = 'hidden';
+    }
+}
+function saveTree(){
+
+
+    var treeData = new Array() ;
+    var jdata = $('#tree').jstree(true).get_json("#", {
+        flat : true
+    });
+    for (var i = 0; i < jdata.length; i++) {
+        var current = jdata[i];
+        var id = current.id;
+        var parent = current.parent;
+        var data = this.findCoreData(id);
+        treeData.push({"id":current.id,"parent":current.parent,"text":current.text,"odr":i+1,"codeHead":"INS","codeId":"COM003" });
+    }
+    $.ajax({
+        url:'<c:url value='/sys/author/arm/UpdateTreeCode.do'/>',
+        type:'POST',
+        dataType:'json',
+        contentType:"application/json; charset=UTF-8",
+        data:JSON.stringify(treeData),
+        success:function(data){
+			alert('저장되었습니다.');
+			location.reload();
+        }
+    });
+
+
+}
+function findCoreData(id) {
+    var coreData = $('#tree').jstree(true).settings.core.data;
+    for (var i = 0; i < coreData.length; i++) {
+        var data = coreData[i];
+        if (data.id == id) {
+            return data;
+        }
+    }
+    return null;
+};
+function addNode(){
+    var currentNode = $('#tree').jstree(true).get_node(id);
+    var allNode = $('#tree').jstree(true);
+
+    var ids = currentNode.children;
+    if (!ids)
+        return [];
+    var children = [];
+    for (var i = 0; i < ids.length; i++) {
+        children.push(allNode.get_node(ids[i]));
+    }
+
+    idMaxValue = idMaxValue+1
+
+    allNode.create_node(currentNode, {"id":idMaxValue,"text":"부서명"}, "last");
+    allNode.edit(idMaxValue);
+}
+function selectNode(id){
+    var param = {
+    		id:"INS"+id,
+    		searchCondition : $("#searchCondition").val(),
+    		searchKeyword : $("#SearchKeyword").val()
+    };
+    $.ajax({
+        url:'<c:url value='/sys/author/arm/selectDeptUser.do'/>',
+        type:'POST',
+        dataType:'json',
+        contentType:"application/json; charset=UTF-8",
+        data:JSON.stringify(param),
+        success:function(data){
+        	grid.resetData(data);
+            $('#totalPage').text(data.length);
+        }
+    });
+}
+function deleteNode(){
+    var tree = $('#tree').jstree(true);
+    tree.delete_node(id);
+}
+function updateNode(){
+    var tree = $('#tree').jstree(true);
+    tree.edit(id);
+}
+
+function fnSearch(){
+    var param = {
+    	    insttCode : "INS" + id,
+    		searchCondition : $("#searchCondition").val(),
+    		searchKeyword : $("#SearchKeyword").val(),
+    }
+	$.ajax({
+		url : "<c:url value='/sys/user/urm/searchUserList.do'/>",
+		type : "POST",
+        dataType:'json',
+        contentType:"application/json; charset=UTF-8",
+		data : JSON.stringify(param),
+		success : function(data){
+            grid.resetData(data);
+            $('#totalPage').text(data.length);
+		}
+	});
+}
+
+<c:if test="${!empty resultMsg}">alert("<spring:message code="${resultMsg}" />");</c:if>
+</script>
+
+<h2 class="hidden">컨텐츠영역</h2>
+    <!-- panel -->
+<section class="panel-wrap">
+        <div class="panel-header">
+         <h3>회원/부서 관리 목록</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <form:form commandName="authorManage" method="post" class="col-3">
+                    <input type="hidden" name="selectedId"/>
+                    <input type="hidden" name="insttCode"/>
+                        <div class="tree-area">
+                            <div id="tree"></div>
+                        </div>
+                        <div class="btn-area">
+							<button type="button" class="btn btn-secondary btn-md btn-block" onclick="javascript:addNode();">부서추가</button>
+							<button type="button" class="btn btn-default btn-md btn-block" onclick="javascript:updateNode();">수정</buCtton>
+							<button type="button" class="btn btn-secondary btn-md btn-block" onclick="javascript:saveTree();">저장</button>
+							<button type="button" class="btn btn-default btn-md btn-block" onclick="javascript:deleteNode();">삭제</button>
+                        </div>
+                </form:form>
+                <form id="listForm" name="listForm" action="<c:url value='/sys/user/urm/UserManage.do'/>" method="post" class="col-9">
+                    <div class="search-area">
+                        <input name="selectedId" type="hidden" />
+                        <input name="insttCode" type="hidden"/>
+                        <input name="checkedIdForDel" type="hidden" />
+                        <input name="pageIndex" type="hidden" value="<c:out value='${userSearchVO.pageIndex}'/>"/>
+
+                        <label for="searchCondition" class="hidden">검색조건</label>
+                        <select id="searchCondition" name="searchCondition" title="검색조건 선택">
+                            <option value="0">아이디</option>
+                            <option value="1">이름</option>
+                        </select>
+                        <input type="text" id="SearchKeyword" name="SearchKeyword" size="35" maxlength="35" title="검색어 입력" placeholder="검색어를 입력하세요."/>
+                        <button type="button" class="btn btn-primary" onclick="javascript:fnSearch(); return false;">검색</button>
+                    </div>
+
+                    <div class="table-header">
+                        <div>총 <strong class="secondary" id="totalPage">${paginationInfo.totalRecordCount}</strong>건이 검색 되었습니다.</div>
+                        <!--
+                        <div>
+               				<select id='recordCountPerPage' name='recordCountPerPage' onchange='fnSearch();'>
+                   				<option value='10' <c:if test="${paginationInfo.recordCountPerPage eq 10}"> selected </c:if> >10개씩보기</option>
+                   				<option value='30' <c:if test="${paginationInfo.recordCountPerPage eq 30}"> selected </c:if> >30개씩보기</option>
+                   				<option value='50' <c:if test="${paginationInfo.recordCountPerPage eq 50}"> selected </c:if> >50개씩보기</option>
+               				</select>
+           				</div>
+           				-->
+                    </div>
+
+                    <div class="y-scroll content-height-4">
+                       <table>
+                           <div id="grid"></div>
+                           <div id="fl"></div>
+                       </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+     <div class="panel-footer">
+         <div class="btn-area">
+         	 <button type="button" class="btn btn-primary btn-excel_Download" onclick="javascript:fnexcel_DownloadUserView();">다운로드</button>
+             <button type="button" class="btn btn-primary btn-lg" onclick="javascript:fnAddUserView();">회원등록</button>
+         </div>
+     </div>
+</section>
+
+<!-- modal -->
+    <div class="modal fade" id="modal-add" role="dialog">
+        <div class="modal-dialog modal-default">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3>그룹 추가</h3>
+                </div>
+	                <div class="modal-body">
+	                        <input type="hidden" name="pstinst" id="pstinst"/>
+	                    <div class="table-box table-row">
+	                        <table>
+	                            <caption></caption>
+	                            <colgroup>
+	                                <col style="width:200px;">
+	                                <col style="width:auto;">
+	                            </colgroup>
+	                            <tbody>
+	                                <tr>
+	                                    <th scope="row"><span>부서명</span></th>
+	                                    <td>
+	                                        <div>
+	                                            <input type="text" placeholder="입력하세요." />
+	                                        </div>
+	                                    </td>
+	                                </tr>
+	                            </tbody>
+                        </table>
+	                    </div>
+	                </div>
+                <div class="modal-footer">
+                    <div class="btn-area">
+                        <button type="button" class="btn btn-primary btn-lg" "onclick="javascript:addNode();">등록</button>
+                        <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- modal -->

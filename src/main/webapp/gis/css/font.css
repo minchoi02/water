@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+/* Noto Sans */
+@font-face {
+    font-family: Noto Sans Korean;
+    src: url('../font/NotoSansKR-Light.woff') format("woff"), url('../font/NotoSansKR-Light.otf') format("opentype");
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: Noto Sans Korean;
+    src: url('../font/NotoSansKR-Regular.woff') format("woff"), url('../font/NotoSansKR-Regular.otf') format("opentype");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: Noto Sans Korean;
+    src: url('../font/NotoSansKR-Medium.woff') format("woff"), url('../font/NotoSansKR-Medium.otf') format("opentype");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: Noto Sans Korean;
+    src: url('../font/NotoSansKR-Bold.woff') format("woff"), url('../font/NotoSansKR-Bold.otf') format("opentype");
+    font-weight: 700;
+    font-style: normal;
+}
+

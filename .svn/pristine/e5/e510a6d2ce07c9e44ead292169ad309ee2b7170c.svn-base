@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorGroup">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="AuthorGroupVO" type="egovframework.appn.sys.author.uam.service.AuthorGroupVO"/>
+    <typeAlias  alias="AuthorGroup" type="egovframework.appn.sys.author.uam.service.AuthorGroup"/>
+
+    <resultMap id="authorGroup" class="egovframework.appn.sys.author.uam.service.AuthorGroupVO">
+        <result property="userId" column="" columnIndex="1"/>
+        <result property="userNm" column="USER_NM" columnIndex="2"/>
+        <result property="groupId" column="GROUP_ID" columnIndex="3"/>
+        <result property="mberTyCode" column="USER_TY_CD" columnIndex="4"/>
+        <result property="mberTyNm" column="MBER_TY_NM" columnIndex="5"/>
+        <result property="authorCode" column="AUTHOR_CD" columnIndex="6"/>
+        <result property="regYn" column="REG_YN" columnIndex="8"/>
+        <result property="uniqId" column="ESNTL_ID" columnIndex="9"/>
+    </resultMap>
+
+    <select id="authorGroup.selectAuthorGroupList" parameterClass="AuthorGroupVO" resultMap="authorGroup">
+            SELECT A.,
+                   A.USER_NM,
+                   A.GROUP_ID,
+                   A.BIZPLC_CD USER_TY_CD,
+                   (SELECT CODE_NM
+                      FROM Z_CMM_DETAIL_CODE_INFO
+                     WHERE CODE_ID = 'COM003'
+                       AND CODE = A.BIZPLC_CD
+                       AND USE_YN = 'Y') AS MBER_TY_NM,
+                   B.AUTHOR_CD,
+                   (CASE WHEN B.SCRTY_STNG_TRGET_ID IS NULL THEN 'N'
+                         ELSE 'Y'
+                     END) AS REG_YN,
+                    ESNTL_ID
+              FROM (SELECT USER_ID , USER_NM USER_NM, GROUP_ID, BIZPLC_CD, ESNTL_ID
+                      FROM USER_INFO ) A LEFT OUTER JOIN Z_USER_SECURITY_SETTING B
+                ON A.ESNTL_ID = B.SCRTY_STNG_TRGET_ID
+             WHERE 1 = 1
+            <isNotEmpty property="searchKeyword">
+                <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                       A. LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+	            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+	                   A.USER_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+	            </isEqual>
+	            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+	                   A.GROUP_ID = #searchKeyword#
+	            </isEqual>
+            </isNotEmpty>
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+
+	<select id="authorGroup.selectAuthorGroupListTotCnt" parameterClass="AuthorGroupVO" resultClass="int">
+
+            SELECT COUNT(*) AS totcnt
+              FROM (SELECT USER_ID , USER_NM USER_NM, GROUP_ID, 'USR03'
+                      FROM USER_INFO ) A LEFT OUTER JOIN Z_USER_SECURITY_SETTING B
+                ON A. = B.SCRTY_STNG_TRGET_ID
+             WHERE 1 = 1
+            <isNotEmpty property="searchKeyword">
+                <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                       A. LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+                <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                       A.USER_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+                </isEqual>
+                <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                       A.GROUP_ID = #searchKeyword#
+                </isEqual>
+            </isNotEmpty>
+	</select>
+
+	<insert id="authorGroup.insertAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			INSERT INTO Z_USER_SECURITY_SETTING
+				  ( SCRTY_STNG_TRGET_ID
+                  , USER_TY_CD
+				  , AUTHOR_CD)
+		   VALUES ( #uniqId#
+                  , #mberTyCode#
+                  , #authorCode#)
+		]]>
+	</insert>
+
+	<update id="authorGroup.updateAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			UPDATE Z_USER_SECURITY_SETTING
+			   SET USER_TY_CD=#mberTyCode#
+                 , AUTHOR_CD=#authorCode#
+		  	 WHERE SCRTY_STNG_TRGET_ID=#uniqId#
+		]]>
+	</update>
+
+	<delete id="authorGroup.deleteAuthorGroup">
+		<![CDATA[
+			DELETE FROM Z_USER_SECURITY_SETTING
+			 WHERE AUTHOR_CD=#authorCode#
+		]]>
+	</delete>
+
+</sqlMap>

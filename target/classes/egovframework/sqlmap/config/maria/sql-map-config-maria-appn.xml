@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- 공통 -->
+	<sqlMap resource="egovframework/sqlmap/appn/cmm/use/CmmUse_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/cmm/login/LoginUsr_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/cmm/zip/ZipManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/cmm/fms/File_SQL_Maria.xml"/>
+
+
+	<!-- 시스템 > 메뉴 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/menu/MainMenu_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/menu/ProgrmManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/menu/ProgrmManageDtl_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/menu/MenuManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/menu/MenuCreat_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 권한 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/author/AuthorManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/author/GroupManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/author/AuthorGroup_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/author/RoleManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/author/AuthorRoleManage_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 사용자 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/user/UserManage_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 코드 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/code/CmmnCodeManage_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/code/CmmnDetailCodeManage_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 로그 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/log/LoginLog_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/sys/log/SysLog_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 게시판관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/bbs/BbsMstrManage_SQL_Maria.xml"/>
+
+	<!-- 시스템 > 컨텐츠관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/cntnts/CntntsMstrManage_SQL_Maria.xml"/>
+
+	<!-- 게시판 -->
+	<sqlMap resource="egovframework/sqlmap/appn/cop/bbs/Board_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/cop/stf/EgovBBSSatisfaction_SQL_Maria.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/cop/cmt/EgovArticleComment_SQL_Maria.xml"/>
+
+	<!-- 연계 관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/link/llm/ListLink_SQL_Maria.xml"/>
+
+	<!-- 팝업관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/pwm/PopupManage_SQL_maria.xml"/>
+	<!-- 배너관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/sys/bwm/BannerManage_SQL_maria.xml"/>
+
+	<!-- 자산관리 -->
+	<sqlMap resource="egovframework/sqlmap/appn/asset/customer/CustomerInfo_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/appn/asset/meter/MeterInfo_SQL.xml"/>
+    <sqlMap resource="egovframework/sqlmap/appn/asset/terminal/TerminalInfo_SQL.xml"/>
+</sqlMapConfig>

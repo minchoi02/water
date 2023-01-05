@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="User">
+
+    <typeAlias  alias="egovMap"      type = "egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="userSearchVO" type = "egovframework.appn.sys.user.urm.service.UserDefaultVO"/>
+    <typeAlias  alias="userVO" type = "egovframework.appn.sys.user.urm.service.UserManageVO"/>
+    <resultMap id="userVO" class="egovframework.appn.sys.user.urm.service.UserManageVO">
+		<result property="uniqId" column="UNIQ_ID" columnIndex="1"/>
+		<result property="userTy" column="USER_TY" columnIndex="2"/>
+		<result property="emplyrId" column="USER_ID" columnIndex="3"/>
+		<result property="emplyrNm" column="EMPLYR_NM" columnIndex="4"/>
+		<result property="password" column="PASSWORD" columnIndex="5"/>
+		<result property="passwordCnsr" column="PASSWORD_CNSR" columnIndex="6"/>
+		<result property="emplNo" column="EMPL_NO" columnIndex="7"/>
+		<result property="ihidnum" column="IHIDNUM" columnIndex="8"/>
+		<result property="sexdstnCode" column="SEXDSTN_CD" columnIndex="9"/>
+		<result property="brth" column="BRTH" columnIndex="10"/>
+		<result property="areaNo" column="AREA_NO" columnIndex="11"/>
+		<result property="homemiddleTelno" column="HOMEMIDDLE_TELNO" columnIndex="12"/>
+		<result property="homeendTelno" column="HOMEEND_TELNO" columnIndex="13"/>
+		<result property="fxnum" column="FX_NO" columnIndex="14"/>
+		<result property="homeadres" column="HOMEADRES" columnIndex="15"/>
+		<result property="detailAdres" column="DETAIL_ADDR" columnIndex="16"/>
+		<result property="zip" column="ZIP" columnIndex="17"/>
+		<result property="offmTelno" column="OFFM_TELNO" columnIndex="18"/>
+		<result property="moblphonNo" column="MOBLPHON_NO" columnIndex="19"/>
+		<result property="emailAdres" column="EML_ADDR" columnIndex="20"/>
+		<result property="ofcpsNm" column="JBPS_NM" columnIndex="21"/>
+		<result property="groupId" column="GROUP_ID" columnIndex="22"/>
+		<result property="deptId" column="DEPT_ID" columnIndex="23"/>
+		<result property="insttCode" column="BIZPLC_CD" columnIndex="24"/>
+		<result property="emplyrSttusCode" column="USER_STTS_CD" columnIndex="25"/>
+		<result property="sbscrbDe" column="JOIN_DT" columnIndex="26"/>
+		<result property="subDn" column="SUB_DN" columnIndex="27"/>
+		<result property="authorCode" column="AUTHOR_CD" columnIndex="27"/>
+		<result property="customerNum" column="CUSTOMER_NUM" columnIndex="28"/>
+		<result property="startDt" column="START_DT" columnIndex="29"/>
+		<result property="endDt" column="END_DT" columnIndex="30"/>
+		<result property="useYn" column="USE_YN" columnIndex="31"/>
+		<result property="manageBizplc" column="MANAGE_BIZPLC" columnIndex="32"/>
+	</resultMap>
+
+    <select id="userManage.selectUserList" parameterClass="userSearchVO" resultClass="egovMap">
+		SELECT
+		    UNIQ_ID, USER_TY, USER_ID , USER_NM, EML_ADDR, PST_INST, MOBLPHON_NO, GROUP_ID, STTUS, JOIN_DT
+		FROM(
+		    SELECT
+		        ESNTL_ID UNIQ_ID,
+		        'USR03'               USER_TY,
+		        USER_ID             USER_ID,
+		        USER_NM,
+		        EML_ADDR,
+		        (select code_nm from Z_CMM_DETAIL_CODE_INFO where code_id = 'COM003' and code = BIZPLC_CD)		PST_INST,
+		        MBTLNUM           MOBLPHON_NO,
+		        GROUP_ID,
+		        (select code_nm from Z_CMM_DETAIL_CODE_INFO where code_id = 'COM001' and code = USER_STTS_CD)	STTUS,
+		        to_char(JOIN_DT, 'YYYY-MM-DD HH24:MI') JOIN_DT,
+		        BIZPLC_CD
+		    FROM    USER_INFO
+		    ) A
+        WHERE 1=1
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            sttus LIKE  #sbscrbSttus#
+        </isNotEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            user_Id LIKE concat('%', #searchKeyword# ,'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            user_Nm LIKE concat('%', #searchKeyword#, '%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="insttCode">
+        	<isNotEqual property="insttCode" compareValue="INS00">
+			BIZPLC_CD = #insttCode#
+			</isNotEqual>
+        </isNotEmpty>
+        ORDER BY JOIN_DT DESC
+    </select>
+    <select id="userManage.selecAuthortUserList" parameterClass="userSearchVO" resultClass="egovMap">
+    select * from (
+		SELECT
+		    UNIQ_ID, USER_TY, USER_ID , USER_NM, EML_ADDR, PST_INST, MOBLPHON_NO, GROUP_ID, STTUS, JOIN_DT, B.AUTHOR_CD
+		FROM(
+		    SELECT
+		        ESNTL_ID UNIQ_ID,
+		        'USR03'               USER_TY,
+		        USER_ID             USER_ID,
+		        USER_NM,
+		        EML_ADDR,
+		        (select code_nm from Z_CMM_DETAIL_CODE_INFO where code_id = 'COM003' and code = BIZPLC_CD)		PST_INST,
+		        MBTLNUM           MOBLPHON_NO,
+		        GROUP_ID,
+		        (select code_nm from Z_CMM_DETAIL_CODE_INFO where code_id = 'COM001' and code = USER_STTS_CD)	STTUS,
+		        to_char(JOIN_DT, 'YYYY-MM-DD HH24:MI') JOIN_DT,
+		        BIZPLC_CD
+		    FROM USER_INFO) A left outer join Z_USER_SECURITY_SETTING B
+         on a.uniq_id = b.SCRTY_STNG_TRGET_ID ) a
+         where 1=1
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            sttus LIKE  #sbscrbSttus#
+        </isNotEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            user_Id LIKE concat('%', #searchKeyword# ,'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            user_Nm LIKE concat('%', #searchKeyword#, '%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="authorCode">
+        	<isNotEqual property="authorCode" compareValue="ROLE_000">
+				AUTHOR_CD = #authorCode#
+			</isNotEqual>
+        </isNotEmpty>
+        ORDER BY JOIN_DT DESC
+    </select>
+
+    <select id="userManage.selectUserListExcel" parameterClass="userSearchVO" resultClass="egovMap">
+		SELECT
+		    uniqId, userTy, userId , userNm, emailAdres, pstInst, moblphonNo, groupId, sttus, sbscrbDe
+		FROM(
+		    SELECT
+		        ESNTL_ID               UNIQ_ID,
+		        'USR03'               USER_TY,
+		        USER_ID             USER_ID,
+		        USER_NM,
+		        EML_ADDR,
+		        FN_CODENAME('COM003', BIZPLC_CD)		PST_INST,
+		        MBTLNUM           MOBLPHON_NO,
+		        GROUP_ID              GROUP_ID,
+		        FN_CODENAME('COM001', USER_STTS_CD)     STTUS,
+		        JOIN_DT
+		    FROM    USER_INFO
+		    ) A
+        WHERE 1=1
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            sttus LIKE  #sbscrbSttus#
+        </isNotEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            user_Id LIKE #searchKeyword#
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            user_Nm LIKE concat('%', #searchKeyword#, '%')
+        </isEqual>
+        ORDER BY JOIN_DT DESC
+    </select>
+
+    <select id="userManage.selectUserListTotCnt" parameterClass="userSearchVO" resultClass="int">
+            SELECT COUNT(1) totcnt
+            FROM(
+            SELECT
+                ESNTL_ID              uniqId,
+                'USR03'               userTy,
+                USER_ID             userId,
+                USER_NM               userNm,
+                EML_ADDR           emailAdres,
+                AREA_NO               areaNo,
+                HOUSE_MIDDLE_TELNO    middleTelno,
+                HOUSE_END_TELNO       endTelno,
+                MBTLNUM               moblphonNo,
+                GROUP_ID              groupId,
+                USER_STTS_CD     sttus,
+                JOIN_DT             sbscrbDe,
+                BIZPLC_CD		  PST_INST
+            FROM    USER_INFO A, Z_USER_SECURITY_SETTING B
+           WHERE a.ESNTL_ID = b.SCRTY_STNG_TRGET_ID
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            sttus LIKE  #sbscrbSttus#
+        </isNotEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            USER_ID LIKE concat('%', #searchKeyword# ,'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            user_Nm LIKE concat('%', #searchKeyword#, '%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="authorCode">
+        	<isNotEqual property="authorCode" compareValue="ROLE_000">
+				b.AUTHOR_CD = #authorCode#
+			</isNotEqual>
+        </isNotEmpty>
+        ) C
+    </select>
+
+    <insert id="userManage.insertUser">
+        <![CDATA[
+            INSERT INTO USER_INFO
+                (   ESNTL_ID            ,
+                    USER_ID           ,
+                    USER_NM             ,
+                    PASSWORD            ,
+                    PASSWORD_HINT       ,
+                    PASSWORD_CNSR       ,
+                    EMPL_NO             ,
+                    IHIDNUM             ,
+                    SEXDSTN_CD        ,
+                    BRTHDY              ,
+                    AREA_NO             ,
+                    HOUSE_MIDDLE_TELNO  ,
+                    HOUSE_END_TELNO     ,
+                    FX_NO               ,
+                    HOUSE_ADDR         ,
+                    DETAIL_ADDR        ,
+                    ZIP                 ,
+                    OFFM_TELNO          ,
+                    MBTLNUM             ,
+                    EML_ADDR         ,
+                    JBPS_NM            ,
+                    GROUP_ID            ,
+                    DEPT_ID           ,
+                    BIZPLC_CD        ,
+                    USER_STTS_CD   ,
+                    JOIN_DT           ,
+                    CERT_DN_VAL)
+            VALUES (
+                    #uniqId#            ,
+                    #emplyrId#          ,
+                    #userNm#            ,
+                    #password#          ,
+                    #passwordHint#      ,
+                    #passwordCnsr#      ,
+                    #emplNo#            ,
+                    #ihidnum#           ,
+                    #sexdstnCode#       ,
+                    #brth#              ,
+                    #areaNo#            ,
+                    #homemiddleTelno#   ,
+                    #homeendTelno#      ,
+                    #fxnum#             ,
+                    #homeadres#         ,
+                    #detailAdres#       ,
+                    #zip#               ,
+                    #offmTelno#         ,
+                    #mbtlnum#           ,
+                    #emailAdres#        ,
+                    #ofcpsNm#           ,
+                    #groupId#           ,
+                    #deptId#            ,
+                    #insttCode#         ,
+                    'A'                 ,
+                    now()				,
+                    #subDn#             )
+        ]]>
+    </insert>
+
+    <delete id="userManage.deleteUser">
+        <![CDATA[
+            DELETE FROM USER_INFO
+            WHERE ESNTL_ID=#delId#
+        ]]>
+    </delete>
+
+    <select id="userManage.selectUser" resultMap="userVO">
+        <![CDATA[
+            SELECT
+                ESNTL_ID           UNIQ_ID            ,
+                'USR03'           USER_TY,
+            USER_ID         USER_ID          ,
+            USER_NM         EMPLYR_NM          ,
+            PASSWORD      AS    PASSWORD          ,
+            PASSWORD_HINT     PASSWORD_HINT      ,
+            PASSWORD_CNSR     PASSWORD_CNSR      ,
+            EMPL_NO           EMPL_NO            ,
+            IHIDNUM           IHIDNUM           ,
+            SEXDSTN_CD      SEXDSTN_CD       ,
+            BRTHDY              BRTH              ,
+            AREA_NO           AREA_NO            ,
+            HOUSE_MIDDLE_TELNO  HOMEMIDDLE_TELNO   ,
+            HOUSE_END_TELNO     HOMEEND_TELNO      ,
+            FX_NO             FX_NO             ,
+            HOUSE_ADDR         HOMEADRES         ,
+            DETAIL_ADDR      DETAIL_ADDR       ,
+            ZIP               ZIP               ,
+            OFFM_TELNO        OFFM_TELNO         ,
+            MBTLNUM       MOBLPHON_NO        ,
+            EML_ADDR       EML_ADDR        ,
+            JBPS_NM          JBPS_NM           ,
+            GROUP_ID          GROUP_ID           ,
+            DEPT_ID         DEPT_ID          ,
+            BIZPLC_CD        BIZPLC_CD         ,
+            MANAGE_BIZPLC    MANAGE_BIZPLC      ,
+            USER_STTS_CD USER_STTS_CD   ,
+            JOIN_DT         JOIN_DT          ,
+            CERT_DN_VAL            SUB_DN,
+            (select AUTHOR_CD from Z_USER_SECURITY_SETTING where  A.esntl_id =  SCRTY_STNG_TRGET_ID) AUTHOR_CD,
+            CUSTOMER_NUM     CUSTOMER_NUM,
+            START_DT        START_DT,
+            END_DT          END_DT,
+            USE_YN          USE_YN
+        FROM USER_INFO A
+            WHERE ESNTL_ID=#uniqId#
+        ]]>
+    </select>
+
+    <update id="userManage.updateUser">
+        <![CDATA[
+            UPDATE USER_INFO
+            SET USER_ID           = #emplyrId#        ,
+                USER_NM             = #emplyrNm#        ,
+                PASSWORD_HINT       = #passwordHint#    ,
+                PASSWORD_CNSR       = #passwordCnsr#    ,
+                EMPL_NO             = #emplNo#          ,
+                IHIDNUM             = #ihidnum#         ,
+                SEXDSTN_CD        = #sexdstnCode#     ,
+                BRTHDY              = #brth#            ,
+                AREA_NO             = #areaNo#          ,
+                HOUSE_MIDDLE_TELNO  = #homemiddleTelno# ,
+                HOUSE_END_TELNO     = #homeendTelno#    ,
+                FX_NO               = #fxnum#           ,
+                HOUSE_ADDR         = #homeadres#       ,
+                DETAIL_ADDR        = #detailAdres#     ,
+                ZIP                 = #zip#             ,
+                OFFM_TELNO          = #offmTelno#       ,
+                MBTLNUM         	= #mbtlnum#      ,
+                EML_ADDR         = #emailAdres#      ,
+                JBPS_NM            = #ofcpsNm#         ,
+                GROUP_ID            = #groupId#         ,
+                DEPT_ID           = #deptId#        ,
+                BIZPLC_CD        = #insttCode#       ,
+                USER_STTS_CD   = #emplyrSttusCode# ,
+                CERT_DN_VAL      = #subDn#,
+                CUSTOMER_NUM      = #customerNum#
+            WHERE ESNTL_ID = #uniqId#
+        ]]>
+    </update>
+
+    <select id="userManage.checkIdDplct" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) usedCnt
+                FROM(
+                SELECT
+                    USER_ID             userId
+                FROM    USER_INFO
+                ) A
+            WHERE userId = #checkId#
+        ]]>
+    </select>
+
+    <update id="userManage.updatePassword">
+        <![CDATA[
+            UPDATE USER_INFO
+            SET
+                   PASSWORD   =  #password#
+            WHERE  USER_ID  = #emplyrId#
+        ]]>
+    </update>
+
+    <select id="userManage.selectPassword" resultClass="userVO">
+        <![CDATA[
+            SELECT
+                    PASSWORD     as     password
+            FROM    USER_INFO
+            WHERE   ESNTL_ID=#uniqId#
+        ]]>
+    </select>
+
+    <select id="userManage.selectId" parameterClass="userVO" resultClass="String">
+        <![CDATA[
+            SELECT
+                    USER_ID
+            FROM    USER_INFO
+            WHERE   USER_NM = #emplyrNm#
+              AND   MBTLNUM = #moblphonNo#
+            LIMIT 1;
+        ]]>
+    </select>
+
+    <select id="userManage.selectIdByPwFind" parameterClass="userVO" resultClass="java.lang.String">
+        <![CDATA[
+            SELECT
+                    ESNTL_ID
+            FROM    USER_INFO
+            WHERE   USER_ID = #emplyrId#
+              AND	USER_NM = #emplyrNm#
+              AND   MBTLNUM = #moblphonNo#
+        ]]>
+    </select>
+
+</sqlMap>

@@ -1,0 +1,84 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+
+  <definition name="main" template="/WEB-INF/jsp/_tiles/mainLayout.jsp" preparer="menuPreparer">
+   <put-attribute name="header" value="/WEB-INF/jsp/_tiles/incHeader.jsp" />
+   <put-attribute name="top" value="/WEB-INF/jsp/_tiles/incTop.jsp" />
+   <put-attribute name="topNav" value="/WEB-INF/jsp/_tiles/incTopnav.jsp" />
+   <put-attribute name="left" value="/WEB-INF/jsp/_tiles/incLeftmenu.jsp" />
+   <put-attribute name="footer" value="/WEB-INF/jsp/_tiles/mainFooter.jsp" />
+ </definition>
+ <definition name="sub" template="/WEB-INF/jsp/_tiles/subLayout.jsp" preparer="menuPreparer">
+ <put-attribute name="header" value="/WEB-INF/jsp/_tiles/incHeader.jsp" />
+   <put-attribute name="top" value="/WEB-INF/jsp/_tiles/incTop.jsp" />
+   <put-attribute name="topNav" value="/WEB-INF/jsp/_tiles/incTopnav.jsp" />
+   <put-attribute name="left" value="/WEB-INF/jsp/_tiles/incLeftmenu.jsp" />
+   <put-attribute name="footer" value="/WEB-INF/jsp/_tiles/subFooter.jsp" />
+ </definition>
+  <definition name="adminMain" template="/WEB-INF/jsp/_tiles/adminMainLayout.jsp" preparer="menuPreparer">
+   <put-attribute name="header" value="/WEB-INF/jsp/_tiles/adminIncHeader.jsp" />
+   <put-attribute name="top" value="/WEB-INF/jsp/_tiles/incTop.jsp" />
+   <put-attribute name="topNav" value="/WEB-INF/jsp/_tiles/incTopnav.jsp" />
+   <put-attribute name="left" value="/WEB-INF/jsp/_tiles/adminIncLeftmenu.jsp" />
+   <put-attribute name="footer" value="/WEB-INF/jsp/_tiles/adminMainFooter.jsp" />
+ </definition>
+ <definition name="adminSub" template="/WEB-INF/jsp/_tiles/adminSubLayout.jsp" preparer="menuPreparer">
+   <put-attribute name="header" value="/WEB-INF/jsp/_tiles/adminIncHeader.jsp" />
+   <put-attribute name="top" value="/WEB-INF/jsp/_tiles/incTop.jsp" />
+   <put-attribute name="topNav" value="/WEB-INF/jsp/_tiles/incTopnav.jsp" />
+   <put-attribute name="left" value="/WEB-INF/jsp/_tiles/adminIncLeftmenu.jsp" />
+   <put-attribute name="footer" value="/WEB-INF/jsp/_tiles/adminSubFooter.jsp" />
+ </definition>
+
+ <definition name="login" template="/WEB-INF/jsp/_tiles/loginLayout.jsp">
+ </definition>
+ <definition name="adminLogin" template="/WEB-INF/jsp/_tiles/adminLoginLayout.jsp">
+ </definition>
+ <definition name="empty" template="/WEB-INF/jsp/_tiles/emptyLayout.jsp">
+ </definition>
+
+ <definition name="cmm/login/*" extends="login">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/cmm/login/{1}.jsp" />
+ </definition>
+ <definition name="admin/login/LoginUsr" extends="adminLogin">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/admin/login/LoginUsr.jsp" />
+ </definition>
+ <definition name="cmm/main/*" extends="main">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/cmm/main/{1}.jsp" />
+ </definition>
+ <definition name="admin/main/*" extends="adminMain">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/admin/main/{1}.jsp" />
+ </definition>
+ <definition name="*/*/*.empty" extends="empty">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+ </definition>
+ <definition name="*/*/*/*.empty" extends="empty">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+ </definition>
+ <definition name="sys/*/*/*" extends="adminSub">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/sys/{1}/{2}/{3}.jsp" />
+ </definition>
+ <definition name="sys/*/*" extends="adminSub">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/sys/{1}/{2}.jsp" />
+ </definition>
+ <definition name="cmm/*/*/*" extends="sub">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/cmm/{1}/{2}/{3}.jsp" />
+ </definition>
+ <definition name="cmm/*/*" extends="sub">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/cmm/{1}/{2}.jsp" />
+ </definition>
+  <definition name="asset/*/*/*" extends="sub">
+    <put-attribute name="content" value="/WEB-INF/jsp/asset/{1}/{2}/{3}.jsp" />
+ </definition>
+ <definition name="asset/*/*" extends="sub">
+    <put-attribute name="content" value="/WEB-INF/jsp/asset/{1}/{2}.jsp" />
+ </definition>
+ <definition name="cop/bbs/*" extends="sub">
+ 	<put-attribute name="content" value="/WEB-INF/jsp/cop/bbs/{1}.jsp" />
+ </definition>
+
+</tiles-definitions>

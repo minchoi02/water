@@ -1,0 +1,82 @@
+@charset "utf-8";
+/*-------------------------------------------------
+Author : KIM KYE YOUNG 김계영
+Last update : 2022. 04. 18.
+-------------------------------------------------*/
+
+/* header */
+.main-wrap { background: linear-gradient(to bottom, #092C4C 0%, #092C4C 282px, #F0F5F8 282px, #F0F5F8 100%); padding: 0 1rem;}
+.main-wrap .header-wrap { height: 11.2rem; width: 126rem; margin: 0 auto; min-width: 126rem; border-bottom: 1px solid #4D667E;}
+.main-wrap .header-wrap .header-logo h1 { padding: 5.6rem 0 0;}
+.main-wrap .header-wrap .gnb { width: 126rem; padding: 6.7rem 0 0 26rem;}
+.main-wrap .header-wrap .gnb li a::after { top: 1.8rem;}
+.main-wrap .header-wrap .user-wrap { top: 1.6rem; right: 0rem;}
+.main-wrap .darkmode { display: none !important;}
+
+/* title */
+.main-title { text-align: center; color: #fff; font-size: 3.2rem; font-weight: 300; padding: 5rem;}
+.main-title strong { font-weight: 700;}
+.main-title span { display: block; font-size: 1.6rem; font-weight: 300; padding-top: 2.2rem; }
+
+/* content */
+.main-wrap .container { width: 126rem;}
+.main-wrap .container-wrap { min-width: 126rem; }
+.main-wrap .content-wrap { min-width: 126rem; padding: 0;}
+.main-wrap .panel-wrap { position: relative; height: 100%; padding: 3.2rem;}
+.main-wrap .row { margin-right: -1.6rem; margin-left: -1.6rem;}
+.main-wrap .row [class*="col-"], .main-wrap .row [class*="col-"]+[class*="col-"]  { padding: 0 1.6rem;}
+.main-wrap .col-sm { width: 32rem;}
+.main-wrap .col-lg { width: 90.8rem;}
+.main-wrap section + section { margin-top: 4rem;} 
+.main-wrap .main-area h3, .admin-area h3 { margin-bottom: 1.6rem;}
+.main-wrap .table-box tr:nth-of-type(even) { background: #fff;}
+.main-wrap .main-more { position: absolute; top: 3.2rem; right: 3.2rem; font-size: 1.6rem; color: #777; padding: .8rem; text-align: center;}
+.main-wrap .main-more:hover { color: #2F80ED;}
+.main-wrap .main-more:hover, .main-wrap .main-more:focus { transform:rotate(180deg);}
+.monitoring-date { display: flex; justify-content: space-between; height: 3.2rem; margin-top: 4rem;}
+.monitoring-date .btn-md { padding: 0!important;}
+.main-wrap .date li { display: inline-block; margin-right: 4px; line-height: 3.2rem;}
+.monitoring-date .nav { margin-right: 8px; width: 17.6rem!important;}
+.monitoring { height: 20rem; display: flex; margin-top: 1.6rem; margin-bottom: 4rem;}
+.monitoring > ul { width: 34.533rem; margin-left: 3.2rem; background: #2F80ED; color: #fff !important; box-shadow: 0px 1rem 2rem rgba(0, 0, 0, .1); border-radius: 4px; padding: 2.8rem 1.6rem;}
+.monitoring > ul:first-child { width: 12.8rem; padding-top: 4.8rem; margin-left: 0; box-shadow: 0px 1rem 2rem rgba(0, 0, 0, .05); background: #fff; font-size: 2.4rem; font-weight: 700; text-align: center; color: #222!important;}
+.monitoring > ul:first-child .danger { color: #222!important;}
+.monitoring > ul:first-child li::after { content: "\f058"; position: relative; display: block; font-family: "Font Awesome 6 Free"; font-size: 6rem; color: #2F80ED; margin-top: 2.4rem;}
+.monitoring > ul:first-child .danger::after { content: "\f06a"; color:  #EB5757;}
+.monitoring > ul strong { font-size: 2.4rem; margin-bottom: 1.6rem; display: block; text-align: center;}
+.monitoring ul ul { font-size: 1.6rem; box-shadow: none !important; display: flex;}
+.monitoring ul ul li { width: 12.8rem; height: 10.4rem; padding-top: 1.2rem; text-align: center; margin: 0 1.6rem; background: rgba(0,0,0,.07); border-radius: 4px;}
+.monitoring ul ul span { height: 6.4rem; margin-top: 1.2rem; background: rgba(0,0,0,.05); display: block; line-height: 6.4rem;}
+.monitoring ul ul li:last-child span { font-size: 5.2rem; font-weight: 700;}
+.monitoring ul.danger { background: #EB5757;}
+.monitoring-place { height: 4rem; line-height: 4rem; display: flex; margin-top: 1.6rem; font-size: 1.8rem;}
+.monitoring-land { height: 6rem; line-height: 6rem; display: flex; margin-top: 1.6rem; font-size: 1.8rem;}
+.monitoring-place > ul, .monitoring-land > ul { display: flex; justify-content: space-around; width: 34.533rem; margin-left: 3.2rem; background: #fff; box-shadow: 0px 1rem 2rem rgba(0, 0, 0, .1); border-radius: 4px;}
+.monitoring-land > ul { flex-wrap: wrap; }
+.monitoring-place > ul:first-child, .monitoring-land > ul:first-child{ width: 12.8rem; margin-left: 0;}
+.monitoring-land li { flex: 1; text-align: center; width: 50%; padding: 0 1rem; }
+.monitoring-land li:nth-of-type(2) { background: #EBF3FE; color: #2F80ED; font-size: 3.2rem; font-weight: 700;}
+.monitoring-land li:nth-of-type(2).danger { background: #FDEFEF;}
+
+/* notice */
+.main-notice { position: relative;}
+.main-notice li { height: 2rem; margin-bottom: .8rem;}
+.main-notice li:last-child { margin-bottom: 0;}
+.main-notice li a { width: 100%; /*width: calc(100% - 8rem); margin-right: 2rem;*/ text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: inline-block;}
+/*.main-wrap .main-notice span { font-size: 1.2rem; color: #555; vertical-align: top;}*/
+
+/* popup */
+.modal-popup { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; text-align: center;}
+.popup-area { position: absolute; left: 50%; top:50%;transform: translate(-50%, -50%); display: flex; width: 126rem; overflow-x: auto; }
+.popup-area > div { margin: 0 1rem; height: auto; margin-bottom: 1rem;}
+.popup-area > div img { max-width: 40rem;}
+.popup-close { display: flex; line-height: 3.2rem; max-width: 40rem;}
+.popup-close input, .popup-allclose input { margin-right: 1rem; vertical-align: middle;}
+.popup-close span, .popup-close button { display: block; font-size: 1.4rem; font-weight: 600; flex : 0 0 30%; background : #555; color : #fff; cursor: pointer; border: 0;}
+.popup-close span { background: #ddd; flex: 0 0 70%; color: #777;}
+.popup-area::-webkit-scrollbar { width: 8px; height: 8px;}
+.popup-area::-webkit-scrollbar-track { background: rgba(255,255,255,.7); width: 8px; border-radius: 4px;}
+.popup-area::-webkit-scrollbar-thumb { background: #092C4C; border-radius: 4px; border-left: 1px solid transparent;}
+.popup-allclose { position: absolute; left: 50%; bottom: 2rem; display: flex; width: 126rem; height: 4rem; line-height: 4rem; justify-content: center; font-size: 1.4rem;transform: translate(-50%, 0);}
+.popup-allclose span { background: #092C4C; width: 20rem; color: #fff; cursor: pointer;}
+.popup-allclose button { background: #0055BA; width: 20rem; border: 0; color: #fff;}

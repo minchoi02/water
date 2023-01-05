@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MainMenu">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="menuManageVO" type="egovframework.appn.sys.menu.mlm.service.MenuManageVO"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.com.cmm.ComDefaultVO"/>
+
+	<select id="menuManage.selectMainMenuHead" parameterClass="MenuManageVO" resultClass="egovMap">
+		<![CDATA[
+            SELECT
+			      B.MENU_NO
+				, B.MENU_ORDR
+				, B.MENU_NM
+				, B.UPPER_MENU_NO AS UPPER_MENU_ID
+				, B.MENU_DC
+				, B.REL_IMG_PTH
+				, B.REL_IMG_NM
+				, B.PROGRM_FILE_NM
+				, url AS chk_url
+			FROM Z_MENU_CREATE_HISTORY A, Z_MENU_INFO B
+			WHERE  B.Menu_NO > 0
+			AND    B.Menu_NO < 10000000
+			AND    B.UPPER_MENU_NO = 0
+			AND    A.MENU_NO  = B.MENU_NO
+			AND    A.AUTHOR_CD = (SELECT C.AUTHOR_CD from Z_USER_SECURITY_SETTING C
+	                                WHERE  C.SCRTY_STNG_TRGET_ID = #tmp_UniqId#)
+			ORDER BY MENU_ORDR
+		]]>
+	</select>
+
+	<select id="menuManage.selectMainMenuLeft" parameterClass="MenuManageVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+			       B.MENU_NO
+				 , B.MENU_ORDR
+				 , B.MENU_NM
+				 , B.UPPER_MENU_NO AS UPPER_MENU_ID
+				 , B.REL_IMG_PTH
+				 , B.REL_IMG_NM
+				 , url AS chk_url
+			FROM   Z_MENU_CREATE_HISTORY A, Z_MENU_INFO B
+			WHERE  A.MENU_NO  = B.MENU_NO
+			AND B.USE_YN = 'Y'
+			AND    A.AUTHOR_CD = (SELECT AUTHOR_CD from Z_USER_SECURITY_SETTING
+	                                WHERE  SCRTY_STNG_TRGET_ID = #tmp_UniqId#)
+			ORDER BY B.MENU_ORDR, B.MENU_NO
+		]]>
+	</select>
+
+	<select id="menuManage.selectLastMenuURL" parameterClass="MenuManageVO" resultClass="String">
+		<![CDATA[
+			SELECT URL FROM Z_MENU_INFO
+				    WHERE MENU_NO = #menuNo#
+		]]>
+	</select>
+
+	<select id="menuManage.selectLastMenuNo" parameterClass="MenuManageVO" resultClass="int">
+		<![CDATA[
+			select MIN(MENU_NO)
+			from   Z_MENU_INFO
+			where  UPPER_MENU_NO = #menuNo#
+			AND    USE_YN = 'Y'
+			and    MENU_ORDR =
+			      (select MIN(MENU_ORDR)
+			       from Z_MENU_CREATE_HISTORY A, Z_MENU_INFO B
+			       where A.MENU_NO = B.MENU_NO
+			       AND   B.USE_YN = 'Y'
+			       AND   A.AUTHOR_CD = (SELECT AUTHOR_CD from Z_USER_SECURITY_SETTING
+	                                      WHERE  SCRTY_STNG_TRGET_ID = #tempValue#)
+			       AND   B.UPPER_MENU_NO = #menuNo#)
+		]]>
+	</select>
+
+	<select id="menuManage.selectLastMenuNoCnt" parameterClass="MenuManageVO" resultClass="int">
+		<![CDATA[
+			select count(MENU_NO)
+			from   Z_MENU_INFO
+			where  UPPER_MENU_NO = #menuNo#
+			AND    USE_YN = 'Y'
+			and    MENU_ORDR =
+			      (select MIN(MENU_ORDR)
+			       from Z_MENU_CREATE_HISTORY A, Z_MENU_INFO B
+			       where A.MENU_NO = B.MENU_NO
+			       AND   B.USE_YN = 'Y'
+			       AND   A.AUTHOR_CD = (SELECT AUTHOR_CD from Z_USER_SECURITY_SETTING
+	                                      WHERE  SCRTY_STNG_TRGET_ID = #tempValue#)
+			       AND   B.UPPER_MENU_NO = #menuNo#)
+		]]>
+	</select>
+	<select id="menuManage.selectMaxMenuNo" parameterClass="MenuManageVO" resultClass="int">
+		<![CDATA[
+			select coalesce(max(menu_no),#upperMenuId#) from Z_MENU_INFO where upper_menu_no = #upperMenuId#
+		]]>
+	</select>
+	<update id="menuManage.updateMenuOrder" >
+		update Z_MENU_INFO
+		set MENU_ORDR =  #menuOrdr#
+		where MENU_NO = #menuNo#
+	</update>
+</sqlMap>

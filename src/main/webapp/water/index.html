@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link type="text/css" rel="shortcut icon" href="images/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=1280" />
+<title>상수도 원격검침 시스템</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link type="text/css" rel="stylesheet" href="css/common.css" />
+</head>
+<body>
+    <!-- popup -->
+	<div class="modal-popup" id="layerPopup">
+        <div class="popup-area">
+            <div>
+                <img src="images/img-banner2.jpg" alt="" />
+                <div class="popup-close">
+                    <span><input type="checkbox" />오늘 하루 보지 않기</span>
+                    <button type="button">닫기</button>
+                </div>
+            </div>
+            <div>
+                <img src="images/img-banner1.jpg" alt="" />
+                <div class="popup-close">
+                    <span><input type="checkbox" />오늘 하루 보지 않기</span>
+                    <button type="button">닫기</button>
+                </div>
+            </div>
+            <div>
+                <img src="images/1.png" alt="" />
+                <div class="popup-close">
+                    <span><input type="checkbox" />오늘 하루 보지 않기</span>
+                    <button type="button">닫기</button>
+                </div>
+            </div>
+            <div>
+                <img src="images/1.png" alt="" />
+                <div class="popup-close">
+                    <span><input type="checkbox" />오늘 하루 보지 않기</span>
+                    <button type="button">닫기</button>
+                </div>
+            </div>
+            <div>
+                <img src="images/1.png" alt="" />
+                <div class="popup-close">
+                    <span><input type="checkbox" />오늘 하루 보지 않기</span>
+                    <button type="button">닫기</button>
+                </div>
+            </div>
+        </div>
+        <div class="popup-allclose">
+            <span><input type="checkbox" />모두 오늘 하루 보지 않기</span>
+            <button type="button">모두 닫기</button>
+        </div>
+	</div>
+    <!--popup -->
+
+    <!-- skip -->
+	<div>
+		<a href="#gnb" class="skip">주메뉴 바로가기</a>
+		<a href="#contents" class="skip">본문 내용바로가기</a>
+	</div>
+	<!-- skip -->
+    <div class="main-wrap">
+        <div class="main-area">
+        <!-- header -->
+        <header class="header-wrap">
+            <div class="header-logo">
+                <h1><a href="#" title="상수도 원격검침 시스템"><em class="hidden">상수도 원격검침 시스템</em></a></h1>
+            </div>
+            <ul class="user-wrap">
+                <li class="darkmode">
+                    <div class="inner">
+                        <input type="radio" name="toggle" id="toggle-radio-light" checked><label for="toggle-radio-light" class="tolight"><i class="fas fa-sun tolight"></i></label>
+                        <input type="radio" name="toggle" id="toggle-radio-dark"><label for="toggle-radio-dark" class="todark"><i class="fas fa-moon todark"></i></label>
+                        <div class="darkmode-bg"></div>
+                    </div>
+                </li>
+                <li><a href="#modal-user" data-toggle="modal"><i class="fas fa-user-circle"></i>유성구 사업소 관리자</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i>LOGOUT</a></li>
+                <!--<li><a href="#"><i class="fas fa-sign-in-alt"></i>LOGIN</a></li>-->
+            </ul>
+            <nav class="gnb" id="gnb">
+                <h2 class="hidden">메뉴</h2>
+                <ul>
+                    <li><a href="#">자산관리</a></li>
+                    <li><a href="#">관제관리</a></li>
+                    <li><a href="#">장애처리관리</a></li>
+                    <li><a href="#">GIS모니터링</a></li>
+                    <li><a href="#">커뮤니티</a></li>
+                    <li><a href="#">통계관리</a></li>
+                    <li class="active"><a href="#">시스템관리</a></li>
+                    <li><a href="#">회원서비스</a></li>
+                </ul>
+            </nav>
+        </header>
+        <!-- header -->
+        <!-- container -->
+        <div class="container container-wrap">
+            <!-- main -->
+            <main id="contents">
+                <div class="content-wrap">
+                    <h2 class="hidden">컨텐츠영역</h2>
+                    <div class="main-title" data-aos="fade-up">
+                        <p><strong>유성구 사업소 관리자</strong>님 접속을 환영합니다.</p>
+                        <span>2012년 12월 06일</span>
+                    </div>
+                    <section class="panel-wrap" data-aos="fade-up" data-aos-delay="400">
+                        <div class="flex justify-content-between">
+                            <h3>자산별 모니터링</h3>
+                            <div class="tab-area">
+                                <ul class="nav medium gray">
+                                    <li>
+                                        <a class="active" data-toggle="tab" href="#tab1">월간</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tab2">분기</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tab3">연간</a>
+                                    </li>
+                                </ul>
+                                <a href="#" class="main-more" title="자산별 모니터링 더보기"><i class="fas fa-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab1">
+                                <ul class="monitoring">
+                                    <li>
+                                        <em>계량기</em>
+                                        <strong>5</strong>
+                                        <span class="up">5</span>
+                                    </li>
+                                    <li>
+                                        <em>통신단말기</em>
+                                        <strong>7</strong>
+                                        <span class="up">12</span>
+                                    </li>
+                                    <li>
+                                        <em>GateWay</em>
+                                        <strong>1</strong>
+                                        <span class="down">7</span>
+                                    </li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h4>지역별 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>지열별 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>5</td>
+                                                        <td>1</td>
+                                                        <td>2</td>
+                                                        <td>0</td>
+                                                        <td>2</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>7</td>
+                                                        <td>1</td>
+                                                        <td>0</td>
+                                                        <td>5</td>
+                                                        <td>3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>1</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <h4>자산 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>자산 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>20</td>
+                                                        <td>15</td>
+                                                        <td>30</td>
+                                                        <td>10</td>
+                                                        <td>10</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab2">
+                                <ul class="monitoring">
+                                    <li>
+                                        <em>계량기</em>
+                                        <strong>10</strong>
+                                        <span class="up">10</span>
+                                    </li>
+                                    <li>
+                                        <em>통신단말기</em>
+                                        <strong>14</strong>
+                                        <span class="up">14</span>
+                                    </li>
+                                    <li>
+                                        <em>GateWay</em>
+                                        <strong>2</strong>
+                                        <span class="down">2</span>
+                                    </li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h4>지역별 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>지열별 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>10</td>
+                                                        <td>1</td>
+                                                        <td>2</td>
+                                                        <td>0</td>
+                                                        <td>2</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>14</td>
+                                                        <td>1</td>
+                                                        <td>0</td>
+                                                        <td>5</td>
+                                                        <td>3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>2</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <h4>자산 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>자산 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>20</td>
+                                                        <td>15</td>
+                                                        <td>30</td>
+                                                        <td>10</td>
+                                                        <td>10</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab3">
+                                <ul class="monitoring">
+                                    <li>
+                                        <em>계량기</em>
+                                        <strong>15</strong>
+                                        <span class="up">15</span>
+                                    </li>
+                                    <li>
+                                        <em>통신단말기</em>
+                                        <strong>20</strong>
+                                        <span class="up">20</span>
+                                    </li>
+                                    <li>
+                                        <em>GateWay</em>
+                                        <strong>3</strong>
+                                        <span class="down">3</span>
+                                    </li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h4>지역별 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>지열별 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>15</td>
+                                                        <td>1</td>
+                                                        <td>2</td>
+                                                        <td>0</td>
+                                                        <td>2</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>20</td>
+                                                        <td>1</td>
+                                                        <td>0</td>
+                                                        <td>5</td>
+                                                        <td>3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>3</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <h4>자산 현황</h4>
+                                        <div class="table-box table-border">
+                                            <table>
+                                                <caption>자산 현황</caption>
+                                                <colgroup>
+                                                    <col style="width:auto;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col" colspan="5">지역</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">자산</th>
+                                                        <th scope="col">유성구</th>
+                                                        <th scope="col">대덕구</th>
+                                                        <th scope="col">서구</th>
+                                                        <th scope="col">중구</th>
+                                                        <th scope="col">동구</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td scope="row">계량기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">통신단말기</td>
+                                                        <td>10000</td>
+                                                        <td>9000</td>
+                                                        <td>20000</td>
+                                                        <td>10000</td>
+                                                        <td>7000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row">GateWay</td>
+                                                        <td>20</td>
+                                                        <td>15</td>
+                                                        <td>30</td>
+                                                        <td>10</td>
+                                                        <td>10</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                    <section class="panel-wrap" data-aos="fade-up" data-aos-delay="500">
+                        <div class="flex justify-content-between">
+                            <h3>사업소별 모니터링</h3>
+                            <div class="tab-area">
+                                <ul class="nav medium gray">
+                                    <li>
+                                        <a class="active" data-toggle="tab" href="#tab4">월간</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tab5">분기</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tab6">연간</a>
+                                    </li>
+                                </ul>
+                                <a href="#" class="main-more" title="사업소별 모니터링 더보기"><i class="fas fa-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab4">
+                                <div class="row">
+                                    <div class="col-4 textC">
+                                        <svg class="daejeon" width="206" height="218" viewBox="0 0 206 218" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_224_2270)">
+                                                <a href="#">
+                                                    <path class="map" d="M36.0159 157.659L39.1483 155.845L41.4969 150.673C41.4969 150.673 42.2776 147.829 42.7992 147.055C43.3207 146.281 45.1509 146.278 45.9316 145.761C46.7124 145.244 48.5425 144.195 48.5425 144.195L49.0641 141.094L50.1072 138.249L51.6718 136.435L52.9773 135.661L55.0666 135.145L56.6313 132.3L57.6744 129.452L60.0229 127.385L60.2852 125.057L59.5013 120.919C59.5013 120.919 57.1528 117.558 57.1528 116.781C57.1528 116.004 58.1959 114.97 58.1959 114.97L61.5907 115.23L64.1984 115.487L67.0685 114.453L69.1579 114.196L70.4633 112.902V110.575C70.4633 110.575 68.3898 109.281 68.3898 108.517C68.3794 108.038 68.194 107.579 67.8682 107.226L66.3036 104.898V101.277C66.2904 100.776 66.4337 100.284 66.7138 99.8673C66.9939 99.4506 67.3971 99.13 67.8682 98.9493L70.2168 96.8785L76.7409 93.5172L79.611 92.7402L83.5273 89.1188C83.5273 89.1188 86.135 86.7912 86.9189 86.7912C88.4932 86.7063 90.0613 86.5338 91.616 86.2743C92.5651 86.119 93.5244 86.0331 94.4861 86.0174H98.1401L101.516 84.2193L105.429 82.1486L107.518 80.5978V75.9426C107.518 75.1657 108.302 74.132 108.302 74.132L109.083 72.0644L109.605 69.9937V66.6197C109.605 66.6197 110.129 65.0534 110.389 64.2921C110.648 63.5309 111.969 61.4476 111.969 61.4476L111.188 57.3093C111.188 57.3093 110.667 55.4986 110.404 54.7217C110.142 53.9448 109.099 52.3941 109.099 51.3603C109.099 50.3265 105.186 46.7051 105.186 46.7051L101.273 45.1388L98.3993 42.8112L96.0508 41.0005L95.2574 38.4285L96.3005 35.324L99.1706 34.5502L101.26 33.5133L102.041 31.1857L101.781 29.1181L102.303 28.2316L100.998 27.3074L101.781 25.2398L102.041 21.8753L103.346 19.8077C103.518 18.8691 103.606 17.9172 103.608 16.9632V11.2711C103.608 11.2711 102.562 8.42659 101.781 8.16971C101.001 7.91283 97.8619 5.58837 97.8619 5.58837L95.2574 4.28829L91.6034 0.409995L88.9925 0.149994L87.4278 0.409995L86.1224 0.666879C85.5556 1.23548 84.9447 1.7592 84.2954 2.23323L83.5146 2.75014L81.4221 5.58837L79.0736 5.33148H76.7251L74.1173 5.84839L72.2903 7.65908L72.5495 11.2774L73.5926 13.605L74.6389 16.1926L75.1604 18.0033L74.3765 20.0709L71.7656 22.3985L70.201 23.9648L68.8955 26.0324L68.3898 28.3412L68.1306 30.4119L67.609 32.4795L65.782 34.5502L63.1711 35.0671L61.3441 35.844L60.3011 37.6516C60.3011 37.6516 60.0387 37.1347 59.258 38.6885C58.4772 40.2423 57.6775 42.0499 57.6775 42.0499L58.1991 44.6375L57.6775 46.7051L56.0971 47.7389L53.7612 50.0728L49.0641 50.8497L47.4994 51.1066L46.194 51.8835L45.1509 53.1773H43.3239L41.2345 50.8497L37.8429 49.5559H31.8372L28.9671 52.1435L26.8778 54.728L24.0108 56.0249L21.4031 57.5756L20.6192 58.6125L19.8353 61.7139L21.4157 63.5246L18.8048 68.9567L18.2833 71.5443L18.5456 74.1288L18.8048 75.6952V76.729L19.8479 79.0566L20.1103 82.418L19.0672 87.0732L17.4867 89.4008L15.1382 91.9884L13.3112 93.0222L12.2681 95.6098L14.0951 97.1761L15.6597 98.7425L16.4437 100.309L16.706 102.376L16.9652 104.964L13.8359 108.065L12.0089 110.393V111.959L11.7466 113.526L9.91956 114.82L7.83338 116.113L6.52793 118.441L6.26557 119.475L7.04948 121.802L7.31183 122.836V123.87L6.26557 125.164L5.74403 126.458L5.22248 127.491L4.70094 128.785V132.147L6.00639 133.44L7.57102 136.028L6.26557 137.322L4.43858 137.579L2.35238 138.096L1.06274 139.042L0.0196533 141.889L1.6001 143.7L2.64319 145.508L3.68945 148.095L4.47019 151.457L5.51644 152.49L6.55954 153.01L9.16728 152.75L10.7477 153.527L13.3555 155.094L15.9664 158.972L17.531 160.266L20.1419 161.043L23.5335 160.526L25.6229 159.749L28.2306 159.232L28.3255 159.877L31.1007 158.455L36.0159 157.659Z"/>
+                                                    <svg x="30" y="65">
+                                                        <path class="location" d="M12.1511 34.2652C2.21865 20.046 0.375 18.5867 0.375 13.3609C0.375 6.20281 6.25124 0.400024 13.5 0.400024C20.7488 0.400024 26.625 6.20281 26.625 13.3609C26.625 18.5867 24.7813 20.046 14.8489 34.2652C14.1971 35.195 12.8029 35.1949 12.1511 34.2652Z" fill="white"/>
+                                                    </svg>
+                                                    <text x="38" y="81" class="number">5</text>
+                                                    <text x="26" y="105">유성구</text>
+                                                </a>
+                                                <a href="#">
+                                                    <path class="map" d="M84.5508 153.001L84.2884 151.707L82.7238 150.673L80.6376 149.38L79.3321 148.089C79.3321 148.089 80.1129 145.244 80.3752 143.703C80.6376 142.162 81.4183 141.892 81.4183 141.892L85.0723 141.375L87.9424 139.308L88.7263 134.922L90.2909 132.078L91.8714 130.267L92.1306 126.646V122.507L93.6952 120.696L98.3923 116.041L100.482 114.475L101.266 112.909L99.9601 110.838L100.482 109.544L101.003 106.96L102.584 103.855L102.062 101.527L102.584 98.4229L101.541 94.0372L98.9328 93.2602L97.8866 91.9664L96.3061 88.8651L96.6507 86.0206H94.4791C93.5174 86.0363 92.5581 86.1221 91.609 86.2774C90.0543 86.5368 88.4862 86.7094 86.9119 86.7943C86.128 86.7943 83.5203 89.122 83.5203 89.122L79.604 92.7433L76.7339 93.5202L70.2098 96.8817L67.8486 98.943C67.3775 99.1237 66.9742 99.4444 66.6941 99.8611C66.414 100.278 66.2708 100.77 66.284 101.271V104.895L67.8486 107.223C68.1744 107.576 68.3597 108.035 68.3701 108.513C68.3701 109.29 70.4595 110.584 70.4595 110.584V112.912L69.154 114.206L67.0647 114.462L64.1946 115.496L61.5869 115.239L58.1921 114.979C58.1921 114.979 57.149 116.016 57.149 116.79C57.149 117.564 59.4975 120.928 59.4975 120.928L60.2814 125.067L60.0191 127.394L57.6705 129.462L56.6274 132.309L55.0628 135.154L52.9734 135.671L51.668 136.445L50.1033 138.258L49.0602 141.103L48.5387 144.204C48.5387 144.204 46.7117 145.241 45.9278 145.771C45.1439 146.3 43.3201 146.288 42.7954 147.064C42.2706 147.841 41.4931 150.683 41.4931 150.683L39.1445 155.855L36.0121 157.669L31.0526 158.442L28.2774 159.865L28.4449 161.03L27.1394 162.064L24.7909 163.098L22.9639 165.168L21.9208 166.462L20.8777 168.53L20.6154 170.857L21.6585 174.996L22.7015 177.323L25.3124 179.394L27.9265 181.96L28.7072 184.03L30.7966 187.132L32.8828 187.909L36.0152 188.686L37.8422 188.169L38.6261 186.602L39.9284 186.345L43.0609 187.636C43.7969 188.377 44.5815 189.069 45.4094 189.707C46.1933 190.224 48.2795 191.273 48.2795 192.034C48.3055 192.645 48.3934 193.252 48.5419 193.845V196.173L48.2795 198.5L49.5849 199.794C50.1481 200.213 50.7618 200.56 51.4119 200.828C52.1958 201.088 54.282 201.862 54.282 201.862L54.5444 203.428L54.282 206.273L51.9335 209.374L52.455 211.185L53.4981 212.751L54.5444 215.336L56.3714 216.902L58.4576 217.419C58.9032 217.396 59.3431 217.308 59.763 217.159C60.3867 216.935 60.9967 216.676 61.59 216.382L62.1116 214.314V211.47L63.417 209.903L65.244 208.337L67.5926 206.526L68.6357 203.942V197.476L70.2161 196.699L73.3486 194.371L75.6971 192.805L77.5241 192.028L78.0456 188.15L77.7833 184.785L77.0025 182.201L78.0456 180.907L79.0887 179.613L79.8726 175.735V172.114C79.8726 172.114 80.1318 169.786 79.8726 169.009C79.6135 168.232 78.0267 165.67 78.0267 165.67V162.825L79.3321 159.721L82.2022 158.154L84.81 156.588L84.5508 155.294V153.001Z"/>
+                                                    <svg x="48" y="144">
+                                                        <path class="location" d="M12.1511 34.2652C2.21865 20.046 0.375 18.5867 0.375 13.3609C0.375 6.20281 6.25124 0.400024 13.5 0.400024C20.7488 0.400024 26.625 6.20281 26.625 13.3609C26.625 18.5867 24.7813 20.046 14.8489 34.2652C14.1971 35.195 12.8029 35.1949 12.1511 34.2652Z" fill="white"/>
+                                                    </svg>
+                                                    <text x="56" y="160" class="number">9</text>
+                                                    <text x="48" y="183">서구</text>
+                                                </a>
+                                                <a href="#">
+                                                    <path class="map" d="M118.477 197.745L119.779 196.969L120.041 195.675L119.257 193.09L118.477 191.28L117.43 189.986V187.398L118.214 185.331L120.563 184.554H122.911L124.492 184.814L125.538 184.554L126.581 183.78V181.192L127.624 179.626L128.408 176.004L127.365 173.677L126.319 172.643L124.738 171.077V169.783L123.433 168.492L122.128 167.715L120.563 166.165L120.304 164.094L122.652 161.249L123.695 159.956L124.738 158.662V155.817L123.955 154.523L122.911 154.007V152.196L123.433 150.645L122.911 149.079L122.652 147.008L121.347 144.424L122.39 141.836L125.001 140.542L127.609 139.252H135.176L137.524 138.992L137.787 136.404L137.003 134.336L134.654 131.232L132.568 129.421L130.988 128.387L128.38 128.127L126.29 126.837L125.247 125.543C125.247 125.543 124.985 124.509 124.726 123.215C124.467 121.921 123.161 122.181 123.161 122.181C123.161 122.181 121.856 120.888 121.581 120.111C121.306 119.334 120 117.266 120 117.266L120.522 114.939L119.216 112.094L116.346 110.283L114.26 110.023L110.906 109.281L110.126 106.436L110.631 104.244L108.558 104.378L105.685 102.828L102.343 102.928L102.552 103.868L100.972 106.972L100.45 109.557L99.9286 110.85L101.234 112.921L100.45 114.487L98.3608 116.054L93.6732 120.671L92.1085 122.482V126.62L91.8493 130.242L90.2689 132.053L88.7042 134.897L87.9203 139.283L85.0502 141.35L81.3962 141.867C81.3962 141.867 80.6123 142.127 80.3531 143.678C80.094 145.229 79.3101 148.064 79.3101 148.064L80.6155 149.355L82.7017 150.648L84.2663 151.682L84.5287 152.976V155.332L84.7879 156.626H87.1364L89.7473 157.146L91.3278 157.662L93.9387 159.229C93.9387 159.229 94.9818 159.746 95.2441 161.296L95.5033 162.863L95.2441 164.93L93.1548 167.778C93.1548 167.778 92.8956 169.586 92.8956 170.362V174.241L93.1548 176.568L93.6732 180.675L94.4571 181.712L95.7625 182.486L97.068 183.263L98.6484 183.78L100.735 185.591L101.259 187.157C101.259 187.157 101.519 187.934 101.781 188.723C102.043 189.513 103.361 190.29 103.361 190.29L105.188 190.806L105.71 192.617L106.494 194.184V195.217L107.275 197.545L110.407 198.062C110.407 198.062 112.755 198.319 113.277 199.096C113.799 199.873 115.888 201.166 115.888 201.166L116.163 201.204L116.931 200.129L118.477 197.745Z"/>
+                                                    <svg x="95" y="134">
+                                                        <path class="location" d="M12.1511 34.2652C2.21865 20.046 0.375 18.5867 0.375 13.3609C0.375 6.20281 6.25124 0.400024 13.5 0.400024C20.7488 0.400024 26.625 6.20281 26.625 13.3609C26.625 18.5867 24.7813 20.046 14.8489 34.2652C14.1971 35.195 12.8029 35.1949 12.1511 34.2652Z" fill="white"/>
+                                                    </svg>
+                                                    <text x="103" y="150" class="number">6</text>
+                                                    <text x="97" y="173">중구</text>
+                                                </a>
+                                                <a href="#">
+                                                    <path class="map" d="M203.287 64.0321L198.59 60.4107L197.546 58.34V54.2048L196.5 51.6172L194.414 50.8434L192.065 51.6172L188.933 52.911L187.353 52.3941L185.788 51.3603L182.655 49.794L180.598 50.3265L179.292 51.1003L178.249 51.8772C178.043 52.4039 177.679 52.8553 177.206 53.171C176.422 53.6879 176.163 54.9817 176.163 54.9817L175.379 56.2755C175.379 56.2755 174.858 56.5324 175.379 57.5662C175.901 58.6 176.163 60.4139 176.163 60.4139V61.9802L175.901 63.5309L173.293 63.274L171.712 61.9802L170.669 61.2033L168.318 60.4107L167.006 58.0863L167.268 54.9817V52.911L164.136 49.2896L161.528 46.962V43.9296L159.701 44.8944L156.831 45.1513C156.831 45.1513 153.177 45.6682 153.177 46.4451C153.177 47.222 151.597 50.0665 151.597 50.0665C151.597 50.0665 151.597 52.3941 151.337 53.171C151.078 53.948 150.816 54.7374 150.553 55.4986C150.291 56.2599 150.032 59.1169 150.032 59.1169L147.683 60.9276L144.292 62.7383L141.422 63.5152L138.811 64.549L136.462 66.0997L135.941 68.6873L137.246 70.498L138.552 72.0487L138.289 74.3763L136.462 76.187C135.974 76.8431 135.538 77.5354 135.157 78.2577C134.635 79.2915 133.854 80.3253 134.376 81.1023C134.898 81.8792 136.984 84.7236 136.984 84.7236L139.595 87.5681L143.249 89.6357L145.335 92.7402L145.076 94.5509L144.029 97.9123L143.249 101.017L141.422 101.794C141.422 101.794 140.375 101.534 140.116 100.757C139.845 100.113 139.495 99.5047 139.073 98.9461L135.419 98.6892L134.376 99.723L133.071 100.24L130.722 100.5C130.722 100.5 128.895 99.983 128.895 99.2061C128.895 98.4292 128.111 96.6185 128.111 96.6185L126.809 94.5509H124.198L122.109 97.1385L120.806 98.1724C120.806 98.1724 120.022 99.7387 119.226 99.983C118.429 100.227 115.572 102.311 115.572 102.311L112.443 104.121L110.6 104.244L110.094 106.436L110.875 109.281L114.27 110.055L116.356 110.315L119.226 112.125L120.531 114.97L120.01 117.297C120.01 117.297 121.315 119.368 121.59 120.142C121.865 120.916 123.171 122.213 123.171 122.213C123.171 122.213 124.473 121.953 124.735 123.246C124.998 124.54 125.257 125.574 125.257 125.574L126.3 126.868L128.389 128.159L130.997 128.419L132.577 129.452L134.664 131.263L137.012 134.368L137.796 136.435L137.534 139.023L135.185 139.283H127.608L125.001 140.574L122.39 141.867L121.347 144.455L122.652 147.039L122.911 149.11L123.433 150.676L122.911 152.227V154.038L123.955 154.555L124.738 155.849V158.693L123.695 159.987L122.652 161.281L120.304 164.125L120.563 166.196L122.128 167.747L123.433 168.523L124.738 169.814V171.108L126.319 172.674L127.365 173.708L128.408 176.036L127.624 179.657L126.581 181.223V183.811L125.538 184.585L124.492 184.845L122.911 184.585H120.563L118.214 185.362L117.43 187.429V190.017L118.477 191.311L119.257 193.121L120.041 195.706L119.779 197L118.477 197.777L116.896 200.104L116.128 201.179L117.68 201.398H120.55L121.593 201.658L122.377 202.692L122.899 204.258L124.204 205.292L126.29 207.363L129.685 207.62L133.077 207.88L134.641 206.846L136.222 205.552L138.311 203.224L138.833 201.157L139.095 198.309L140.138 196.743L143.271 195.709L146.141 196.483L147.705 194.917L147.968 193.623L146.922 192.056L147.184 189.212L149.532 188.178L151.619 187.401L154.23 185.85L155.273 184.04H157.1L159.711 182.746L162.059 179.385L164.408 175.763L163.624 172.402L162.059 170.331L161.275 168.52V164.135L159.97 162.064V159.219L162.059 157.409L162.318 156.115L161.797 154.304L162.84 151.72L164.145 151.46L167.015 148.098V145.511L164.929 141.632L163.102 138.271L163.624 136.46L165.204 134.65L166.506 133.616L167.29 130.771L167.028 128.184L166.247 126.617L167.028 125.58L167.812 124.29V122.479L168.333 121.185L170.16 119.891L170.423 118.858L170.944 116.27L170.682 113.425L169.377 110.838L168.596 108.513L170.423 107.476L171.728 106.96L173.309 106.183V104.115L173.568 101.787L176.179 99.9768L179.049 99.4599L181.919 98.4261L183.746 95.3216L185.311 91.9602C185.311 91.9602 186.095 89.8895 186.095 88.8557V86.5281L185.835 83.1667L184.789 79.8022L184.53 78.5115L185.835 75.6638L189.227 73.3363L191.054 71.2687L193.662 70.2349H201.229L203.318 69.9749L205.667 68.6811L205.926 66.8704L203.287 64.0321Z"/>
+                                                    <svg x="136" y="110">
+                                                        <path class="location" d="M12.1511 34.2652C2.21865 20.046 0.375 18.5867 0.375 13.3609C0.375 6.20281 6.25124 0.400024 13.5 0.400024C20.7488 0.400024 26.625 6.20281 26.625 13.3609C26.625 18.5867 24.7813 20.046 14.8489 34.2652C14.1971 35.195 12.8029 35.1949 12.1511 34.2652Z" fill="white"/>
+                                                    </svg>
+                                                    <text x="144" y="126" class="number">8</text>
+                                                    <text x="136" y="150">동구</text>
+                                                </a>
+                                                <a href="#">
+                                                    <path class="map" d="M108.558 104.378L112.474 104.121L115.604 102.311C115.604 102.311 118.477 100.24 119.257 99.9831C120.038 99.7262 120.838 98.1724 120.838 98.1724L122.14 97.1386L124.23 94.551H126.84L128.143 96.6185C128.143 96.6185 128.927 98.4292 128.927 99.2061C128.927 99.9831 130.754 100.5 130.754 100.5L133.102 100.24L134.408 99.7231L135.451 98.6892L139.105 98.9461C139.526 99.5048 139.877 100.113 140.148 100.757C140.407 101.534 141.453 101.794 141.453 101.794L143.28 101.017L144.061 97.9123L145.107 94.551L145.366 92.7402L143.28 89.6358L139.626 87.5681L137.015 84.7237C137.015 84.7237 134.929 81.8792 134.408 81.1023C133.886 80.3254 134.667 79.2915 135.188 78.2577C135.569 77.5354 136.006 76.8431 136.494 76.187L138.321 74.3763L138.583 72.0487L137.278 70.498L135.972 68.6873L136.494 66.0997L138.842 64.549L141.453 63.5152L144.323 62.7383L147.715 60.9276L150.064 59.1169C150.064 59.1169 150.326 56.2724 150.585 55.4986C150.844 54.7249 151.107 53.9323 151.369 53.1711C151.631 52.4098 151.628 50.0665 151.628 50.0665C151.628 50.0665 153.209 47.222 153.209 46.4451C153.209 45.6682 156.863 45.1513 156.863 45.1513L159.733 44.8944L161.56 43.9296V43.8606L162.34 41.0162L164.689 38.6885L166.516 36.6178L169.648 34.2902L169.908 32.2226L169.127 29.375L167.546 27.5674H164.676L162.069 28.3412L159.707 27.8306L158.402 26.2642L157.88 23.9366L159.461 20.8321V19.5383L158.418 16.9538L157.896 14.6262L156.591 13.0599C156.591 13.0599 154.242 13.3199 153.458 13.3199C152.674 13.3199 151.11 14.3537 151.11 14.3537L148.502 16.4244C148.175 16.7104 147.825 16.9692 147.456 17.1982C146.675 17.7151 145.629 19.5258 145.629 19.5258C145.451 19.9341 145.363 20.375 145.37 20.8196V24.441L144.848 27.0255C144.682 27.6465 144.316 28.1966 143.805 28.5918C143.066 29.1455 142.368 29.7506 141.716 30.4025L140.41 31.1763C139.108 31.9532 138.062 32.4701 138.062 32.4701C138.062 32.4701 137.019 34.0365 136.235 34.0365H135.454L131.538 32.7427L128.408 32.2258L126.828 30.6594L125.785 29.3656L124.204 28.3318L122.121 27.5674H120.294C120.294 27.5674 117.424 27.3074 116.64 27.5674C115.856 27.8274 117.424 27.0474 115.86 27.8243C114.507 28.4337 113.114 28.9518 111.69 29.375L110.385 29.8951L105.685 29.635L102.815 28.6012L102.293 28.2316L101.771 29.1181L102.031 31.1857L101.259 33.5133L99.17 34.5502L96.2999 35.324L95.2568 38.4285L96.0376 41.0162L98.3861 42.8269L101.259 45.1544L105.173 46.7208C105.173 46.7208 109.086 50.3422 109.086 51.376C109.086 52.4098 110.132 53.9636 110.391 54.7374C110.65 55.5112 111.175 57.325 111.175 57.325L111.956 61.4633C111.956 61.4633 110.654 63.5309 110.375 64.3078C110.097 65.0847 109.591 66.6354 109.591 66.6354V69.9968L109.07 72.0675L108.289 74.1351C108.289 74.1351 107.505 75.1689 107.505 75.9458V80.601L105.416 82.1517L101.512 84.2193L98.1206 86.03H96.6381L96.2936 88.8745L97.874 91.9759L98.9203 93.2697L101.528 94.0466L102.571 98.4324L102.05 101.537L102.366 102.931L105.707 102.831L108.558 104.378Z"/>
+                                                    <svg x="113" y="40">
+                                                        <path class="location" d="M12.1511 34.2652C2.21865 20.046 0.375 18.5867 0.375 13.3609C0.375 6.20281 6.25124 0.400024 13.5 0.400024C20.7488 0.400024 26.625 6.20281 26.625 13.3609C26.625 18.5867 24.7813 20.046 14.8489 34.2652C14.1971 35.195 12.8029 35.1949 12.1511 34.2652Z" fill="white"/>
+                                                    </svg>
+                                                    <text x="121" y="56" class="number">7</text>
+                                                    <text x="109" y="80">대덕구</text>
+                                                </a>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="col-8 position-unusual">
+                                        <h4 class="">조치 현황</h4>
+                                        <div class="main-graph">높이 208px 그래프1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab5">
+                                <div class="row">
+                                    <div class="col-4">
+
+                                    </div>
+                                    <div class="col-8 position-unusual">
+                                        <h4>조치 현황</h4>
+                                        <div class="main-graph">높이 208px 그래프2</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab6">
+                                <div class="row">
+                                    <div class="col-4">
+                                    </div>
+                                    <div class="col-8 position-unusual">
+                                        <h4>조치 현황</h4>
+                                        <div class="main-graph">높이 208px 그래프3</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="row" data-aos="fade-up" data-aos-delay="500">
+                        <div class="col-8">
+                            <section class="panel-wrap">
+                                <div class="flex justify-content-between">
+                                    <h3>통계 및 현황</h3>
+                                    <div class="tab-area">
+                                        <ul class="nav medium gray">
+                                            <li>
+                                                <a class="active" data-toggle="tab" href="#tab7">월간</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#tab8">분기</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#tab9">연간</a>
+                                            </li>
+                                        </ul>
+                                        <a href="#" class="main-more" title="통계 및 현황 더보기"><i class="fas fa-plus"></i></a>
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="tab7">
+                                        <div class="main-graph">높이 208px 그래프1</div>
+                                    </div>
+                                    <div class="tab-pane fade" id="tab8">
+                                        <div class="main-graph">높이 208px 그래프2</div>
+                                    </div>
+                                    <div class="tab-pane fade" id="tab9">
+                                        <div class="main-graph">높이 208px 그래프3</div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="col-4">
+                            <section class="panel-wrap">
+                                <h3>최근 게시물</h3>
+                                <div class="tab-area">
+                                    <ul class="nav medium">
+                                        <li>
+                                            <a class="active" data-toggle="tab" href="#notice1">공지사항</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#notice2">묻고답하기</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#notice3">보도자료</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#notice4">자료실</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="notice1">
+                                        <a href="#" class="main-more" title="공지사항 더보기"><i class="fas fa-plus"></i></a>
+                                        <ul class="main-notice list-dot">
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">공지사항입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="notice2">
+                                        <a href="#" class="main-more" title="묻고답하기 더보기"><i class="fas fa-plus"></i></a>
+                                        <ul class="main-notice list-dot">
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">묻고답하기입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="notice3">
+                                        <a href="#" class="main-more" title="보도자료 더보기"><i class="fas fa-plus"></i></a>
+                                        <ul class="main-notice list-dot">
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">보도자료입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="notice4">
+                                        <a href="#" class="main-more" title="자료실 더보기"><i class="fas fa-plus"></i></a>
+                                        <ul class="main-notice list-dot">
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                            <li>
+                                                <a href="#">자료실입니다.</a>
+                                                <span>2022-01-01</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                </div>
+            </main>
+            <!-- main -->
+        </div>
+        <!-- container -->
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer>
+        <div class="banner-wrap">
+            <h3 class="hidden">배너모음</h3>
+            <div class="banner-area">
+                <div class="slider banner-slider">
+                    <a href="#" target="_blank" title="새창">대전 지리정보 서비스</a>
+                    <a href="#" target="_blank" title="새창">it`s 水 사랑방대한민국 정부</a>
+                    <a href="#" target="_blank" title="새창">e-대전뉴스선거위반행위신고센터</a>
+                    <a href="#" target="_blank" title="새창">금강유역환경청한국수자원공사</a>
+                    <a href="#" target="_blank" title="새창">환경부한국상하수도협회</a>
+                    <a href="#" target="_blank" title="새창">환경부한국상하수도협회</a>
+                </div>
+                <div class="banner-button dropup">
+                    <button type="button" class="slick-prev slick-arrow">이전</button>
+                    <button type="button" class="slick-play">재생</button>
+                    <button type="button" class="slick-pause">정지</button>
+                    <button type="button" class="slick-next slick-arrow">다음</button>
+                    <button type="button" class="all dropdown-toggle" id="bannerButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">전체보기</button>
+                    <div class="dropdown-menu" aria-labelledby="bannerButton">
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">대전 지리정보 서비스</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">it`s 水 사랑방대한민국 정부</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">e-대전뉴스선거위반행위신고센터</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">금강유역환경청한국수자원공사</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">환경부한국상하수도협회</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">환경부한국상하수도협회</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">대전 지리정보 서비스</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">it`s 水 사랑방대한민국 정부</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">e-대전뉴스선거위반행위신고센터</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">금강유역환경청한국수자원공사</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">환경부한국상하수도협회</a>
+                        <a href="#" target="_blank" title="새창" class="dropdown-item">환경부한국상하수도협회</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="site-wrap">
+            <div class="site-area">
+                <ul>
+                    <li><a href="#">이용안내</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                </ul>
+                <div class="site-button">
+                    <div class="dropup">
+                        <button type="button" class="dropdown-toggle" id="siteButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">대전광역시관련 사이트</button>
+                        <ul class="dropdown-menu" aria-labelledby="siteButton1">
+                            <li><a href="http://www.daejeon.go.kr" target="_blank" title="새창" class="dropdown-item">대전광역시청</a></li>
+                            <li><a href="http://www.oworld.kr/" target="_blank" title="새창" class="dropdown-item">대전동물원</a></li>
+                            <li><a href="http://tour.daejeon.go.kr" target="_blank" title="새창" class="dropdown-item">대전문화관광</a></li>
+                            <li><a href="http://map.daejeon.go.kr" target="_blank" title="새창" class="dropdown-item">새주소안내/생활지리</a></li>
+                            <li><a href="http://traffic.daejeon.go.kr" target="_blank" title="새창" class="dropdown-item">대전교통정보센터</a></li>
+                            <li><a href="http://tax.daejeon.go.kr/main/index.htm" target="_blank" title="새창" class="dropdown-item">지방세도우미</a></li>
+                            <li><a href="http://star.metro.daejeon.kr" target="_blank" title="새창" class="dropdown-item">시민천문대</a></li>
+                            <li><a href="http://www.djac.or.kr" target="_blank" title="새창" class="dropdown-item">대전문화예술의전당</a></li>
+                            <li><a href="http://nanumi.metro.daejeon.kr" target="_blank" title="새창" class="dropdown-item">자원봉사센터</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropup">
+                        <button type="button" class="dropdown-toggle" id="siteButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">상수도관련 사이트</button>
+                        <ul class="dropdown-menu" aria-labelledby="siteButton2">
+                            <li><a href="http://water.seoul.go.kr" target="_blank" title="새창" class="dropdown-item">서울상수도사업본부</a></li>
+                            <li><a href="http://water.busan.go.kr/" target="_blank" title="새창" class="dropdown-item">부산상수도사업본부</a></li>
+                            <li><a href="http://water.daegu.go.kr" target="_blank" title="새창" class="dropdown-item">대구상수도사업본부</a></li>
+                            <li><a href="http://waterworksh.incheon.kr/" target="_blank" title="새창" class="dropdown-item">인천상수도사업본부</a></li>
+                            <li><a href="http://water.gwangju.go.kr" target="_blank" title="새창" class="dropdown-item">광주상수도사업본부</a></li>
+                            <li><a href="http://water.ulsan.go.kr/" target="_blank" title="새창" class="dropdown-item">울산상수도사업본부</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            //배너슬라이
+            $('.banner-slider').slick({
+                dots: false,
+                infinite: true,
+                slidesToShow: 5,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 2500,
+                speed: 500,
+                pauseOnHover:true,
+                prevArrow: $('.slick-prev'),
+                nextArrow: $('.slick-next')
+            });
+            $('.banner-wrap .slick-pause').on('click', function(){
+                $('.banner-slider').slick('slickPause');
+                $(this).hide().siblings('.slick-play').show();
+                $(this).hide().siblings('.slick-play').focus();
+            });
+            $('.banner-wrap .slick-play').on('click', function(){
+                $('.banner-slider').slick('slickPlay');
+                $(this).hide().siblings('.slick-pause').show();
+                $(this).hide().siblings('.slick-pause').focus();
+            });
+            //업슬라이드
+            $('.dropdown-toggle').on('click', function() {
+                var clickObId = $(this).next().attr('id');
+                console.log(clickObId);
+                $('.dropdown-menu').each(function(){                    if($(this).attr('id')!=clickObId&&$(this).css("display")=='block'){
+                        $(this).slideToggle(400);
+                    }
+                 });
+                $(this).next('.dropdown-menu').slideToggle(400);
+            });
+            $(document).click(function(e){
+                if (!$(e.target).is('.dropdown-toggle')) {
+                    $('.dropdown-menu').each(function(){
+                       if($(this).css("display")=='block'){
+                         $(this).slideToggle(400);
+                       }
+                    });
+                }
+            });
+        </script>
+        <div class="footer-info">35278 대전광역시 서구 신갈마로 141번길 80 대표전화 042-715-6114 야간, 휴일당직실이용 042-715-6900<br />Copyright(c) 대전광역시 상수도사업본부. All Rights Reserved.</div>
+    </footer>
+    <!-- footer -->
+	<!-- modal -->
+	<div class="modal fade" id="modal-user" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3>회원 정보</h3>
+				</div>
+				<div class="modal-body">
+					<h4>상세정보</h4>
+					<button type="button" class="btn btn-secondary btn-md float-right">수정</button>
+					<div class="border-list-default">
+						<div class="flex">
+							<div class="thumbnail thumbnail-sm"></div>
+							<div class="list-area">
+								<ul class="list-area-item">
+									<li>홍길동 회원님</li>
+									<li>ID : abc@korea.kr(관리자)</li>
+									<li>기관 1 / 부서 1</li>
+									<li>010-1234-1234</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<h4>최근게시물</h4>
+					<div class="table-box table-hover">
+						<table>
+							<caption>테이블 기본</caption>
+							<colgroup>
+								<col style="width:5%;">
+								<col style="width:15%;">
+								<col style="width:auto;">
+								<col style="width:15%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">순번</th>
+									<th scope="col">게시판명</th>
+									<th scope="col">제목</th>
+									<th scope="col">댓/답글</th>
+									<th scope="col">작성일시</th>
+									<th scope="col">본문</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>5</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+								</tr>
+								<tr>
+									<td>4</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+								</tr>
+								<tr>
+									<td>3</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+								</tr>
+								<tr>
+									<td>1</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="btn-area">
+						<button type="button" class="btn btn-default btn-lg" data-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal -->
+    <script>
+        AOS.init({
+            duration: 1500,
+        });
+    </script>
+    <script type="text/javascript">
+
+ $(document).ready(function() {
+     AOS.init({
+            duration: 1500,
+            once : true,
+            offset : 0
+        });
+
+
+
+
+         $("#layerPopup").hide();
+
+    checkCookie();
+
+ });
+
+ function closePopup(ob){
+     ob.parentElement.parentElement.style.display='none'
+     var popDiv = $(ob.parentElement.parentElement.parentElement).children();
+
+     var popflag = true;
+     $(popDiv).each(function (index, item) {
+         if($(item).css('display')=='block'){popflag= false}
+     });
+
+     if(popflag){
+         $("#layerPopup").hide();
+         $("#layerPopup").off('scroll touchmove mousewheel');
+     }
+
+     var id = $(ob.parentElement.parentElement).attr('id');
+
+     if($(ob.parentElement.parentElement).find('input').is(":checked")){
+        setCookie(id,"done",1);
+     };
+ }
+ function checkCookie()
+ {
+
+
+ }
+
+ function setCookie( name, value, expiredays )
+ {
+     var todayDate = new Date();
+     todayDate.setDate( todayDate.getDate() + expiredays );
+     document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+ }
+ function getCookie( name )
+ {
+     var nameOfCookie = name + "=";
+     var x = 0;
+     while ( x <= document.cookie.length )
+     {
+         var y = (x+nameOfCookie.length);
+         if ( document.cookie.substring( x, y ) == nameOfCookie )
+         {
+             if ( (endOfCookie=document.cookie.indexOf( ";", y )) == -1 )
+                 endOfCookie = document.cookie.length;
+             return unescape( document.cookie.substring( y, endOfCookie ) );
+         }
+         x = document.cookie.indexOf( " ", x ) + 1;
+         if ( x == 0 )
+             break;
+     }
+     return "";
+ }
+
+
+ </script>
+</body>
+</html>

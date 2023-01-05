@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorRoleManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="authorRoleManageVO" type="egovframework.appn.sys.author.arm.service.AuthorRoleManageVO"/>
+    <typeAlias  alias="authorRoleManage" type="egovframework.appn.sys.author.arm.service.AuthorRoleManage"/>
+
+    <resultMap id="authorRole" class="egovframework.appn.sys.author.arm.service.AuthorRoleManageVO">
+        <result property="roleCode" column="ROLE_CD" columnIndex="1"/>
+        <result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+        <result property="rolePtn" column="ROLE_PTTRN" columnIndex="3"/>
+        <result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+        <result property="roleTyp" column="ROLE_TY" columnIndex="5"/>
+        <result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+        <result property="authorCode" column="AUTHOR_CD" columnIndex="7"/>
+        <result property="regYn" column="REG_YN" columnIndex="8"/>
+        <result property="creatDt" column="CRT_DT" columnIndex="9"/>
+        <result property="creatAuthor" column="CRT_AUTHOR_YN" columnIndex="9"/>
+        <result property="readAuthor" column="REDNG_AUTHOR_YN" columnIndex="9"/>
+        <result property="updtAuthor" column="UPDT_AUTHOR_YN" columnIndex="9"/>
+        <result property="deleteAuthor" column="DEL_AUTHOR_YN" columnIndex="9"/>
+        <result property="menuType" column="MENU_TY" columnIndex="9"/>
+    </resultMap>
+
+    <select id="authorRoleManage.selectAuthorRoleList" parameterClass="authorRoleManageVO" resultMap="authorRole">
+        <![CDATA[
+            SELECT A.ROLE_CD,
+                   A.ROLE_NM,
+                   (select url from Z_MENU_INFO where a.ROLE_CD::numeric = menu_no)  ROLE_PTTRN,
+                   A.ROLE_DC,
+                   A.ROLE_TY,
+                   A.ROLE_SORT,
+                   B.AUTHOR_CD,
+                   B.CRT_DT,
+                   (CASE WHEN B.ROLE_CD IS NULL THEN 'N' ELSE 'Y' END) AS REG_YN,
+                   (select CRT_AUTHOR_YN from Z_MENU_CREATE_HISTORY  where menu_no::text = A.ROLE_CD and AUTHOR_CD = #searchKeyword# ) as CRT_AUTHOR_YN,
+                   (select REDNG_AUTHOR_YN from Z_MENU_CREATE_HISTORY  where menu_no::text = A.ROLE_CD and AUTHOR_CD = #searchKeyword#) as REDNG_AUTHOR_YN,
+                   (select UPDT_AUTHOR_YN from Z_MENU_CREATE_HISTORY  where menu_no::text = A.ROLE_CD and AUTHOR_CD = #searchKeyword#) as UPDT_AUTHOR_YN,
+                   (select DEL_AUTHOR_YN from Z_MENU_CREATE_HISTORY  where menu_no::text = A.ROLE_CD and AUTHOR_CD = #searchKeyword# ) as DEL_AUTHOR_YN,
+                    (select MENU_TY from Z_MENU_INFO  where menu_no::text = A.ROLE_CD ) as MENU_TY
+              FROM Z_ROLE_INFO A
+                   LEFT OUTER JOIN (SELECT AUTHOR_CD , ROLE_CD, CRT_DT FROM Z_AUTHOR_ROLE_REL WHERE AUTHOR_CD = #searchKeyword#) B
+                ON A.ROLE_CD = B.ROLE_CD
+        ]]>
+
+        	<isEqual property="recordCountPerPage" compareValue="10">
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+            </isEqual>
+    </select>
+
+	<select id="authorRoleManage.selectAuthorRoleListTotCnt" parameterClass="authorRoleManageVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+              FROM Z_ROLE_INFO A
+                   LEFT OUTER JOIN (SELECT AUTHOR_CD , ROLE_CD, CRT_DT FROM Z_AUTHOR_ROLE_REL WHERE AUTHOR_CD = #searchKeyword#) B
+                ON A.ROLE_CD = B.ROLE_CD
+	</select>
+
+    <insert id="authorRoleManage.insertAuthorRole" parameterClass="authorRoleManage">
+        <![CDATA[
+            INSERT INTO Z_AUTHOR_ROLE_REL
+                  ( AUTHOR_CD
+                  , ROLE_CD
+                  , CRT_DT)
+           VALUES ( #authorCode#
+                  , #menuId#
+                  , now())
+        ]]>
+    </insert>
+
+    <delete id="authorRoleManage.deleteAuthorRole">
+        <![CDATA[
+            DELETE FROM Z_AUTHOR_ROLE_REL
+             WHERE AUTHOR_CD=#authorCode#
+               AND ROLE_CD=#roleCode#
+        ]]>
+    </delete>
+    <delete id="authorRoleManage.deleteAllAuthorRole">
+        <![CDATA[
+            DELETE FROM Z_AUTHOR_ROLE_REL
+             WHERE AUTHOR_CD=#authorCode#
+        ]]>
+    </delete>
+    <delete id="authorRoleManage.deleteAllRoleCode">
+        <![CDATA[
+            DELETE FROM Z_AUTHOR_ROLE_REL
+             WHERE ROLE_CD=#roleCode#
+        ]]>
+    </delete>
+
+</sqlMap>

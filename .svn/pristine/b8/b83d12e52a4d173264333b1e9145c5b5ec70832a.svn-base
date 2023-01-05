@@ -1,0 +1,149 @@
+package egovframework.appn.asset.customer.service;
+
+/**
+ * @Class Name : CustomerInfoVO.java
+ * @Description : CustomerInfo VO class
+ * @Modification Information
+ *
+ * @author 차주병
+ * @since 2022.04.26
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C)  All right reserved.
+ */
+public class CustomerInfoVO extends CustomerInfoDefaultVO{
+    private static final long serialVersionUID = 1L;
+
+    /** customer_code */
+    private java.lang.String customerNum;
+
+    /** customer_name */
+    private java.lang.String customerName;
+
+    /** customer_building_name */
+    private java.lang.String customerBuildingName;
+
+    private String manageBizplc;
+
+    /** lat */
+    private java.math.BigDecimal lat;
+
+    /** lot */
+    private java.math.BigDecimal lot;
+
+    /** zip */
+    private java.lang.String zip;
+
+    /** road_name_addr */
+    private java.lang.String roadNameAddr;
+
+    /** lot_number_addr */
+    private java.lang.String lotNumberAddr;
+
+    /** detail_addr */
+    private java.lang.String detailAddr;
+
+    /** use_yn */
+    private java.lang.String useYn;
+
+    private java.lang.String chargerNm;
+
+
+    public java.lang.String getcustomerNum() {
+        return this.customerNum;
+    }
+
+    public void setcustomerNum(java.lang.String customerNum) {
+        this.customerNum = customerNum;
+    }
+
+    public java.lang.String getCustomerName() {
+        return this.customerName;
+    }
+
+    public void setCustomerName(java.lang.String customerName) {
+        this.customerName = customerName;
+    }
+
+    public java.lang.String getCustomerBuildingName() {
+        return this.customerBuildingName;
+    }
+
+    public void setCustomerBuildingName(java.lang.String customerBuildingName) {
+        this.customerBuildingName = customerBuildingName;
+    }
+
+	public String getManageBizplc() {
+		return manageBizplc;
+	}
+
+	public void setManageBizplc(String manageBizplc) {
+		this.manageBizplc = manageBizplc;
+	}
+
+    public java.math.BigDecimal getLat() {
+        return this.lat;
+    }
+
+    public void setLat(java.math.BigDecimal lat) {
+        this.lat = lat;
+    }
+
+    public java.math.BigDecimal getLot() {
+        return this.lot;
+    }
+
+    public void setLot(java.math.BigDecimal lot) {
+        this.lot = lot;
+    }
+
+    public java.lang.String getZip() {
+        return this.zip;
+    }
+
+    public void setZip(java.lang.String zip) {
+        this.zip = zip;
+    }
+
+    public java.lang.String getRoadNameAddr() {
+        return this.roadNameAddr;
+    }
+
+    public void setRoadNameAddr(java.lang.String roadNameAddr) {
+        this.roadNameAddr = roadNameAddr;
+    }
+
+    public java.lang.String getLotNumberAddr() {
+        return this.lotNumberAddr;
+    }
+
+    public void setLotNumberAddr(java.lang.String lotNumberAddr) {
+        this.lotNumberAddr = lotNumberAddr;
+    }
+
+    public java.lang.String getDetailAddr() {
+        return this.detailAddr;
+    }
+
+    public void setDetailAddr(java.lang.String detailAddr) {
+        this.detailAddr = detailAddr;
+    }
+
+    public java.lang.String getUseYn() {
+        return this.useYn;
+    }
+
+    public void setUseYn(java.lang.String useYn) {
+        this.useYn = useYn;
+    }
+
+	public java.lang.String getChargerNm() {
+		return chargerNm;
+	}
+
+	public void setChargerNm(java.lang.String chargerNm) {
+		this.chargerNm = chargerNm;
+	}
+
+}

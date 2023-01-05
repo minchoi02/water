@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorManage">
+
+    <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="AuthorManageVO" type="egovframework.appn.sys.author.arm.service.AuthorManageVO"/>
+    <typeAlias  alias="AuthorManage" type="egovframework.appn.sys.author.arm.service.AuthorManage"/>
+
+    <resultMap id="author" class="egovframework.appn.sys.author.arm.service.AuthorManageVO">
+        <result property="authorCode" column="AUTHOR_CD" columnIndex="1"/>
+        <result property="authorNm" column="AUTHOR_NM" columnIndex="2"/>
+        <result property="authorDc" column="AUTHOR_DC" columnIndex="3"/>
+        <result property="authorCreatDe" column="AUTHOR_CRT_DT" columnIndex="4"/>
+    </resultMap>
+
+    <select id="authorManage.selectAuthorList" parameterClass="AuthorManageVO" resultMap="author">
+            SELECT
+                   AUTHOR_CD, AUTHOR_NM, AUTHOR_DC, AUTHOR_CRT_DT
+              FROM Z_AUTHOR_INFO
+             WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                AUTHOR_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+            </isEqual>
+            ORDER BY AUTHOR_CRT_DT DESC
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+
+    <select id="authorManage.selectAuthorListTotCnt" parameterClass="AuthorManageVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM Z_AUTHOR_INFO
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                AUTHOR_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+            </isEqual>
+    </select>
+
+    <select id="authorManage.selectAuthor" resultMap="author">
+        <![CDATA[
+            SELECT AUTHOR_CD, AUTHOR_NM, AUTHOR_DC, AUTHOR_CRT_DT
+              FROM Z_AUTHOR_INFO
+             WHERE AUTHOR_CD= (select AUTHOR_CD from Z_AUTHOR_INFO where TREE_CD = #treeCode#)
+        ]]>
+    </select>
+
+    <insert id="authorManage.insertAuthor" parameterClass="AuthorManage">
+        <![CDATA[
+            INSERT INTO Z_AUTHOR_INFO
+                  ( AUTHOR_CD
+                  , AUTHOR_NM
+                  , AUTHOR_DC
+                  , AUTHOR_CRT_DT
+                  , TREE_CD
+                  , UPPER_TREE_CD )
+           VALUES ( #authorCode#
+                  , #authorNm#
+                  , 'AutoIncrease'
+                  , to_char(now(), 'YYYY-MM-DD HH24:MI:SS')
+                  , (select max(TREE_CD::numeric)+1 from Z_AUTHOR_INFO)
+                  , '1')
+        ]]>
+    </insert>
+
+    <update id="authorManage.updateAuthor" parameterClass="AuthorManage">
+        <![CDATA[
+            UPDATE Z_AUTHOR_INFO
+               SET AUTHOR_NM=#authorNm#
+                 , AUTHOR_DC=#authorDc#
+             WHERE AUTHOR_CD=#authorCode#
+        ]]>
+    </update>
+
+
+    <delete id="authorManage.deleteAuthor">
+        <![CDATA[
+            DELETE FROM Z_AUTHOR_INFO
+             WHERE AUTHOR_CD=#authorCode#
+        ]]>
+    </delete>
+
+    <select id="authorManage.selectAuthorAllList" parameterClass="AuthorManageVO" resultMap="author">
+            SELECT
+                   AUTHOR_CD, AUTHOR_NM, AUTHOR_DC, AUTHOR_CRT_DT
+              FROM Z_AUTHOR_INFO
+    </select>
+    <select id="authorManage.selectRoleCode" resultClass = "string">
+    	select concat('ROLE_', COALESCE((select lpad((max(substring(AUTHOR_CD,6,3)::numeric)+1)::text,3,'0') from  Z_AUTHOR_INFO
+         WHERE author_dc = 'AutoIncrease'),'001') ) roleCode
+    </select>
+    <select id="authorManage.selectAuthorCode" resultClass = "string">
+    		select AUTHOR_CD from Z_AUTHOR_INFO where TREE_CD = #treeCode#
+    </select>
+    <update id="authorManage.updateUserAuthor">
+			update Z_USER_SECURITY_SETTING
+			   set AUTHOR_CD = #authorCode#
+			     , CRT_AUTHOR_YN=#creatAuthor#
+                 , REDNG_AUTHOR_YN=#readAuthor#
+                 , UPDT_AUTHOR_YN=#updtAuthor#
+                 , DEL_AUTHOR_YN=#deleteAuthor#
+			where SCRTY_STNG_TRGET_ID = #uniqId#
+    </update>
+    <update id="authorManage.updateUserAuthor2">
+			update Z_USER_SECURITY_SETTING
+			   set AUTHOR_CD = #authorCode#
+			where SCRTY_STNG_TRGET_ID = #uniqId#
+    </update>
+</sqlMap>

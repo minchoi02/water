@@ -1,0 +1,173 @@
+package egovframework.appn.asset.meter.web;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+
+import egovframework.appn.asset.meter.service.MeterInfoService;
+import egovframework.appn.asset.meter.service.MeterInfoDefaultVO;
+import egovframework.appn.asset.meter.service.MeterInfoVO;
+import egovframework.com.cmm.ComDefaultCodeVO;
+import egovframework.com.cmm.service.CmmUseService;
+
+/**
+ * @Class Name : MeterInfoController.java
+ * @Description : MeterInfo Controller class
+ * @Modification Information
+ *
+ * @author 차주병
+ * @since 2022.04.26
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C)  All right reserved.
+ */
+
+@Controller
+@SessionAttributes(types=MeterInfoVO.class)
+public class MeterInfoController {
+
+    @Resource(name = "meterInfoService")
+    private MeterInfoService meterInfoService;
+
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    protected EgovPropertyService propertiesService;
+
+	/** cmmUseService */
+	@Resource(name = "CmmUseService")
+	private CmmUseService cmmUseService;
+
+    /**
+	 * meter_info 목록을 조회한다. (pageing)
+	 * @param searchVO - 조회할 정보가 담긴 MeterInfoDefaultVO
+	 * @return "/meterInfo/MeterInfoList"
+	 * @exception Exception
+	 */
+    @RequestMapping(value="/asset/meter/MeterInfoList.do")
+    public String selectMeterInfoList(@ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, ModelMap model) throws Exception {
+
+    	/** EgovPropertyService.sample */
+    	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
+    	searchVO.setPageSize(propertiesService.getInt("pageSize"));
+
+    	/** pageing */
+    	PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
+		paginationInfo.setPageSize(searchVO.getPageSize());
+
+		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+//        List<?> meterInfoList = meterInfoService.selectMeterInfoList(searchVO);
+//        model.addAttribute("resultList", meterInfoList);
+		model.addAttribute("resultList", new ObjectMapper().writeValueAsString(meterInfoService.selectMeterInfoList(searchVO)));
+
+        int totCnt = meterInfoService.selectMeterInfoListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+        model.addAttribute("paginationInfo", paginationInfo);
+
+        return "asset/meter/MeterInfoList";
+    }
+
+    @RequestMapping("/asset/meter/addMeterInfoView.do")
+    public String addMeterInfoView( @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, Model model) throws Exception {
+    	ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM002");
+		model.addAttribute("manageBizplc_result", cmmUseService.selectCmmCodeDetail(vo));
+
+        model.addAttribute("meterInfoVO", new MeterInfoVO());
+        return "asset/meter/MeterInfoRegister";
+    }
+
+    @RequestMapping("/asset/meter/addMeterInfo.do")
+    public String addMeterInfo( MeterInfoVO meterInfoVO, @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        meterInfoService.insertMeterInfo(meterInfoVO);
+        status.setComplete();
+        return "forward:/asset/meter/MeterInfoList.do";
+    }
+
+    @RequestMapping("/asset/meter/updateMeterInfoView.do")
+    public String updateMeterInfoView( @RequestParam("meterManagenum") java.lang.Integer meterManagenum , @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, Model model) throws Exception {
+
+    	ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM002");
+		model.addAttribute("manageBizplc_result", cmmUseService.selectCmmCodeDetail(vo));
+
+        MeterInfoVO meterInfoVO = new MeterInfoVO();
+        meterInfoVO.setMeterManagenum(meterManagenum);
+        // 변수명은 CoC 에 따라 meterInfoVO
+        model.addAttribute(selectMeterInfo(meterInfoVO, searchVO));
+        return "asset/meter/MeterInfoDetail";
+    }
+
+    @RequestMapping("/asset/meter/selectMeterInfo.do")
+    public @ModelAttribute("meterInfoVO") MeterInfoVO selectMeterInfo( MeterInfoVO meterInfoVO, @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO) throws Exception {
+        return meterInfoService.selectMeterInfo(meterInfoVO);
+    }
+
+    @RequestMapping("/asset/meter/updateMeterInfo.do")
+    public String updateMeterInfo( MeterInfoVO meterInfoVO, @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        meterInfoService.updateMeterInfo(meterInfoVO);
+        status.setComplete();
+        return "forward:/asset/meter/MeterInfoList.do";
+    }
+
+    @RequestMapping("/asset/meter/deleteMeterInfo.do")
+    public String deleteMeterInfo( MeterInfoVO meterInfoVO, @ModelAttribute("searchVO") MeterInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        meterInfoService.deleteMeterInfo(meterInfoVO);
+        status.setComplete();
+        return "forward:/asset/meter/MeterInfoList.do";
+    }
+
+    /**
+     * 비동기식 검색
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/meter/searchMeterList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String searchMeterList( @RequestBody MeterInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(meterInfoService.selectMeterInfoList(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지 건 수 수정
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/meter/pageMeterList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String pageMeterList( @RequestBody MeterInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(meterInfoService.selectMeterInfoListTotCnt(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지네이션
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/meter/MeterListPage.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String MeterListPage( @RequestBody MeterInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(meterInfoService.selectMeterInfoList(searchVO));
+	 }
+}

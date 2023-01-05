@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProgrmManage">
+
+	<typeAlias  alias="comDefaultVO" type="egovframework.com.cmm.ComDefaultVO"/>
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="progrmManageVO" type="egovframework.appn.sys.menu.plm.service.ProgrmManageVO"/>
+
+	<select id="progrmManage.selectProgrmList" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				  PROGRM_FILE_NM   AS "progrmFileNm"
+				, PROGRM_STRG_PATH AS "progrmStrePath"
+				, PROGRM_KOR_NM  AS "progrmKoreanNm"
+				, PROGRM_DC        AS "progrmDc"
+				, URL              AS "URL"
+			FROM Z_PROGRAM_LIST
+			WHERE PROGRM_KOR_NM like  CONCAT('%', #searchKeyword#, '%')
+		 ]]>
+		 	<isNotEqual property="excel" compareValue="Y">
+				LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+			</isNotEqual>
+	</select>
+
+	<!-- 총건수 조회 -->
+	<select id="progrmManage.selectProgrmListTotCnt_S" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(*) AS totcnt
+		  FROM Z_PROGRAM_LIST
+		 WHERE PROGRM_KOR_NM like CONCAT('%', #searchKeyword#, '%')
+		]]>
+	</select>
+
+	<!-- 파일명존재여부 조회 -->
+	<select id="progrmManage.selectProgrmNMTotCnt" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(*) AS totcnt
+		  FROM Z_PROGRAM_LIST
+		 WHERE PROGRM_FILE_NM = #searchKeyword#
+		]]>
+	</select>
+
+	<select id="progrmManage.selectProgrm" parameterClass="String" resultClass="progrmManageVO">
+		<![CDATA[
+			SELECT
+				  PROGRM_FILE_NM AS progrmFileNm
+				, PROGRM_STRG_PATH AS progrmStrePath
+				, PROGRM_KOR_NM AS progrmKoreanNm
+				, PROGRM_DC AS progrmDc
+				, URL AS URL
+			FROM Z_PROGRAM_LIST
+			WHERE PROGRM_FILE_NM = #progrmNm#
+		]]>
+	</select>
+
+	<insert id="progrmManage.insertProgrm">
+		<![CDATA[
+			INSERT INTO Z_PROGRAM_LIST
+				( PROGRM_FILE_NM
+				  , PROGRM_STRG_PATH
+				  , PROGRM_KOR_NM
+				  , PROGRM_DC
+				  , URL )
+			VALUES ( #progrmFileNm#
+				  , #progrmStrePath#
+				  , #progrmKoreanNm#
+				  , #progrmDc#
+				  , #URL# )
+		]]>
+	</insert>
+
+	<update id="progrmManage.updateProgrm">
+		<![CDATA[
+			UPDATE Z_PROGRAM_LIST
+			SET PROGRM_STRG_PATH=#progrmStrePath#
+				, PROGRM_KOR_NM=#progrmKoreanNm#
+				, PROGRM_DC      =#progrmDc#
+				, URL            =#URL#
+			WHERE PROGRM_FILE_NM=#progrmFileNm#
+		]]>
+	</update>
+
+	<delete id="progrmManage.deleteProgrm">
+		<![CDATA[
+			DELETE FROM Z_PROGRAM_LIST
+			WHERE PROGRM_FILE_NM=#progrmFileNm#
+		]]>
+	</delete>
+
+	<delete id="progrmManage.deleteAllProgrm">
+		<![CDATA[
+			DELETE FROM Z_PROGRAM_LIST  WHERE PROGRM_FILE_NM <> 'dir'
+		]]>
+	</delete>
+
+	<!-- 메뉴정보 총건수 조회 -->
+	<select id="progrmManage.selectProgrmListTotCnt" parameterClass="progrmManageVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(*) AS totcnt FROM Z_PROGRAM_LIST
+		]]>
+	</select>
+	<select id="progrmManage.selectTreeCodeList" resultClass="egovMap">
+	<![CDATA[
+	select code::text as id, coalesce(UPPER_CODE_ID::text,'##') as parent, code_nm as text   from (
+		with recursive sys_treeCodeList(
+			code,
+			code_nm,
+			UPPER_CODE_ID,
+			ordr,
+			path,
+			cycle) as (/* 계층구조의 시작조건 쿼리 */
+			select
+				substring(A.code,4,5) code,
+				A.code_nm,
+				substring(A.UPPER_CODE_ID,0,5) UPPER_CODE_ID,
+				A.ordr,
+				array[substring(A.code,4,5)::text],
+				false
+			from
+				Z_CMM_DETAIL_CODE_INFO A
+			where
+				A.code_id = #codeId#
+				and A.UPPER_CODE_ID in ('##')
+				and A.USE_YN = 'Y'
+			union all /*하위 데이터를 찾아가기 위한 반복조건 쿼리*/
+			select
+				substring(A.code,4,5) code,
+				A.code_nm,
+				substring(A.UPPER_CODE_ID,4,5) UPPER_CODE_ID,
+				A.ordr,
+				B.path||substring(A.code,4,5)::text,
+				substring(A.code,4,5)  = any(B.path)
+			from
+				Z_CMM_DETAIL_CODE_INFO A,
+				sys_treeCodeList B
+			where
+				substring(A.UPPER_CODE_ID,4,5) = B.code
+				and A.code_id = #codeId#
+				and A.USE_YN = 'Y'
+				and not cycle )/*View 쿼리*/
+			select
+				code,
+				code_nm,
+				UPPER_CODE_ID,
+				ordr,
+				path
+			from
+				sys_treeCodeList
+			order by
+				path ) a
+		]]>
+	</select>
+	<select id="progrmManage.selectAuthorTreeList" resultClass="egovMap">
+	<![CDATA[
+	select code::text as id, coalesce(UPPER_CODE_ID::text,'##') as parent, code_nm as text   from (
+		with recursive sys_treeCodeList(
+			code,
+			code_nm,
+			UPPER_CODE_ID,
+			path,
+			cycle) as (/* 계층구조의 시작조건 쿼리 */
+			select
+				A.TREE_CD code,
+				A.author_nm,
+				A.UPPER_TREE_CD UPPER_CODE_ID,
+				array[A.TREE_CD::text],
+				false
+			from
+				Z_AUTHOR_INFO A
+			where
+				A.UPPER_TREE_CD in ('##')
+			union all /*하위 데이터를 찾아가기 위한 반복조건 쿼리*/
+			select
+				TREE_CD code,
+				A.author_nm,
+				UPPER_TREE_CD  UPPER_CODE_ID,
+				B.path||TREE_CD::text,
+				TREE_CD  = any(B.path)
+			from
+				Z_AUTHOR_INFO A,
+				sys_treeCodeList B
+			where
+				A.UPPER_TREE_CD = B.code
+				and not cycle )/*View 쿼리*/
+			select
+				code,
+				code_nm,
+				UPPER_CODE_ID,
+				path
+			from
+				sys_treeCodeList
+			order by code::integer
+			 ) a
+		]]>
+	</select>
+	<select id="progrmManage.selectAuthorList" resultClass="egovMap">
+		select
+			AUTHOR_CD as value
+			,author_nm as text
+		from Z_AUTHOR_INFO
+		where AUTHOR_CD not in ('ROLE_000')
+		order by AUTHOR_CRT_DT desc
+	</select>
+	<insert id="progrmManage.insertTreeCode">
+		<![CDATA[
+			INSERT INTO Z_CMM_DETAIL_CODE_INFO
+				(code_id
+				  , code
+				  , code_nm
+				  , UPPER_CODE_ID
+				  , ordr
+				  , USE_YN
+				  , FRST_REG_DT
+				  , FRST_REGUSR_ID)
+			VALUES (
+			       #codeId#
+			      ,concat(#codeHead#,lpad(#id#,2,'0'))
+				  , #text#
+				  ,concat(#codeHead#,#parent#)
+				  , #odr#
+				  , 'Y'
+				  , now()
+				  , 'USRCNFRM_00000000000')
+		]]>
+	</insert>
+	<delete id="progrmManage.deleteTreeCode">
+		delete from Z_CMM_DETAIL_CODE_INFO where code_id = #codeId# and UPPER_CODE_ID not in('##')
+	</delete>
+</sqlMap>

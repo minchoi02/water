@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PopupManage">
+
+	<typeAlias  alias="egovMap"      type = "egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="PopupManageVO" type = "egovframework.appn.sys.pwm.service.PopupManageVO"/>
+
+	<!-- ::ResultMap 선언 -->
+	<resultMap id="PopupManageVOs" class="egovframework.appn.sys.pwm.service.PopupManageVO">
+		<result property="popupId" column="POPUP_ID" columnIndex="1"/>
+		<result property="popupTitleNm" column="POPUP_NM" columnIndex="2"/>
+		<result property="fileUrl" column="LINK_URL" columnIndex="3"/>
+		<result property="popupHlc" column="POPUP_VRTICL_LC" columnIndex="4"/>
+		<result property="popupWlc" column="POPUP_WIDTH_LC" columnIndex="5"/>
+		<result property="popupHSize" column="POPUP_VRTICL_SZ" columnIndex="6"/>
+		<result property="popupWSize" column="POPUP_WIDTH_SZ" columnIndex="7"/>
+		<result property="ntceBgnde" column="NTCE_BGN_DATE" columnIndex="8"/>
+		<result property="ntceEndde" column="NTCE_END_DATE" columnIndex="9"/>
+		<result property="stopVewAt" column="STOPVIEW_SETUP_YN" columnIndex="10"/>
+		<result property="ntceAt" column="NTCE_YN" columnIndex="11"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT" columnIndex="12"/>
+		<result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="13"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDT_DT" columnIndex="14"/>
+		<result property="lastUpdusrId" column="LAST_UPDTUSR_ID" columnIndex="15"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="16"/>
+		<result property="fileSn" column="FILE_SN" columnIndex="16"/>
+		<result property="popupDc" column="POPUP_DC" columnIndex="16"/>
+	</resultMap>
+
+	<!-- 팝업창관리:: 메인 게시물정보 -->
+	<select id="popupManage.selectPopupManageMain" parameterClass="PopupManageVO" resultMap="PopupManageVOs">
+	 <![CDATA[
+		SELECT
+			A.POPUP_ID,
+			A.POPUP_NM,
+			A.LINK_URL,
+			A.POPUP_VRTICL_LC,
+			A.POPUP_WIDTH_LC,
+			A.POPUP_VRTICL_SZ,
+			A.POPUP_WIDTH_SZ,
+			A.NTCE_BGN_DATE,
+			A.NTCE_END_DATE,
+			A.STOPVIEW_SETUP_YN,
+			A.NTCE_YN,
+			to_char(A.FRST_REG_DT,'YYYY-MM-DD') FRST_REG_DT,
+			A.FRST_REGUSR_ID,
+			to_char(A.LAST_UPDT_DT,'YYYY-MM-DD') LAST_UPDT_DT,
+			A.LAST_UPDTUSR_ID,
+			A.ATCH_FILE_ID,
+			(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+			A.POPUP_DC
+		FROM Z_POPUP_INFO A
+			WHERE 1=1
+			AND A.NTCE_YN = 'Y'
+			AND to_char(now(),'YYYYMMDDHHMI') >= NTCE_BGN_DATE
+			AND to_char(now(),'YYYYMMDDHHMI') <=  NTCE_END_DATE
+	 ]]>
+	</select>
+
+	<!-- 팝업창관리: 화이트 리스트 정보 -->
+	<select id="popupManage.selectPopupWhiteList" resultClass="egovMap">
+		SELECT
+			LINK_URL
+		FROM Z_POPUP_INFO
+	</select>
+
+	<!-- 팝업창관리::목록조회 게시물정보 -->
+	<select id="popupManage.selectPopupManage"  parameterClass="PopupManageVO" resultMap="PopupManageVOs">
+		SELECT
+			A.POPUP_ID,
+			A.POPUP_NM,
+			A.LINK_URL,
+			A.POPUP_VRTICL_LC,
+			A.POPUP_WIDTH_LC,
+			A.POPUP_VRTICL_SZ,
+			A.POPUP_WIDTH_SZ,
+			A.NTCE_BGN_DATE,
+			A.NTCE_END_DATE,
+			A.STOPVIEW_SETUP_YN,
+			A.NTCE_YN,
+			to_char(A.FRST_REG_DT,'YYYY-MM-DD') FRST_REG_DT,
+			A.FRST_REGUSR_ID,
+			to_char(A.LAST_UPDT_DT,'YYYY-MM-DD') LAST_UPDT_DT,
+			A.LAST_UPDTUSR_ID,
+			A.ATCH_FILE_ID,
+			(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+			A.POPUP_DC
+		FROM Z_POPUP_INFO A
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[POPUP_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="2">
+			<![CDATA[LINK_URL LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		ORDER BY A.FRST_REG_DT DESC
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+
+	<!-- 팝업창관리::목록조회_게시물 총갯수  -->
+	<select id="popupManage.selectPopupManageCnt"  parameterClass="PopupManageVO" resultClass="int">
+		SELECT
+		COUNT(*) totcnt
+		FROM Z_POPUP_INFO
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[POPUP_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="2">
+			<![CDATA[LINK_URL LIKE CONCAT('%', #searchKeyword#, '%')]]>
+		</isEqual>
+	</select>
+
+    <!-- 팝업창관리::삭제  -->
+	<delete id="popupManage.deletePopupManage" parameterClass="PopupManageVO">
+			DELETE FROM Z_POPUP_INFO
+			WHERE POPUP_ID=#popupId#
+	</delete>
+
+	<!-- 팝업창관리::수정  -->
+	<update id="popupManage.updatePopupManage" parameterClass="PopupManageVO">
+		UPDATE Z_POPUP_INFO
+		SET
+		POPUP_NM=#popupTitleNm#,
+		LINK_URL=#fileUrl#,
+		POPUP_VRTICL_LC=CAST (#popupHlc# AS INTEGER),
+		POPUP_WIDTH_LC=CAST (#popupWlc# AS INTEGER),
+		POPUP_VRTICL_SZ=CAST (#popupHSize# AS INTEGER),
+		POPUP_WIDTH_SZ=CAST (#popupWSize# AS INTEGER),
+		NTCE_BGN_DATE=#ntceBgnde#,
+		NTCE_END_DATE=#ntceEndde#,
+		STOPVIEW_SETUP_YN=#stopVewAt#,
+		NTCE_YN=#ntceAt#,
+		LAST_UPDT_DT =now(),
+		LAST_UPDTUSR_ID=#lastUpdusrId#,
+		ATCH_FILE_ID = #atchFileId#,
+		POPUP_DC = #popupDc#
+		WHERE POPUP_ID=#popupId#
+	</update>
+
+	<!-- 팝업창관리::상세보기 -->
+	<select id="popupManage.selectPopupManageDetail" parameterClass="PopupManageVO" resultMap="PopupManageVOs">
+	SELECT
+		A.POPUP_ID,
+		A.POPUP_NM,
+		A.LINK_URL,
+		A.POPUP_VRTICL_LC,
+		A.POPUP_WIDTH_LC,
+		A.POPUP_VRTICL_SZ,
+		A.POPUP_WIDTH_SZ,
+		A.NTCE_BGN_DATE,
+		A.NTCE_END_DATE,
+		A.STOPVIEW_SETUP_YN,
+		A.NTCE_YN,
+		A.FRST_REG_DT,
+		A.FRST_REGUSR_ID,
+		A.LAST_UPDT_DT,
+		A.LAST_UPDTUSR_ID,
+		A.ATCH_FILE_ID,
+		(select max(file_sn) from Z_FILE_DETAIL_INFO where ATCH_FILE_ID = a.ATCH_FILE_ID) FILE_SN,
+		A.POPUP_DC
+	FROM Z_POPUP_INFO A
+		WHERE 1=1
+		AND A.POPUP_ID=#popupId#
+	</select>
+
+	<!-- 팝업창관리::입력  -->
+	<insert id="popupManage.insertPopupManage" parameterClass="PopupManageVO">
+	INSERT INTO Z_POPUP_INFO (
+		POPUP_ID,
+		POPUP_NM,
+		LINK_URL,
+		POPUP_VRTICL_LC,
+		POPUP_WIDTH_LC,
+		POPUP_VRTICL_SZ,
+		POPUP_WIDTH_SZ,
+		NTCE_BGN_DATE,
+		NTCE_END_DATE,
+		STOPVIEW_SETUP_YN,
+		NTCE_YN,
+		FRST_REG_DT,
+		FRST_REGUSR_ID,
+		LAST_UPDT_DT,
+		LAST_UPDTUSR_ID,
+		ATCH_FILE_ID,
+		POPUP_DC
+	)VALUES(
+		#popupId#,
+		#popupTitleNm#,
+		#fileUrl#,
+		CAST (#popupHlc# AS INTEGER),
+		CAST (#popupWlc# AS INTEGER),
+		CAST (#popupHSize# AS INTEGER),
+		CAST (#popupWSize# AS INTEGER),
+		#ntceBgnde#,
+		#ntceEndde#,
+		#stopVewAt#,
+		#ntceAt#,
+		now(),
+		#frstRegisterId#,
+		now(),
+		#lastUpdusrId#,
+		#atchFileId#,
+		#popupDc#
+		)
+	</insert>
+
+</sqlMap>

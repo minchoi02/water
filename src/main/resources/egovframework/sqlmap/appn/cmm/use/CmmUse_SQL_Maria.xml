@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CmmUse">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="ComDefaultCodeVO" type="egovframework.com.cmm.ComDefaultCodeVO"/>
+
+	<resultMap id="CmmCodeDetail" class="egovframework.com.cmm.service.CmmnDetailCode">
+		<result property="codeId"    	column="CODE_ID"   	columnIndex="1"/>
+		<result property="code"  		column="CODE" 		columnIndex="2"/>
+		<result property="codeNm"   	column="CODE_NM"  	columnIndex="3"/>
+		<result property="codeDc"   	column="CODE_DC"  	columnIndex="4"/>
+	</resultMap>
+
+	<select id="CmmUse.selectCmmCodeDetail" parameterClass="ComDefaultCodeVO" resultMap="CmmCodeDetail">
+		<![CDATA[
+			SELECT
+			CODE_ID, CODE, CODE_NM, CODE_DC
+			FROM
+			Z_CMM_DETAIL_CODE_INFO
+			WHERE
+			USE_YN = 'Y'
+			AND CODE_ID = #codeId#
+		]]>
+		<isNotEmpty property="code">
+			AND CODE = #code#
+		</isNotEmpty>
+			ORDER BY CAST(ORDR AS INTEGER)
+	</select>
+
+	<select id="CmmUse.selectCmmCodeDetailIn" parameterClass="java.util.List" resultMap="CmmCodeDetail">
+		<![CDATA[
+			SELECT
+			CODE_ID, CODE, CODE_NM, CODE_DC
+			FROM
+			Z_CMM_DETAIL_CODE_INFO
+			WHERE
+			USE_YN = 'Y'
+			AND CODE_ID IN
+		]]>
+		<iterate open="(" close=")" conjunction=",">
+			#voList[].codeId#
+		</iterate>
+			ORDER BY CAST(ORDR AS INTEGER)
+	</select>
+
+    <select id="CmmUse.selectGroupIdDetail" parameterClass="ComDefaultCodeVO" resultMap="CmmCodeDetail">
+            <![CDATA[
+            SELECT
+                #tableNm#     CODE_ID,
+                GROUP_ID     CODE,
+                GROUP_NM     CODE_NM,
+                GROUP_DC     CODE_DC
+            FROM
+                Z_AUTHOR_GROUP_INFO
+            WHERE 1=1
+            ]]>
+            <isEqual prepend="AND" property="haveDetailCondition" compareValue="Y">
+                GROUP_ID  LIKE  #detailConditionValue#
+            </isEqual>
+    </select>
+
+
+</sqlMap>

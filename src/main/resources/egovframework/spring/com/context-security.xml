@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd
+       ">
+
+	<!-- 이부분이 없으면 에러난다.. 우선은 alias태그만 넣어둔다. 나중에 디비에서 사용자 처리시 변경된다.-->
+	<!-- <sec:authentication-manager alias="authenticationManager" /> -->
+	<sec:authentication-manager id="adminAuthManager">
+		<sec:authentication-provider ref="adminAuthProvider"/>
+	</sec:authentication-manager>
+	<bean id="adminAuthProvider"  class="egovframework.com.cmm.security.AdminAuthService"/>
+
+	<!-- handler  설정시...
+	<bean id="adminAuthSuccessHandler" class="com.spring.securitytest.AdminAuthSuccessHandler">
+		<property name="defaultUrl" value="/admin/main" />
+	</bean>
+
+	<bean id="adminAuthFailureHandler" class="com.spring.securitytest.AdminAuthFailHandler">
+		<property name="errorMessage"   value="" />
+		<property name="defaultFailUrl" value="/admin/login?status=error" />
+	</bean>
+	-->
+
+	<sec:authentication-manager id="userAuthManager">
+		<sec:authentication-provider ref="userAuthProvider"/>
+	</sec:authentication-manager>
+	<bean id="userAuthProvider" class="egovframework.com.cmm.security.UserAuthService"/>
+	<bean id="adminLoginFailHandler" class="egovframework.com.cmm.security.AdminLoginFailHandler"/>
+	<bean id="userLoginFailHandler" class="egovframework.com.cmm.security.UserLoginFailHandler"/>
+
+	<!-- secured method -->
+	<sec:global-method-security secured-annotations="enabled" />
+
+	<!-- 인증예외처리 -->
+    <!-- <sec:http pattern="/cmmn3th/**"     security="none" /> -->
+
+	<!-- admin security -->
+	<sec:http
+		pattern="/admin/**"
+		auto-config="true"
+		use-expressions="true"
+		authentication-manager-ref="adminAuthManager"
+	>
+		<!-- csrf 사용여부 - true:사용안함 , false:사용함 -->
+		<sec:csrf disabled="true"/>
+
+
+		<!-- 로그인 시 처리
+		-->
+		<sec:form-login
+			login-page="/admin/login/LoginUsr.do"
+			username-parameter="admin_id"
+			password-parameter="admin_pw"
+			login-processing-url="/admin/login/loginproc"
+			default-target-url="/admin/login/loginSuccess.do"
+			authentication-failure-handler-ref="adminLoginFailHandler"
+		/>
+
+		<!-- 로그아웃 시 처리
+		 -->
+		<sec:logout
+			logout-url="/admin/login/logout.do"
+			logout-success-url="/admin/login/LoginUsr.do?status=logout"
+			invalidate-session="true"
+			delete-cookies ="true"
+		/>
+		<!-- 중복 세션관리
+		-->
+		<sec:session-management invalid-session-url="/admin/login/LoginUsr.do">
+			<sec:concurrency-control
+				max-sessions="1"
+				error-if-maximum-exceeded="false"
+				expired-url="/admin/login/LoginUsr.do?error=duplexSession"
+			/>
+		</sec:session-management>
+
+	</sec:http>
+
+	<!-- member security -->
+	<sec:http
+		pattern="/cmm/**"
+		auto-config="true"
+		use-expressions="true"
+		authentication-manager-ref="userAuthManager"
+	>
+
+		<!-- csrf 사용여부 - true:사용안함 , false:사용함 -->
+		<sec:csrf disabled="true"/>
+
+		<sec:form-login
+			login-page="/cmm/login/LoginUsr.do"
+			username-parameter="user_id"
+			password-parameter="user_pw"
+			login-processing-url="/cmm/login/loginproc"
+			default-target-url="/cmm/login/loginSuccess.do"
+			authentication-failure-handler-ref="userLoginFailHandler"
+		/>
+
+		<!-- 로그아웃 시 처리
+		-->
+		<sec:logout
+			logout-url="/cmm/login/logout.do"
+			logout-success-url="/cmm/login/login?status=logout"
+			invalidate-session="true"
+			delete-cookies ="true"
+		/>
+
+		<!-- 중복 세션관리
+		-->
+		<sec:session-management invalid-session-url="/cmm/login/LoginUsr.do?error=invalidSession">
+			<sec:concurrency-control
+				max-sessions="1"
+				error-if-maximum-exceeded="false"
+				expired-url="/cmm/login/LoginUsr.do?error=duplexSession"
+			/>
+		</sec:session-management>
+
+	</sec:http>
+	<!-- URL에 세미콜론(semicolon)허용 여부(기본값/false) -->
+	<bean id="egovStrictHttpFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall">
+		<property name="allowSemicolon" value="true"/>
+	</bean>
+	<security:http-firewall ref="egovStrictHttpFirewall"/>
+
+
+</beans>
+
+

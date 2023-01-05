@@ -1,0 +1,171 @@
+package egovframework.appn.asset.customer.web;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+
+import egovframework.appn.asset.customer.service.CustomerInfoService;
+import egovframework.appn.asset.customer.service.CustomerInfoDefaultVO;
+import egovframework.appn.asset.customer.service.CustomerInfoVO;
+import egovframework.com.cmm.ComDefaultCodeVO;
+import egovframework.com.cmm.service.CmmUseService;
+
+/**
+ * @Class Name : CustomerInfoController.java
+ * @Description : CustomerInfo Controller class
+ * @Modification Information
+ *
+ * @author 차주병
+ * @since 2022.04.26
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C)  All right reserved.
+ */
+
+@Controller
+@SessionAttributes(types=CustomerInfoVO.class)
+public class CustomerInfoController {
+
+    @Resource(name = "customerInfoService")
+    private CustomerInfoService customerInfoService;
+
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    protected EgovPropertyService propertiesService;
+
+	/** cmmUseService */
+	@Resource(name = "CmmUseService")
+	private CmmUseService cmmUseService;
+
+    /**
+	 * customer_info 목록을 조회한다. (pageing)
+	 * @param searchVO - 조회할 정보가 담긴 CustomerInfoDefaultVO
+	 * @return "/customerInfo/CustomerInfoList"
+	 * @exception Exception
+	 */
+    @RequestMapping(value="/asset/customer/CustomerInfoList.do")
+    public String selectCustomerInfoList(@ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, ModelMap model) throws Exception {
+
+    	/** EgovPropertyService.sample */
+    	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
+    	searchVO.setPageSize(propertiesService.getInt("pageSize"));
+
+    	/** pageing */
+    	PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
+		paginationInfo.setPageSize(searchVO.getPageSize());
+
+		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+//        List<?> customerInfoList = customerInfoService.selectCustomerInfoList(searchVO);
+//        model.addAttribute("resultList", customerInfoList);
+
+		model.addAttribute("resultList", new ObjectMapper().writeValueAsString(customerInfoService.selectCustomerInfoList(searchVO)));
+
+        int totCnt = customerInfoService.selectCustomerInfoListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+        model.addAttribute("paginationInfo", paginationInfo);
+
+        return "asset/customer/CustomerInfoList";
+    }
+
+    @RequestMapping("/asset/customer/addCustomerInfoView.do")
+    public String addCustomerInfoView( @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, Model model) throws Exception {
+        model.addAttribute("customerInfoVO", new CustomerInfoVO());
+        return "asset/customer/CustomerInfoRegister";
+    }
+
+    @RequestMapping("/asset/customer/addCustomerInfo.do")
+    public String addCustomerInfo( CustomerInfoVO customerInfoVO, @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        customerInfoService.insertCustomerInfo(customerInfoVO);
+        status.setComplete();
+        return "forward:/asset/customer/CustomerInfoList.do";
+    }
+
+    @RequestMapping("/asset/customer/updateCustomerInfoView.do")
+    public String updateCustomerInfoView( @RequestParam("customerNum") java.lang.String customerNum , @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, Model model) throws Exception {
+
+    	ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM002");
+		model.addAttribute("manageBizplc_result", cmmUseService.selectCmmCodeDetail(vo));
+
+        CustomerInfoVO customerInfoVO = new CustomerInfoVO();
+        customerInfoVO.setcustomerNum(customerNum);
+        // 변수명은 CoC 에 따라 customerInfoVO
+        model.addAttribute(selectCustomerInfo(customerInfoVO, searchVO));
+        return "asset/customer/CustomerInfoDetail";
+    }
+
+    @RequestMapping("/asset/customer/selectCustomerInfo.do")
+    public @ModelAttribute("customerInfoVO") CustomerInfoVO selectCustomerInfo( CustomerInfoVO customerInfoVO, @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO) throws Exception {
+        return customerInfoService.selectCustomerInfo(customerInfoVO);
+    }
+
+    @RequestMapping("/asset/customer/updateCustomerInfo.do")
+    public String updateCustomerInfo( CustomerInfoVO customerInfoVO, @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        customerInfoService.updateCustomerInfo(customerInfoVO);
+        status.setComplete();
+        return "forward:/asset/customer/CustomerInfoList.do";
+    }
+
+    @RequestMapping("/asset/customer/deleteCustomerInfo.do")
+    public String deleteCustomerInfo( CustomerInfoVO customerInfoVO, @ModelAttribute("searchVO") CustomerInfoDefaultVO searchVO, SessionStatus status) throws Exception {
+        customerInfoService.deleteCustomerInfo(customerInfoVO);
+        status.setComplete();
+        return "forward:/asset/customer/CustomerInfoList.do";
+    }
+
+    /**
+     * 비동기식 검색
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/customer/searchCustomerList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String searchCustomerList( @RequestBody CustomerInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(customerInfoService.selectCustomerInfoList(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지 건 수 수정
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/customer/pageCustomerList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String pageCustomerList( @RequestBody CustomerInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(customerInfoService.selectCustomerInfoListTotCnt(searchVO));
+	 }
+
+    /**
+     * 비동기식 페이지네이션
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/asset/customer/CustomerListPage.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String CustomerListPage( @RequestBody CustomerInfoDefaultVO searchVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(customerInfoService.selectCustomerInfoList(searchVO));
+	 }
+
+}

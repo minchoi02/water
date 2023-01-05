@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link type="text/css" rel="shortcut icon" href="../images/favicon.ico" />	
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=1920" />
+<title>상수도 원격검침 시스템</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+</head>
+<body>
+<div class="admin-wrap">
+	<!-- skip -->
+	<div>
+		<a href="#gnb" class="skip">주메뉴 바로가기</a>
+		<a href="#contents" class="skip">본문 내용바로가기</a>
+	</div>	
+	<!-- skip -->
+	<!-- header --> 
+	<header class="header-wrap">      
+		<div class="header-logo">
+			<h1><a href="#" title="상수도 원격검침 시스템"><em class="hidden">상수도 원격검침 시스템</em></a></h1>
+		</div>
+		<nav class="gnb" id="gnb">
+			<h2 class="hidden">메뉴</h2>
+			<ul>
+				<li><a href="#">자산관리</a></li>
+				<li><a href="#">관제관리</a></li>
+				<li><a href="#">장애처리관리</a></li>
+				<li><a href="#">GIS모니터링</a></li>
+				<li><a href="#">커뮤니티</a></li>
+				<li><a href="#">통계관리</a></li>
+				<li class="active"><a href="#">시스템관리</a></li>
+				<li><a href="#">회원서비스</a></li>
+			</ul>
+		</nav>
+		<ul class="user-wrap">
+			<li><a href="#modal-user" data-bs-toggle="modal"><i class="fas fa-user-circle"></i>유성구 사업소 관리자</a></li>
+			<li><a href="#"><i class="fas fa-sign-out-alt"></i>LOGOUT</a></li>
+		</ul>
+	</header>
+	<!-- header -->	    
+	<!-- container -->
+	<div class="container container-wrap">		
+		<!-- left menu -->
+		<nav id="sidebar" class="collapse-horizontal collapse show">	
+            <div class="sidebar-header">
+                <h2>시스템관리</h2>
+            </div>
+            <ul>
+                <li class="depth-none">
+                    <a href="#menu1">메뉴1</a>
+                </li>
+                <li class="depth-none">
+                    <a href="#menu2">메뉴2</a>
+                </li>
+				<li class="depth-none">
+                    <a href="#menu3">메뉴3</a>
+                </li>
+				<li class="depth-none">
+                    <a href="#menu4">메뉴4</a>
+                </li>
+				<li class="depth-none">
+                    <a href="#menu5">메뉴5</a>
+                </li>
+            </ul>
+        </nav>   
+        <button type="button" class="btn-sidebar" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="true" aria-controls="sidebar"></button> 
+		<!-- left menu -->		
+		<!-- main -->
+		<main id="contents">
+			<div class="content-wrap">
+				<h2 class="hidden">컨텐츠영역</h2>
+				<!-- panel -->
+				<section class="panel-wrap">
+					<div class="panel-header">
+						<h3>코드 관리 목록</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="tree-area">
+								공통 코드 tree
+								</div>
+								<div class="btn-area">
+									<button type="button" class="btn btn-secondary btn-md btn-block">전체 펼치기</button>
+									<button type="button" class="btn btn-default btn-md btn-block">전체접기</button>
+								</div>								
+							</div>
+							<div class="col-9">
+								<div class="search-area">
+									<form>
+										<label for="Search" class="hidden">검색</label>
+										<select>
+                                            <option value="1">전체</option>
+											<option value="2">코드 ID</option>
+											<option value="3">코드명</option>
+										</select>            
+										<input type="text" id="Search" placeholder="검색어를 입력하세요." />
+										<button type="submit" class="btn btn-primary">검색</button>
+									</form>
+								</div>  
+								<div class="table-header">
+									<div>총 <strong class="secondary">100</strong>건이 검색 되었습니다.</div>
+									<div>
+										<select>
+											<option value="1">데이터 사용</option>
+											<option value="2">데이터 미사용</option>
+											<option value="3">데이터 삭제</option>
+										</select> 
+										<button type="submit" class="btn btn-secondary mr-gutter">변경</button>
+										<select>
+											<option value="1">10개씩보기</option>
+											<option value="2">50개씩보기</option>
+										</select>
+									</div>	
+								</div>
+								<div class="table-box y-scroll content-height-4">
+									<table>
+										<caption>코드 관리 목록</caption>
+										<colgroup>
+											<col style="width:10%;">
+											<col style="width:10%;">	
+											<col style="width:20%;">
+											<col style="width:30%;">
+											<col style="width:10;">
+											<col style="width:20%;">
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col"><input type="checkbox" /></th>
+												<th scope="col">코드 ID</th>
+												<th scope="col">코드명</th>
+												<th scope="col">코드설명</th>
+												<th scope="col">정렬 순번</th>
+												<th scope="col">가입상태</th>
+											</tr>    
+										</thead>
+										<tbody>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>005</td>
+												<td>부서5</td>
+												<td>ㅇㅇ기관 부서5</td>
+												<td>5</td>
+												<td><strong class="primary">미사용</strong></td>   
+											</tr>    
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>004</td>
+												<td>부서4</td>
+												<td>ㅇㅇ기관 부서4</td>
+												<td>4</td>
+												<td><strong class="secondary">사용</strong></td> 
+											</tr> 
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>003</td>
+												<td>부서3</td>
+												<td>ㅇㅇ기관 부서3</td>
+												<td>3</td>
+												<td><strong class="primary">미사용</strong></td>     
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>002</td>
+												<td>부서2</td>
+												<td>ㅇㅇ기관 부서2</td>
+												<td>2</td>
+												<td><strong class="secondary">사용</strong></td>    
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>001</td>
+												<td>부서1</td>
+												<td>ㅇㅇ기관 부서1</td>
+												<td>1</td>
+												<td><strong class="secondary">사용</strong></td>   
+											</tr>								
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel-footer">
+						<div class="page">
+                            <ul>
+                                <li><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
+                                <li><a href="#"><i class="fas fa-angle-left"></i></a></li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right"></i></a></li>
+                                <li><a href="#"><i class="fas fa-angle-double-right"></i></a></li>
+                            </ul>
+                        </div>
+						<div class="btn-area">
+							<button type="button" class="btn btn-primary btn-lg">등록</button>
+						</div>
+					</div>
+				</section>	
+				<!-- panel -->
+				<!-- footer -->
+				<footer>
+				35278 대전광역시 서구 신갈마로 141번길 80 대표전화 042-715-6114 야간, 휴일당직실이용 042-715-6900<br />Copyright(c) 대전광역시 상수도사업본부. All Rights Reserved.
+				</footer>
+				<!-- footer -->
+			</div>	
+		</main>		
+		<!-- main -->		
+	</div>
+	<!-- container -->
+	<!-- modal -->
+	<div class="modal fade" id="modal-user" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>회원 정보</h3>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h4>상세정보</h4>
+					<button type="button" class="btn btn-secondary btn-md float-right">수정</button>
+					<div class="border-list-default">
+						<div class="flex">
+							<div class="thumbnail thumbnail-sm"></div>
+							<div class="list-area">
+								<ul class="list-area-item">
+									<li>홍길동 회원님</li>
+									<li>ID : abc@korea.kr(관리자)</li>
+									<li>기관 1 / 부서 1</li>
+									<li>010-1234-1234</li>
+								</ul>
+							</div>	
+						</div>
+					</div>					
+					<h4>최근게시물</h4>
+					<div class="table-box table-hover">
+						<table>
+							<caption>테이블 기본</caption>
+							<colgroup>
+								<col style="width:5%;">						
+								<col style="width:15%;">								
+								<col style="width:auto;">
+								<col style="width:15%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">순번</th>
+									<th scope="col">게시판명</th>
+									<th scope="col">제목</th>
+									<th scope="col">댓/답글</th>
+									<th scope="col">작성일시</th>
+									<th scope="col">본문</th>
+								</tr>    
+							</thead>
+							<tbody>
+								<tr>
+									<td>5</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr>    
+								<tr>
+									<td>4</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>3</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>2</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+								<tr>
+									<td>1</td>
+									<td>게시판명</td>
+									<td>제목</td>
+									<td>댓/답글</td>
+									<td>작성일시</td>
+									<td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>   
+								</tr> 
+							</tbody>
+						</table>
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<div class="btn-area">
+						<button type="button" class="btn btn-default btn-lg" data-bs-dismiss="modal">닫기</button>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div> 
+	<!-- modal -->	  
+</div>    
+</body>
+</html>

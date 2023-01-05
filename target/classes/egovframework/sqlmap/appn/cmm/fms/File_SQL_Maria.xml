@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="File">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="FileVO" type="egovframework.com.cmm.service.FileVO"/>
+
+	<resultMap id="fileList" class="egovframework.com.cmm.service.FileVO">
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="1"/>
+		<result property="fileCn" column="FILE_CN" columnIndex="2"/>
+		<result property="fileExtsn" column="FILE_EXTSN" columnIndex="3"/>
+		<result property="fileMg" column="FILE_SZ" columnIndex="4"/>
+		<result property="fileSn" column="FILE_SN" columnIndex="5"/>
+		<result property="fileStreCours" column="FILE_STRG_PATH" columnIndex="6"/>
+		<result property="orignlFileNm" column="ORIGNL_FILE_NM" columnIndex="7"/>
+		<result property="streFileNm" column="STRG_FILE_NM" columnIndex="8"/>
+		<result property="creatDt" column="CRT_DT" columnIndex="9"/>
+		<result property="cateNm" column="CTGRY_NM" columnIndex="10"/>
+		<result property="cateId" column="CTGRY_ID" columnIndex="13"/>
+		<result property="odr" column="ODR" columnIndex="11"/>
+		<result property="frstRegistPnttm" column="FRST_REG_DT" columnIndex="12"/>
+	</resultMap>
+
+	<resultMap id="fileDetail" class="egovframework.com.cmm.service.FileVO">
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="1"/>
+		<result property="fileCn" column="FILE_CN" columnIndex="2"/>
+		<result property="fileExtsn" column="FILE_EXTSN" columnIndex="3"/>
+		<result property="fileMg" column="FILE_SZ" columnIndex="4"/>
+		<result property="fileSn" column="FILE_SN" columnIndex="5"/>
+		<result property="fileStreCours" column="FILE_STRG_PATH" columnIndex="6"/>
+		<result property="orignlFileNm" column="ORIGNL_FILE_NM" columnIndex="7"/>
+		<result property="streFileNm" column="STRG_FILE_NM" columnIndex="8"/>
+	</resultMap>
+
+
+ 	<select id="FileManage.selectFileList" parameterClass="FileVO" resultMap="fileList" >
+
+			SELECT
+				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRG_PATH, b.STRG_FILE_NM,
+				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SZ, a.CRT_DT, b.ODR, b.FRST_REG_DT
+				,CTGRY_ID
+				<isNotEmpty  property="cateGroup">
+				,FN_CODENAME(#cateGroup#,b.CTGRY_ID) CTGRY_NM
+				</isNotEmpty>
+				<isEmpty  property="cateGroup">
+				,'' CTGRY_NM
+				</isEmpty>
+			FROM
+				Z_FILE_INFO a, Z_FILE_DETAIL_INFO b
+			WHERE
+				a.ATCH_FILE_ID = #atchFileId#
+			AND
+				a.ATCH_FILE_ID = b.ATCH_FILE_ID
+			AND
+				a.USE_YN = 'Y'
+			ORDER BY b.FILE_SN
+		<![CDATA[
+ 		]]>
+ 	</select>
+
+	<insert id="FileManage.insertFileMaster" parameterClass="FileVO" >
+		<![CDATA[
+			INSERT INTO Z_FILE_INFO
+			(ATCH_FILE_ID, CRT_DT, USE_YN)
+			VALUES
+			( #atchFileId#, now(), 'Y')
+		]]>
+	</insert>
+
+	<insert id="FileManage.insertFileDetail" parameterClass="FileVO" >
+		<![CDATA[
+			INSERT INTO Z_FILE_DETAIL_INFO
+			( ATCH_FILE_ID, FILE_SN, FILE_STRG_PATH, STRG_FILE_NM,
+			  ORIGNL_FILE_NM, FILE_EXTSN, FILE_SZ, FILE_CN, CTGRY_ID, ODR )
+			VALUES
+			( #atchFileId#, CAST (#fileSn# AS INTEGER), #fileStreCours#, #streFileNm#,
+			  #orignlFileNm#, #fileExtsn#,  CAST (#fileMg# AS INTEGER), #fileCn#, #cateId#,#odr# )
+		]]>
+	</insert>
+
+	<delete id="FileManage.deleteFileDetail" parameterClass="FileVO" >
+		<![CDATA[
+			DELETE FROM Z_FILE_DETAIL_INFO
+			WHERE
+			  	ATCH_FILE_ID = #atchFileId#
+			AND ORIGNL_FILE_NM  = #orignlFileNm#
+		]]>
+	</delete>
+
+	<select id="FileManage.getMaxFileSN" parameterClass="FileVO" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT coalesce(MAX(FILE_SN),0)+1 AS FILE_SN
+			FROM Z_FILE_DETAIL_INFO
+			WHERE ATCH_FILE_ID =  #atchFileId#
+		]]>
+	</select>
+
+ 	<select id="FileManage.selectFileInf" parameterClass="FileVO" resultMap="fileDetail" >
+ 		<![CDATA[
+			SELECT
+				ATCH_FILE_ID, FILE_CN, FILE_SN, FILE_STRG_PATH, STRG_FILE_NM,
+				FILE_EXTSN, ORIGNL_FILE_NM, FILE_SZ
+			FROM
+				Z_FILE_DETAIL_INFO
+			WHERE
+				ATCH_FILE_ID = #atchFileId#
+			AND
+				FILE_SN = CAST (#fileSn# AS INTEGER)
+ 		]]>
+ 	</select>
+
+	<update id="FileManage.deleteCOMTNFILE" parameterClass="FileVO" >
+		<![CDATA[
+			UPDATE Z_FILE_INFO
+			SET USE_YN = 'N'
+			WHERE ATCH_FILE_ID = #atchFileId#
+		]]>
+	</update>
+
+ 	<select id="FileManage.selectFileListByFileNm" parameterClass="FileVO" resultMap="fileList" >
+ 		<![CDATA[
+			SELECT
+				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRG_PATH, b.STRG_FILE_NM,
+				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SZ, a.CRT_DT
+			FROM
+				Z_FILE_INFO a, Z_FILE_DETAIL_INFO b
+			WHERE
+				a.ATCH_FILE_ID = b.ATCH_FILE_ID
+			AND
+				a.USE_YN = 'Y'
+ 		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="streFileNm">
+				<![CDATA[	b.STRG_FILE_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="orignlFileNm">
+				<![CDATA[	b.ORIGNL_FILE_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+		<![CDATA[
+			ORDER BY a.ATCH_FILE_ID, b.FILE_SN
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+ 	</select>
+
+ 	<select id="FileManage.selectFileListCntByFileNm" parameterClass="FileVO" resultClass="java.lang.Integer" >
+ 		<![CDATA[
+			SELECT
+				COUNT(a.ATCH_FILE_ID)
+			FROM
+				Z_FILE_INFO a, Z_FILE_DETAIL_INFO b
+			WHERE
+				a.ATCH_FILE_ID = b.ATCH_FILE_ID
+			AND
+				a.USE_YN = 'Y'
+ 		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="streFileNm">
+				<![CDATA[	b.STRG_FILE_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="orignlFileNm">
+				<![CDATA[	b.ORIGNL_FILE_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+ 	</select>
+
+  	<select id="FileManage.selectImageFileList" parameterClass="FileVO" resultMap="fileList" >
+			SELECT
+				a.ATCH_FILE_ID, b.FILE_CN, b.FILE_SN, b.FILE_STRG_PATH, b.STRG_FILE_NM,
+				b.FILE_EXTSN, b.ORIGNL_FILE_NM, b.FILE_SZ, a.CRT_DT, b.ODR, b.FRST_REG_DT
+				,CTGRY_ID
+				<isNotEmpty  property="cateGroup">
+				,FN_CODENAME(#cateGroup#,b.CTGRY_ID) CTGRY_NM
+				</isNotEmpty>
+				<isEmpty  property="cateGroup">
+				,'' CTGRY_NM
+				</isEmpty>
+			FROM
+				Z_FILE_INFO a, Z_FILE_DETAIL_INFO b
+			WHERE
+				a.ATCH_FILE_ID = #atchFileId#
+			AND
+				a.ATCH_FILE_ID = b.ATCH_FILE_ID
+			AND
+				UPPER(b.FILE_EXTSN) IN ('GIF','JPG','BMP','PNG')
+			AND
+				a.USE_YN = 'Y'
+			ORDER BY b.FILE_SN
+ 	</select>
+
+</sqlMap>

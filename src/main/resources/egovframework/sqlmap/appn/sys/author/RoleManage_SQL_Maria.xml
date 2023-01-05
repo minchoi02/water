@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RoleManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="roleManageVO" type="egovframework.appn.sys.author.rem.service.RoleManageVO"/>
+    <typeAlias  alias="roleManage" type="egovframework.appn.sys.author.rem.service.RoleManage"/>
+
+    <resultMap id="role" class="egovframework.appn.sys.author.rem.service.RoleManageVO">
+        <result property="roleCode" column="ROLE_CD" columnIndex="1"/>
+        <result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+        <result property="rolePtn" column="ROLE_PTTRN" columnIndex="3"/>
+        <result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+        <result property="roleTyp" column="ROLE_TY" columnIndex="5"/>
+        <result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+        <result property="roleCreatDe" column="ROLE_CRT_DT" columnIndex="7"/>
+    </resultMap>
+
+    <select id="roleManage.selectRoleList" parameterClass="roleManageVO" resultMap="role">
+            SELECT ROLE_CD,
+                   ROLE_NM,
+                   ROLE_PTTRN,
+                   ROLE_DC,
+                   (SELECT CODE_NM
+                      FROM Z_CMM_DETAIL_CODE_INFO
+                     WHERE CODE_ID = 'COM029'
+                       AND CODE = ROLE_TY) AS ROLE_TY,
+                   ROLE_SORT,
+                   ROLE_CRT_DT
+              FROM Z_ROLE_INFO
+             WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ROLE_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+            </isEqual>
+            ORDER BY ROLE_CRT_DT DESC
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+
+	<select id="roleManage.selectAuthorListTotCnt" parameterClass="roleManageVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+			FROM Z_ROLE_INFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				ROLE_NM LIKE CONCAT('%' , #searchKeyword#, '%')
+			</isEqual>
+	</select>
+
+    <select id="roleManage.selectRole" resultMap="role">
+        <![CDATA[
+            SELECT ROLE_CD,
+                   ROLE_NM,
+                   ROLE_PTTRN,
+                   ROLE_DC,
+                   ROLE_TY,
+                   ROLE_SORT,
+                   ROLE_CRT_DT
+              FROM Z_ROLE_INFO
+             WHERE ROLE_CD = #roleCode#
+        ]]>
+    </select>
+
+	<insert id="roleManage.insertRole" parameterClass="roleManage">
+		<![CDATA[
+			INSERT INTO Z_ROLE_INFO
+				  ( ROLE_CD
+				  , ROLE_NM
+                  , ROLE_PTTRN
+                  , ROLE_DC
+                  , ROLE_TY
+				  , ROLE_SORT
+				  , ROLE_CRT_DT )
+		   VALUES ( #roleCode#
+			      , #roleNm#
+				  , #rolePtn#
+                  , #roleDc#
+                  , #roleTyp#
+                  , #roleSort#
+				  , to_char(now(), 'YYYY-MM-DD HH24:MI:SS'))
+		]]>
+	</insert>
+
+	<update id="roleManage.updateRole" parameterClass="roleManage">
+		<![CDATA[
+			UPDATE Z_ROLE_INFO
+			   SET ROLE_NM=#roleNm#
+                 , ROLE_PTTRN=#rolePtn#
+                 , ROLE_DC=#roleDc#
+                 , ROLE_TY=#roleTyp#
+                 , ROLE_SORT=#roleSort#
+				 , ROLE_CRT_DT=to_char(now(), 'YYYY-MM-DD HH24:MI:SS')
+		  	 WHERE ROLE_CD=#roleCode#
+		]]>
+	</update>
+
+	<delete id="roleManage.deleteRole">
+		<![CDATA[
+			DELETE FROM Z_ROLE_INFO
+			 WHERE ROLE_CD=#roleCode#
+		]]>
+	</delete>
+
+    <select id="roleManage.selectRoleAllList" parameterClass="roleManageVO" resultMap="role">
+            SELECT ROLE_CD, ROLE_NM, ROLE_PTTRN, ROLE_DC, ROLE_TY, ROLE_SORT, ROLE_CRT_DT
+              FROM Z_ROLE_INFO
+    </select>
+
+</sqlMap>

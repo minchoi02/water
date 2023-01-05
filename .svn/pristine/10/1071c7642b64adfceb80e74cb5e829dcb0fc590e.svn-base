@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TerminalInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="terminalInfoSerarchVO" type="egovframework.appn.asset.terminal.service.TerminalInfoDefaultVO"/>
+
+	<resultMap id="terminalInfo" class="egovframework.appn.asset.terminal.service.TerminalInfoVO">
+		<result property="terminalManagenum" column="terminal_managenum" columnIndex="1"/>
+		<result property="customerNum" column="customer_num" columnIndex="2"/>
+		<result property="terminalName" column="terminal_name" columnIndex="3"/>
+		<result property="chargerNm" column="charger_nm" columnIndex="4"/>
+		<result property="subterminalManagenum" column="subterminal_managenum" columnIndex="5"/>
+		<result property="manageBizplc" column="manage_bizplc" columnIndex="6"/>
+		<result property="lat" column="lat" columnIndex="7"/>
+		<result property="lot" column="lot" columnIndex="8"/>
+		<result property="locationDetail" column="location_detail" columnIndex="9"/>
+		<result property="locationPhoto" column="location_photo" columnIndex="10"/>
+		<result property="purchaseYear" column="purchase_year" columnIndex="11"/>
+		<result property="standardCode" column="standard_code" columnIndex="12"/>
+		<result property="spec" column="spec" columnIndex="13"/>
+		<result property="terminalMacAddr" column="terminal_mac_addr" columnIndex="14"/>
+		<result property="terminalFwInfo" column="terminal_fw_info" columnIndex="15"/>
+		<result property="terminalBtryInfo" column="terminal_btry_info" columnIndex="16"/>
+		<result property="gateway1" column="gateway_1" columnIndex="17"/>
+		<result property="gateway2" column="gateway_2" columnIndex="18"/>
+		<result property="useYn" column="use_yn" columnIndex="19"/>
+	</resultMap>
+
+	<insert id="terminalInfoDAO.insertTerminalInfo">
+		<![CDATA[
+			INSERT INTO terminal_info
+				( terminal_managenum
+				  , customer_num
+				  , terminal_name
+                  , charger_nm
+                  , subterminal_managenum
+                  , manage_bizplc
+				  , lat
+				  , lot
+				  , location_detail
+				  , location_photo
+				  , purchase_year
+				  , standard_code
+				  , spec
+				  , terminal_mac_addr
+				  , terminal_fw_info
+				  , terminal_btry_info
+				  , gateway_1
+				  , gateway_2
+				  , use_yn )
+			VALUES ( #terminalManagenum#
+				  , #customerNum#
+				  , #terminalName#
+                  , #chargerNm#
+                  , #subterminalManagenum#
+                  , #manageBizplc#
+				  , #lat#
+				  , #lot#
+				  , #locationDetail#
+				  , #locationPhoto#
+				  , #purchaseYear#
+				  , #standardCode#
+				  , #spec#
+				  , #terminalMacAddr#
+				  , #terminalFwInfo#
+				  , #terminalBtryInfo#
+				  , #gateway1#
+				  , #gateway2#
+				  , #useYn# )
+		]]>
+	</insert>
+
+	<update id="terminalInfoDAO.updateTerminalInfo">
+		<![CDATA[
+			UPDATE terminal_info
+			SET terminal_managenum=#terminalManagenum#
+				, customer_num=#customerNum#
+				, terminal_name=#terminalName#
+                , charger_nm=#chargerNm#
+                , subterminal_managenum=#subterminalManagenum#
+                , manage_bizplc=#manageBizplc#
+				, lat=#lat#
+				, lot=#lot#
+				, location_detail=#locationDetail#
+				, location_photo=#locationPhoto#
+				, purchase_year=#purchaseYear#
+				, standard_code=#standardCode#
+				, spec=#spec#
+				, terminal_mac_addr=#terminalMacAddr#
+				, terminal_fw_info=#terminalFwInfo#
+				, terminal_btry_info=#terminalBtryInfo#
+				, gateway_1=#gateway1#
+				, gateway_2=#gateway2#
+				, use_yn=#useYn#
+			WHERE terminal_managenum=#terminalManagenum#::varchar
+		]]>
+	</update>
+
+	<delete id="terminalInfoDAO.deleteTerminalInfo">
+		<![CDATA[
+			DELETE FROM terminal_info
+			WHERE terminal_managenum=#terminalManagenum#::varchar
+		]]>
+	</delete>
+
+	<select id="terminalInfoDAO.selectTerminalInfo" resultMap="terminalInfo">
+		<![CDATA[
+			SELECT
+				terminal_managenum
+				, customer_num
+				, terminal_name
+                , charger_nm
+                , subterminal_managenum
+                , manage_bizplc
+				, lat
+				, lot
+				, location_detail
+				, location_photo
+				, purchase_year
+				, standard_code
+				, spec
+				, terminal_mac_addr
+				, terminal_fw_info
+				, terminal_btry_info
+				, gateway_1
+				, gateway_2
+				, use_yn
+			FROM terminal_info
+			WHERE terminal_managenum=#terminalManagenum#::varchar
+		]]>
+	</select>
+
+	<select id="terminalInfoDAO.selectTerminalInfoList" parameterClass="terminalInfoSerarchVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT
+                terminal_managenum
+                , customer_num
+                , terminal_name
+                , charger_nm
+                , subterminal_managenum
+                , manage_bizplc
+                , lat
+                , lot
+                , location_detail
+                , location_photo
+                , purchase_year
+                , standard_code
+                , spec
+                , terminal_mac_addr
+                , terminal_fw_info
+                , terminal_btry_info
+                , gateway_1
+                , gateway_2
+                , use_yn
+            FROM terminal_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[terminal_managenum LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[terminal_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[charger_nm LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+        <![CDATA[
+            LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	<select id="terminalInfoDAO.selectTerminalInfoListTotCnt" parameterClass="terminalInfoSerarchVO" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) totcnt
+            FROM terminal_info
+            WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[terminal_managenum LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                <![CDATA[customer_num LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                <![CDATA[terminal_name LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                <![CDATA[charger_nm LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+	</select>
+
+</sqlMap>

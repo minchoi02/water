@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cntntsMstr">
+
+	<typeAlias  alias="egovMap"    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CntntsMstr"   type="egovframework.appn.sys.cntnts.service.CntntsMstr"/>
+	<typeAlias  alias="CntntsMstrVO" type="egovframework.appn.sys.cntnts.service.CntntsMstrVO"/>
+
+    <resultMap id="cntntsMstrVO" class="egovframework.appn.sys.cntnts.service.CntntsMstrVO">
+        <result property="cntntsId" column="CNTNTS_ID" columnIndex="1"/>
+        <result property="cntntsNm" column="CNTNTS_NM" columnIndex="2"/>
+        <result property="cntntsCn" column="CNTNTS_CN" columnIndex="3"/>
+        <result property="frstRegisterId" column="FRST_REGUSR_ID" columnIndex="4"/>
+        <result property="frstRegistPnttm" column="FRST_REG_DT" columnIndex="5"/>
+    </resultMap>
+
+	<select id="cntntsMstr.selectCntntsMstrList" parameterClass="CntntsMstrVO" resultClass="egovMap">
+		<![CDATA[
+			 SELECT CNTNTS_ID
+		          , CNTNTS_NM
+		          , to_char(FRST_REG_DT, 'YYYY-MM-DD HH24:MI') FRST_REG_DT
+		          , FRST_REGUSR_ID
+		          , LAST_UPDT_DT
+		          , LAST_UPDTUSR_ID
+		          , B.UPPER_MENU_NO
+		          , (SELECT MENU_NM FROM SYS_MENUINFO WHERE B.UPPER_MENU_NO = MENU_NO) UPPER_MENU_NM
+		          , B.MENU_NO
+		          , B.MENU_NM
+	          FROM Z_CONTENTS_INFO A LEFT OUTER JOIN SYS_MENUINFO B
+	            ON REPLACE(A.CNTNTS_ID,' ','') = REPLACE(REPLACE(B.URL,'/cmm/cntnts/selectCntnts.do?cntntsId=',''),' ','')
+			  WHERE 1=1
+			  AND DEL_YN = 'N'
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[CNTNTS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			  ORDER BY FRST_REG_DT DESC
+			<isNotEqual property="excel" compareValue="Y">
+				LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+			</isNotEqual>
+
+	</select>
+
+    <select id="cntntsMstr.selectCntntsMstrListTotCnt" parameterClass="CntntsMstrVO" resultClass="int">
+        <![CDATA[
+            SELECT  COUNT(*) totcnt
+              FROM COP_CNTNTSMSTR A LEFT OUTER JOIN SYS_MENUINFO B
+                ON REPLACE(A.CNTNTS_ID,' ','') = REPLACE(REPLACE(B.URL,'/cmm/cntnts/selectCntnts.do?cntntsId=',''),' ','')
+              WHERE 1=1
+              AND DEL_AT = 'N'
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[CNTNTS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+    </select>
+        <select id="cntntsMstr.selectCntntsMstrSearchList" parameterClass="CntntsMstrVO" resultClass="egovMap">
+        <![CDATA[
+             SELECT CNTNTS_ID
+                  , CNTNTS_NM
+                  , to_char(FRST_REG_DT, 'YYYY-MM-DD HH24:MI') FRST_REG_DT
+                  , FRST_REGUSR_ID
+                  , LAST_UPDT_DT
+                  , LAST_UPDTUSR_ID
+              FROM Z_CONTENTS_INFO A
+              WHERE 1=1
+              AND DEL_YN = 'N'
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[CNTNTS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+              ORDER BY FRST_REG_DT DESC
+            <isNotEqual property="excel" compareValue="Y">
+                LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+            </isNotEqual>
+
+    </select>
+
+    <select id="cntntsMstr.selectCntntsMstrSearchListTotCnt" parameterClass="CntntsMstrVO" resultClass="int">
+        <![CDATA[
+            SELECT  COUNT(*) totcnt
+              FROM  Z_CONTENTS_INFO
+              WHERE 1=1
+              AND DEL_YN = 'N'
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[CNTNTS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+            </isEqual>
+    </select>
+	<select id="cntntsMstr.selectCntntsMstrLogList" parameterClass="CntntsMstrVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT CNTNTS_ID
+				 , RESTORE_ID
+				 , CNTNTS_NM
+				 , CNTNTS_CN
+				 , FRST_REG_DT
+				 , FRST_REGUSR_ID
+				 , LAST_UPDT_DT
+				 , LAST_UPDTUSR_ID
+			  FROM Z_CONTENTS_LOG_INFO
+			 WHERE DEL_YN = 'N'
+			 AND CNTNTS_ID = #cntntsId#
+		]]>
+	</select>
+
+	<select id="cntntsMstr.selectCntntsMstrLogListTotCnt" parameterClass="CntntsMstrVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt
+			  FROM  Z_CONTENTS_LOG_INFO
+			 WHERE  DEL_YN = 'N'
+			 AND CNTNTS_ID = #cntntsId#
+		]]>
+	</select>
+
+	<insert id="cntntsMstr.insertCntntsMstr" parameterClass="CntntsMstrVO">
+		<![CDATA[
+			INSERT INTO Z_CONTENTS_INFO
+				( CNTNTS_ID
+				, CNTNTS_NM
+				, CNTNTS_CN
+				, FRST_REG_DT
+				, FRST_REGUSR_ID
+				, LAST_UPDT_DT
+				, LAST_UPDTUSR_ID)
+		  VALUES( #cntntsId#
+				, #cntntsNm#
+				, #cntntsCn#
+				, now()
+				, #frstRegisterId#
+				, now()
+				, #frstRegisterId# )
+		]]>
+	</insert>
+	<insert id="cntntsMstr.insertCntntsMstrLog" parameterClass="CntntsMstrVO">
+		<![CDATA[
+			INSERT INTO Z_CONTENTS_LOG_INFO
+				( CNTNTS_ID
+				, RESTORE_ID
+				, CNTNTS_NM
+				, CNTNTS_CN
+				, FRST_REG_DT
+				, FRST_REGUSR_ID
+				, LAST_UPDT_DT
+				, LAST_UPDTUSR_ID)
+		  VALUES( #cntntsId#
+		  		, (select   coalesce(MAX(restore_id::numeric),0)+1 from Z_CONTENTS_LOG_INFO where cntnts_id = #cntntsId#)
+				, #cntntsNm#
+				, #cntntsCn#
+				, now()
+				, #frstRegisterId#
+				, now()
+				, #frstRegisterId# )
+		]]>
+	</insert>
+
+	<select id="cntntsMstr.selectCntntsMstr" parameterClass="CntntsMstrVO" resultMap="cntntsMstrVO">
+		<![CDATA[
+			SELECT CNTNTS_ID
+				 , CNTNTS_NM
+				 , CNTNTS_CN
+				 , FRST_REGUSR_ID
+				 , FRST_REG_DT
+			  FROM Z_CONTENTS_INFO
+			 WHERE CNTNTS_ID = #cntntsId#
+		]]>
+	</select>
+
+	<select id="cntntsMstr.selectCntntsMstrLog" parameterClass="CntntsMstrVO" resultMap="cntntsMstrVO">
+		<![CDATA[
+			SELECT CNTNTS_ID
+				 , CNTNTS_NM
+<!-- 				 , CNTNTS_CN -->
+				 , FRST_REGUSR_ID
+				 , FRST_REG_DT
+			  FROM Z_CONTENTS_LOG_INFO
+			 WHERE CNTNTS_ID = #cntntsId#
+			   AND RESTORE_ID = #restoreId#
+		]]>
+	</select>
+
+	<update id="cntntsMstr.updateCntntsMstr" parameterClass="CntntsMstrVO">
+		<![CDATA[
+			UPDATE Z_CONTENTS_INFO
+			   SET CNTNTS_NM = #cntntsNm#
+				 , CNTNTS_CN = #cntntsCn#
+				 , LAST_UPDTUSR_ID = #lastUpdusrId#
+				 , LAST_UPDT_DT = now()
+			 WHERE CNTNTS_ID = #cntntsId#
+		]]>
+	</update>
+
+	<update id="cntntsMstr.deleteCntntsMstr" parameterClass="CntntsMstrVO">
+		<![CDATA[
+			UPDATE Z_CONTENTS_INFO
+			   SET DEL_YN = 'Y'
+			 WHERE CNTNTS_ID = #cntntsId#
+		]]>
+	</update>
+	<update id="cntntsMstr.deleteCntntsMstrLog" parameterClass="CntntsMstrVO">
+		<![CDATA[
+			UPDATE Z_CONTENTS_LOG_INFO
+			   SET DEL_YN = 'Y'
+			 WHERE CNTNTS_ID = #cntntsId#
+			  AND RESTORE_ID = #restoreId#
+		]]>
+	</update>
+
+</sqlMap>

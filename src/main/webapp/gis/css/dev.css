@@ -1,0 +1,17 @@
+/* dev added */
+#vworld_map, #spatial_map { position: absolute; height: 100%; width: calc(100% - 40rem); right: 0px;}
+
+.ol-zoom{display: none;}
+.ol-attribution{display: none;}
+.vw-logo{display: none;}
+.vw-notice{display: none;}
+.ol-control{background-color:rgba(255,255,255,.0) !important;}
+.ol-control:hover{background-color:rgba(255,255,255,.0) !important;}
+.ol-control button{font-size:0 !important;background-color:rgb(255,255,255) !important; border-radius:50px !important; height:40px !important; width:40px !important; color:#000 !important;}
+
+.view-wrap {display: none; z-index:1}
+#popup {visibility: visible;}
+
+.control-wrap {z-index: 98 !important;} 
+
+#searchString {visibility: hidden;}

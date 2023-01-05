@@ -1,0 +1,569 @@
+package egovframework.appn.cop.bbs.web;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springmodules.validation.commons.DefaultBeanValidator;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import egovframework.appn.cop.bbs.service.BBSManageService;
+import egovframework.appn.cop.bbs.service.Board;
+import egovframework.appn.cop.bbs.service.BoardVO;
+import egovframework.appn.cop.bbs.service.impl.BBSManageDAO;
+import egovframework.appn.sys.bbs.service.BbsMstrService;
+import egovframework.appn.sys.bbs.service.BbsMstrVO;
+import egovframework.appn.sys.link.llm.service.LinkVO;
+import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.service.CmmUseService;
+import egovframework.com.cmm.service.FileMngService;
+import egovframework.com.cmm.service.FileMngUtil;
+import egovframework.com.cmm.service.FileVO;
+import egovframework.rte.fdl.idgnr.EgovIdGnrService;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+
+/**
+ * 게시물 관리를 위한 컨트롤러 클래스
+ * @author 공통 서비스 개발팀 이삼섭
+ * @since 2009.03.19
+ * @version 1.0
+ * @see
+ *
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *
+ *   수정일      수정자          수정내용
+ *  -------    --------    ---------------------------
+ *  2009.03.19  이삼섭          최초 생성
+ *  2009.06.29  한성곤	       2단계 기능 추가 (댓글관리, 만족도조사)
+ *  2011.08.31  JJY            경량환경 템플릿 커스터마이징버전 생성
+ *
+ *  </pre>
+ */
+@Controller
+public class BBSManageController {
+
+    @Resource(name = "BBSManageDAO")
+    private BBSManageDAO bbsMngDAO;
+
+	@Resource(name = "BBSManageService")
+	private BBSManageService bbsMngService;
+
+    @Resource(name = "bbsMstrService")
+    private BbsMstrService bbsMstrService;
+
+	@Resource(name = "FileMngService")
+	private FileMngService fileMngService;
+
+	@Resource(name = "FileMngUtil")
+	private FileMngUtil fileUtil;
+
+	@Resource(name = "propertiesService")
+	protected EgovPropertyService propertyService;
+
+	@Resource(name = "egovMessageSource")
+	EgovMessageSource egovMessageSource;
+
+	/** cmmUseService */
+	@Resource(name = "CmmUseService")
+	private CmmUseService cmmUseService;
+
+    @Resource(name = "egovFileIdGnrService")
+    private EgovIdGnrService idgenService;
+
+	@Autowired
+	private DefaultBeanValidator beanValidator;
+
+	/**
+	 * XSS 방지 처리.
+	 *
+	 * @param data
+	 * @return
+	 */
+	protected String unscript(String data) {
+		if (data == null || data.trim().equals("")) {
+			return "";
+		}
+
+		String ret = data;
+
+		ret = ret.replaceAll("<(S|s)(C|c)(R|r)(I|i)(P|p)(T|t)", "&lt;script");
+		ret = ret.replaceAll("</(S|s)(C|c)(R|r)(I|i)(P|p)(T|t)", "&lt;/script");
+
+		ret = ret.replaceAll("<(O|o)(B|b)(J|j)(E|e)(C|c)(T|t)", "&lt;object");
+		ret = ret.replaceAll("</(O|o)(B|b)(J|j)(E|e)(C|c)(T|t)", "&lt;/object");
+
+		ret = ret.replaceAll("<(A|a)(P|p)(P|p)(L|l)(E|e)(T|t)", "&lt;applet");
+		ret = ret.replaceAll("</(A|a)(P|p)(P|p)(L|l)(E|e)(T|t)", "&lt;/applet");
+
+		ret = ret.replaceAll("<(E|e)(M|m)(B|b)(E|e)(D|d)", "&lt;embed");
+		ret = ret.replaceAll("</(E|e)(M|m)(B|b)(E|e)(D|d)", "&lt;embed");
+
+		ret = ret.replaceAll("<(F|f)(O|o)(R|r)(M|m)", "&lt;form");
+		ret = ret.replaceAll("</(F|f)(O|o)(R|r)(M|m)", "&lt;form");
+
+		return ret;
+	}
+
+	/**
+	 * 게시물에 대한 목록을 조회한다.
+	 *
+	 * @param boardVO
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/selectBoardList.do")
+	public String selectBoardArticles(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model, HttpServletRequest request) throws Exception {
+		Boolean isAdmin = false;
+    	LoginVO loginvo = (LoginVO) request.getSession().getAttribute("LoginVO");
+    	isAdmin = loginvo.getAuthorCode().equals(("ROLE_ADMIN"));
+    	model.addAttribute("isAdmin", isAdmin);
+
+		BbsMstrVO bbsMstrVO = new BbsMstrVO();
+		bbsMstrVO.setBbsId(boardVO.getBbsId());
+		bbsMstrVO = bbsMstrService.selectBbsMstr(bbsMstrVO);
+		boardVO.setBbsNm(bbsMstrVO.getBbsNm());
+		boardVO.setAdminLimitAt(bbsMstrVO.getAdminLimitAt());
+		boardVO.setFileAtchAt(bbsMstrVO.getFileAtchAt());
+		boardVO.setFileAtchCnt(bbsMstrVO.getFileAtchCnt());
+		boardVO.setReplyPosbAt(bbsMstrVO.getReplyAt());
+
+		boardVO.setPageUnit(propertyService.getInt("pageUnit"));
+		boardVO.setPageSize(propertyService.getInt("pageSize"));
+
+		PaginationInfo paginationInfo = new PaginationInfo();
+
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getRecordCountPerPage());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+
+		boardVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		boardVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+		Map<String, Object> map = bbsMngService.selectBoardArticles(boardVO);
+		int totCnt = Integer.parseInt((String) map.get("resultCnt"));
+
+		paginationInfo.setTotalRecordCount(totCnt);
+
+//		if(bbsMstrVO.getBbsTy().equals("1")) {
+//			model.addAttribute("resultList", new ObjectMapper().writeValueAsString(map.get("resultList")));
+//		}else if(bbsMstrVO.getBbsTy().equals("2")) {
+//			model.addAttribute("resultList",map.get("resultList"));
+//		}else {
+//			model.addAttribute("resultList", new ObjectMapper().writeValueAsString(map.get("resultList")));
+//		}
+		model.addAttribute("resultList", map.get("resultList"));
+		model.addAttribute("resultCnt", map.get("resultCnt"));
+		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("isAdmin", isAdmin);
+
+
+		if(bbsMstrVO.getBbsTy().equals("1")) {
+			return "cop/bbs/NoticeList";
+		}else if(bbsMstrVO.getBbsTy().equals("2")) {
+			return "cop/bbs/GalleryList";
+		}else {
+			return "cop/bbs/NoticeList";
+		}
+	}
+
+	/**
+	 * 게시물에 대한 상세 정보를 조회한다.
+	 *
+	 * @param boardVO
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/selectBoardArticle.do")
+	public String selectBoardArticle(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model,HttpServletRequest req) throws Exception {
+
+		Boolean isAdmin = false;
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+    	isAdmin = loginvo.getAuthorCode().equals(("ROLE_ADMIN"));
+    	model.addAttribute("isAdmin", isAdmin);
+
+		// 조회수 증가 여부 지정
+		boardVO.setPlusCount(true);
+		if(boardVO.getSubPageIndex()!=null) {
+			if (boardVO != null && !boardVO.getSubPageIndex().equals("")) {
+				boardVO.setPlusCount(false);
+			}
+		}
+		////-------------------------------
+
+		boardVO.setLastUpdusrId(loginvo.getUniqId());
+		BoardVO vo = bbsMngService.selectBoardArticle(boardVO);
+
+
+
+		FileVO fileVO =  new FileVO();
+		fileVO.setAtchFileId(vo.getAtchFileId());
+
+		model.addAttribute("fileList", new ObjectMapper().writeValueAsString(fileMngService.selectFileInfs(fileVO)));
+		model.addAttribute("isAdmin", isAdmin);
+		model.addAttribute("result", vo);
+		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("sessionUniqId", loginvo.getUniqId());
+		model.addAttribute("useSatisfaction", true);
+
+		return "cop/bbs/NoticeInqire";
+	}
+
+	/**
+	 * 게시물 등록을 위한 등록페이지로 이동한다.
+	 *
+	 * @param boardVO
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/addBoardArticle.do")
+	public String addBoardArticle(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model,HttpServletRequest req) throws Exception {
+
+		model.addAttribute("boardVO", boardVO);
+		if(boardVO.getBbsTy().equals("1")) {
+			return "cop/bbs/NoticeRegist";
+		}else if(boardVO.getBbsTy().equals("2")){
+			return "cop/bbs/GalleryRegist";
+		}else {
+			return "cop/bbs/NoticeRegist";
+		}
+	}
+
+	/**
+	 * 게시물을 등록한다.
+	 *
+	 * @param boardVO
+	 * @param board
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/insertBoardArticle.do")
+	public String insertBoardArticle(@ModelAttribute("searchVO") BoardVO boardVO,
+			@ModelAttribute("board") Board board, BindingResult bindingResult, SessionStatus status, ModelMap model,HttpServletRequest req
+			) throws Exception {
+
+		List<FileVO> filevoList = null;
+
+		if(req.getParameter("fileInfo")!="") {
+			filevoList = getUploadFileListVO((String)req.getParameter("fileInfo"),board.getAtchFileId());
+
+			fileMngService.insertFileInfs(filevoList);
+		}
+
+
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+
+		if(req.getParameter("fileInfo")!="") {
+			board.setAtchFileId(filevoList.get(0).getAtchFileId());
+		}
+		board.setFrstRegisterId(loginvo.getUniqId());
+		board.setNtcrId(loginvo.getId());
+		board.setNtcrNm(loginvo.getName());
+		board.setBbsId(board.getBbsId());
+
+		board.setNttCn(unscript(board.getNttCn())); // XSS 방지
+
+		bbsMngService.insertBoardArticle(board);
+
+		return "forward:/cop/bbs/selectBoardList.do";
+	}
+
+	/**
+	 * 게시물에 대한 답변 등록을 위한 등록페이지로 이동한다.
+	 *
+	 * @param boardVO
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/addReplyBoardArticle.do")
+	public String addReplyBoardArticle(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model,HttpServletRequest req) throws Exception {
+		Boolean isAdmin = false;
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+    	isAdmin = loginvo.getAuthorCode().equals(("ROLE_ADMIN"));
+    	model.addAttribute("isAdmin", isAdmin);
+    	if(!isAdmin) {
+    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+        	return "cmm/login/LoginUsr";
+    	}
+		model.addAttribute("result", boardVO);
+
+		return "cop/bbs/NoticeReply";
+	}
+
+	/**
+	 * 게시물에 대한 답변을 등록한다.
+	 *
+	 * @param boardVO
+	 * @param board
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/replyBoardArticle.do")
+	public String replyBoardArticle(HttpServletRequest req, @ModelAttribute("searchVO") BoardVO boardVO,
+			@ModelAttribute("board") Board board, BindingResult bindingResult, ModelMap model, SessionStatus status) throws Exception {
+
+
+		List<FileVO> filevoList = null;
+
+		if(req.getParameter("fileInfo")!="") {
+			filevoList = getUploadFileListVO((String)req.getParameter("fileInfo"),board.getAtchFileId());
+
+			fileMngService.insertFileInfs(filevoList);
+		}
+
+
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+
+		if(req.getParameter("fileInfo")!="") {
+			board.setAtchFileId(filevoList.get(0).getAtchFileId());
+		}
+			board.setReplyAt("Y");
+			board.setFrstRegisterId(loginvo.getUniqId());
+			board.setNtcrId(loginvo.getId());
+			board.setNtcrNm(loginvo.getName());
+			board.setBbsId(board.getBbsId());
+			board.setParnts(Long.toString(boardVO.getNttId()));
+			board.setSortOrdr(boardVO.getSortOrdr());
+			board.setReplyLc(Integer.toString(Integer.parseInt(boardVO.getReplyLc()) + 1));
+
+			board.setNttCn(unscript(board.getNttCn())); // XSS 방지
+
+			bbsMngService.insertBoardArticle(board);
+
+		return "forward:/cop/bbs/selectBoardList.do";
+	}
+
+	/**
+	 * 게시물 수정을 위한 수정페이지로 이동한다.
+	 *
+	 * @param boardVO
+	 * @param vo
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/forUpdateBoardArticle.do")
+	public String selectBoardArticleForUpdt(@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO vo, ModelMap model,HttpServletRequest req) throws Exception {
+
+
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+
+		BoardVO bdvo = new BoardVO();
+
+		bdvo = bbsMngService.selectBoardArticle(boardVO);
+		FileVO fileVO =  new FileVO();
+		fileVO.setAtchFileId(vo.getAtchFileId());
+
+		model.addAttribute("fileList", new ObjectMapper().writeValueAsString(fileMngService.selectFileInfs(fileVO)));
+		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("result", bdvo);
+		model.addAttribute("sessionUniqId", loginvo.getUniqId());
+		////-----------------------------
+
+		return "cop/bbs/NoticeUpdt";
+	}
+
+	/**
+	 * 게시물에 대한 내용을 수정한다.
+	 *
+	 * @param boardVO
+	 * @param board
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/updateBoardArticle.do")
+	public String updateBoardArticle(HttpServletRequest req,@ModelAttribute("searchVO") BoardVO boardVO,
+			@ModelAttribute("board") Board board, BindingResult bindingResult, ModelMap model, SessionStatus status) throws Exception {
+
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+
+    	boolean newFileFlag = false;
+
+    	String atchFileId = board.getAtchFileId();
+    	atchFileId = atchFileId.trim();
+    	if(atchFileId.equals("")) {
+    		newFileFlag = true;
+    	}
+
+    	String uploadedFilesInfo =  (String)req.getParameter("uploadedFilesInfo");
+    	String modifiedFilesInfo =  (String)req.getParameter("modifiedFilesInfo");
+
+    	List<FileVO> totFilevoList = new ArrayList<FileVO>();
+
+    	if(uploadedFilesInfo!="") {
+    		List<FileVO> filevoList = getUploadFileListVO(uploadedFilesInfo,board.getAtchFileId());
+    		totFilevoList.addAll(filevoList);
+    	}
+    	if(modifiedFilesInfo!="") {
+    		List<FileVO> filevoList2 = getModifiredFileListVO(modifiedFilesInfo,board.getAtchFileId());
+    		fileMngService.deleteFileInfs(filevoList2);
+    	}
+    	if(totFilevoList.size()>0) {
+    		if(newFileFlag) {
+    			fileMngService.insertFileInfs(totFilevoList);
+    			board.setAtchFileId(totFilevoList.get(0).getAtchFileId());
+    		}else {
+    			fileMngService.updateFileInfs(totFilevoList);
+    		}
+    	}
+
+
+		board.setLastUpdusrId(loginvo.getUniqId());
+		board.setNttCn(unscript(board.getNttCn())); // XSS 방지
+
+		bbsMngService.updateBoardArticle(board);
+
+		return "forward:/cop/bbs/selectBoardList.do";
+	}
+
+	/**
+	 * 게시물에 대한 내용을 삭제한다.
+	 *
+	 * @param boardVO
+	 * @param board
+	 * @param sessionVO
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cop/bbs/deleteBoardArticle.do")
+	public String deleteBoardArticle(@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") Board board, ModelMap model,HttpServletRequest req)
+			throws Exception {
+
+    	LoginVO loginvo = (LoginVO) req.getSession().getAttribute("LoginVO");
+
+		board.setLastUpdusrId(loginvo.getUniqId());
+
+		bbsMngService.deleteBoardArticle(board);
+
+		return "forward:/cop/bbs/selectBoardList.do";
+	}
+
+	public List<FileVO> getUploadFileListVO(String param,String atchFileId) throws Exception {
+
+		JSONArray ja = (JSONArray)new JSONParser().parse(param);
+		JSONArray ja2 = new JSONArray();
+		atchFileId = atchFileId.trim();
+		int fileSn = 0;
+		if(atchFileId.equals("")) {
+			//신규파일
+			atchFileId = idgenService.getNextStringId();
+		}else {
+			//기존파일
+			FileVO fvo = new FileVO();
+			fvo.setAtchFileId(atchFileId);
+			fileSn = fileMngService.getMaxFileSN(fvo);
+
+		}
+		List<FileVO> filevoList = new ArrayList<>();
+		for(int i=0;i<ja.size();i++) {
+			FileVO filevo = new FileVO();
+			ja2 = (JSONArray)ja.get(i);
+			for(int j=0;j<ja2.size();j++) {
+
+				JSONObject jo = (JSONObject)ja2.get(j);
+
+				filevo.setFileExtsn((String)jo.get("fileExtsn"));
+				filevo.setFileMg((String)jo.get("fileMg"));
+				filevo.setFileSn(String.valueOf(fileSn));
+				filevo.setFileStreCours((String)jo.get("fileStreCours"));
+				filevo.setOrignlFileNm((String)jo.get("orignlFileNm"));
+				filevo.setStreFileNm((String)jo.get("streFileNm"));
+				//신규파일
+				filevo.setAtchFileId(atchFileId);
+
+				filevoList.add(filevo);
+				fileSn++;
+			}
+		}
+		return filevoList;
+	}
+	public List<FileVO> getModifiredFileListVO(String param,String atchFileId) throws Exception {
+
+		JSONArray ja = (JSONArray)new JSONParser().parse(param);
+
+		List<FileVO> filevoList = new ArrayList<>();
+
+		for(int i=0;i<ja.size();i++) {
+			FileVO filevo = new FileVO();
+			JSONObject jo = (JSONObject)ja.get(i);
+
+			if(((String)jo.get("isDeleted")).equals("true")) {
+				filevo.setAtchFileId((String)jo.get("fileId"));
+				filevo.setOrignlFileNm((String)jo.get("fileName"));
+				filevo.setAtchFileId(atchFileId);
+
+				filevoList.add(filevo);
+			}
+		}
+		return filevoList;
+	}
+
+    /**
+     * 비동기식 검색
+     * @param boardVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/cop/bbs/searchNoticeList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String searchNoticeList( @RequestBody BoardVO boardVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(bbsMngDAO.selectBoardArticleList(boardVO));
+	 }
+
+    /**
+     * 비동기식 페이지 건 수 수정
+     * @param boardVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/cop/bbs/pageNoticeList.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String pageNoticeList( @RequestBody BoardVO boardVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(bbsMngDAO.selectBoardArticleListCnt(boardVO));
+	 }
+
+    /**
+     * 비동기식 페이지네이션
+     * @param boardVO
+     * @return
+     * @throws Exception
+     */
+	 @RequestMapping(value = "/cop/bbs/NoticeListPage.do", produces = "application/json; charset=utf8")
+	 public @ResponseBody String NoticeListPage( @RequestBody BoardVO boardVO) throws Exception {
+		 return new ObjectMapper().writeValueAsString(bbsMngDAO.selectBoardArticleList(boardVO));
+	 }
+}

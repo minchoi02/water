@@ -1,0 +1,223 @@
+package egovframework.appn.asset.terminal.service;
+
+/**
+ * @Class Name : TerminalInfoVO.java
+ * @Description : TerminalInfo VO class
+ * @Modification Information
+ *
+ * @author 차주병
+ * @since 2022.04.26
+ * @version 1.0
+ * @see
+ *
+ *  Copyright (C)  All right reserved.
+ */
+public class TerminalInfoVO extends TerminalInfoDefaultVO{
+    private static final long serialVersionUID = 1L;
+
+    /** terminal_managenum */
+    private java.lang.Integer terminalManagenum;
+
+    /** customer_code */
+    private java.lang.String customerNum;
+
+    /** terminal_name */
+    private java.lang.String terminalName;
+
+    private java.lang.String chargerNm;
+
+    private java.lang.String subterminalManagenum;
+
+    private java.lang.String manageBizplc;
+
+    /** lat */
+    private java.lang.String lat;
+
+    /** lot */
+    private java.lang.String lot;
+
+    /** location_detail */
+    private java.lang.String locationDetail;
+
+    /** location_photo */
+    private java.lang.String locationPhoto;
+
+    /** purchase_year */
+    private java.lang.String purchaseYear;
+
+    /** standard_code */
+    private java.lang.String standardCode;
+
+    /** spec */
+    private java.lang.String spec;
+
+    /** terminal_mac_addr */
+    private java.lang.String terminalMacAddr;
+
+    /** terminal_fw_info */
+    private java.lang.String terminalFwInfo;
+
+    /** terminal_btry_info */
+    private java.lang.String terminalBtryInfo;
+
+    /** gateway_1 */
+    private java.lang.String gateway1;
+
+    /** gateway_2 */
+    private java.lang.String gateway2;
+
+    /** use_yn */
+    private java.lang.String useYn;
+
+    public java.lang.Integer getTerminalManagenum() {
+        return this.terminalManagenum;
+    }
+
+    public void setTerminalManagenum(java.lang.Integer terminalManagenum) {
+        this.terminalManagenum = terminalManagenum;
+    }
+
+    public java.lang.String getcustomerNum() {
+        return this.customerNum;
+    }
+
+    public void setcustomerNum(java.lang.String customerNum) {
+        this.customerNum = customerNum;
+    }
+
+    public java.lang.String getTerminalName() {
+        return this.terminalName;
+    }
+
+    public void setTerminalName(java.lang.String terminalName) {
+        this.terminalName = terminalName;
+    }
+
+	public java.lang.String getChargerNm() {
+		return chargerNm;
+	}
+
+	public void setChargerNm(java.lang.String chargerNm) {
+		this.chargerNm = chargerNm;
+	}
+
+	public java.lang.String getSubterminalManagenum() {
+		return subterminalManagenum;
+	}
+
+	public void setSubterminalManagenum(java.lang.String subterminalManagenum) {
+		this.subterminalManagenum = subterminalManagenum;
+	}
+
+	public java.lang.String getManageBizplc() {
+		return manageBizplc;
+	}
+
+	public void setManageBizplc(java.lang.String manageBizplc) {
+		this.manageBizplc = manageBizplc;
+	}
+
+    public java.lang.String getLat() {
+        return this.lat;
+    }
+
+    public void setLat(java.lang.String lat) {
+        this.lat = lat;
+    }
+
+    public java.lang.String getLot() {
+        return this.lot;
+    }
+
+    public void setLot(java.lang.String lot) {
+        this.lot = lot;
+    }
+
+    public java.lang.String getLocationDetail() {
+        return this.locationDetail;
+    }
+
+    public void setLocationDetail(java.lang.String locationDetail) {
+        this.locationDetail = locationDetail;
+    }
+
+    public java.lang.String getLocationPhoto() {
+        return this.locationPhoto;
+    }
+
+    public void setLocationPhoto(java.lang.String locationPhoto) {
+        this.locationPhoto = locationPhoto;
+    }
+
+    public java.lang.String getPurchaseYear() {
+        return this.purchaseYear;
+    }
+
+    public void setPurchaseYear(java.lang.String purchaseYear) {
+        this.purchaseYear = purchaseYear;
+    }
+
+    public java.lang.String getStandardCode() {
+        return this.standardCode;
+    }
+
+    public void setStandardCode(java.lang.String standardCode) {
+        this.standardCode = standardCode;
+    }
+
+    public java.lang.String getSpec() {
+        return this.spec;
+    }
+
+    public void setSpec(java.lang.String spec) {
+        this.spec = spec;
+    }
+
+    public java.lang.String getTerminalMacAddr() {
+        return this.terminalMacAddr;
+    }
+
+    public void setTerminalMacAddr(java.lang.String terminalMacAddr) {
+        this.terminalMacAddr = terminalMacAddr;
+    }
+
+    public java.lang.String getTerminalFwInfo() {
+        return this.terminalFwInfo;
+    }
+
+    public void setTerminalFwInfo(java.lang.String terminalFwInfo) {
+        this.terminalFwInfo = terminalFwInfo;
+    }
+
+    public java.lang.String getTerminalBtryInfo() {
+        return this.terminalBtryInfo;
+    }
+
+    public void setTerminalBtryInfo(java.lang.String terminalBtryInfo) {
+        this.terminalBtryInfo = terminalBtryInfo;
+    }
+
+    public java.lang.String getGateway1() {
+        return this.gateway1;
+    }
+
+    public void setGateway1(java.lang.String gateway1) {
+        this.gateway1 = gateway1;
+    }
+
+    public java.lang.String getGateway2() {
+        return this.gateway2;
+    }
+
+    public void setGateway2(java.lang.String gateway2) {
+        this.gateway2 = gateway2;
+    }
+
+    public java.lang.String getUseYn() {
+        return this.useYn;
+    }
+
+    public void setUseYn(java.lang.String useYn) {
+        this.useYn = useYn;
+    }
+}

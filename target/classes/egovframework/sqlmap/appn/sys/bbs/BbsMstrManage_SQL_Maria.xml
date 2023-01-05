@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bbsMstr">
+
+	<typeAlias  alias="egovMap"    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="BbsMstr"   type="egovframework.appn.sys.bbs.service.BbsMstr"/>
+	<typeAlias  alias="BbsMstrVO" type="egovframework.appn.sys.bbs.service.BbsMstrVO"/>
+
+    <resultMap id="bbsMstrVO" class="egovframework.appn.sys.bbs.service.BbsMstrVO">
+        <result property="bbsId" column="BBS_ID" columnIndex="1"/>
+        <result property="bbsNm" column="BBS_NM" columnIndex="2"/>
+        <result property="adminLimitAt" column="MNGR_LMT_YN" columnIndex="3"/>
+        <result property="fileAtchAt" column="FILE_ATCH_YN" columnIndex="4"/>
+        <result property="fileAtchCnt" column="FILE_ATCH_CNT" columnIndex="5"/>
+        <result property="replyAt" column="CMNT_YN" columnIndex="6"/>
+        <result property="cmtAt" column="REPLY_YN" columnIndex="6"/>
+        <result property="bbsTy" column="BBS_TY" columnIndex="6"/>
+        <result property="bbsDc" column="BBS_DC" columnIndex="7"/>
+    </resultMap>
+
+	<select id="bbsMstr.selectBbsMstrList" parameterClass="BbsMstrVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT BBS_ID
+				 , BBS_NM
+				 , MNGR_LMT_YN
+				 , FILE_ATCH_YN
+				 , FILE_ATCH_CNT
+				 , CMNT_YN
+				 , BBS_DC
+				 , to_char(FRST_REG_DT, 'YYYY-MM-DD HH24:MI') FRST_REG_DT
+				 , FRST_REGUSR_ID
+				 , LAST_UPDT_DT
+				 , LAST_UPDTUSR_ID
+			  FROM Z_BBS_MASTER
+			 WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[BBS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			 ORDER BY FRST_REG_DT DESC
+			<isNotEqual property="excel" compareValue="Y">
+				LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+			</isNotEqual>
+	</select>
+
+	<select id="bbsMstr.selectBbsMstrListTotCnt" parameterClass="BbsMstrVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt
+			  FROM  Z_BBS_MASTER
+			 WHERE  1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[BBS_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+	</select>
+
+	<insert id="bbsMstr.insertBbsMstr" parameterClass="BbsMstrVO">
+		<![CDATA[
+			INSERT INTO Z_BBS_MASTER
+				( BBS_ID
+				, BBS_NM
+				, MNGR_LMT_YN
+				, FILE_ATCH_YN
+				, FILE_ATCH_CNT
+				, CMNT_YN
+				, BBS_DC
+				, REPLY_YN
+				, BBS_TY
+				, FRST_REG_DT
+				, FRST_REGUSR_ID
+				, LAST_UPDT_DT
+				, LAST_UPDTUSR_ID)
+		  VALUES( #bbsId#
+				, #bbsNm#
+				, #adminLimitAt#
+				, #fileAtchAt#
+				, #fileAtchCnt#
+				, #replyAt#
+				, #bbsDc#
+				, #cmtAt#
+				, #bbsTy#
+				, now()
+				, #frstRegisterId#
+				, now()
+				, #frstRegisterId# )
+		]]>
+	</insert>
+
+	<select id="bbsMstr.selectBbsMstr" parameterClass="BbsMstrVO" resultMap="bbsMstrVO">
+		<![CDATA[
+			SELECT BBS_ID
+				 , BBS_NM
+				 , MNGR_LMT_YN
+				 , FILE_ATCH_YN
+				 , FILE_ATCH_CNT
+				 , CMNT_YN
+				 , REPLY_YN
+				 , BBS_TY
+				 , BBS_DC
+			  FROM Z_BBS_MASTER
+			 WHERE BBS_ID = #bbsId#
+		]]>
+	</select>
+
+	<update id="bbsMstr.updateBbsMstr" parameterClass="BbsMstrVO">
+		<![CDATA[
+			UPDATE Z_BBS_MASTER
+			   SET BBS_NM = #bbsNm#
+				 , MNGR_LMT_YN = #adminLimitAt#
+				 , FILE_ATCH_YN = #fileAtchAt#
+				 , FILE_ATCH_CNT = #fileAtchCnt#
+				 , CMNT_YN = #replyAt#
+				 , REPLY_YN = #cmtAt#
+				 , BBS_TY = #bbsTy#
+				 , BBS_DC = #bbsDc#
+				 , LAST_UPDTUSR_ID = #lastUpdusrId#
+				 , LAST_UPDT_DT = now()
+			 WHERE BBS_ID = #bbsId#
+		]]>
+	</update>
+
+	<update id="bbsMstr.deleteBbsMstr" parameterClass="BbsMstrVO">
+		<![CDATA[
+			UPDATE Z_BBS_MASTER
+			   SET DEL_YN = 'Y'
+			 WHERE BBS_ID = #bbsId#
+		]]>
+	</update>
+
+</sqlMap>

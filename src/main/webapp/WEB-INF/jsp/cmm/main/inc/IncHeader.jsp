@@ -1,0 +1,177 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page import = "egovframework.com.cmm.LoginVO" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+
+<tiles:importAttribute name="list_headmenu"/>
+<tiles:importAttribute name="list_menulist"/>
+
+<script type="text/javascript">
+function goMenuPage(baseMenuNo){
+    document.menuListForm.activeMenuId.value="";
+    document.getElementById("baseMenuNo").value=baseMenuNo;
+    document.getElementById("link").value="forward:"+getLastLink(baseMenuNo);
+    //document.menuListForm.chkURL.value=url;
+    document.menuListForm.action = "<c:url value='/PageLink.do'/>";
+    document.menuListForm.submit();
+}
+function fnMyPage(uniqId) {
+    document.myPageForm.submit();
+}
+</script>
+
+<!-- header -->
+<header class="header-wrap">
+    <div class="header-logo">
+        <c:if test="${LoginVO.authorCode == 'ROLE_ADMIN' }">
+            <h1><a href="<c:url value='/admin/main/mainPage.do'/>" title = "상수도 원격검침 시스템(사용자)"><em class="hidden">상수도 원격검침 시스템(사용자)</em></a></h1>
+        </c:if>
+        <c:if test="${LoginVO.authorCode != 'ROLE_ADMIN' }">
+            <h1><a href="<c:url value='/cmm/main/mainPage.do'/>" title = "상수도 원격검침 시스템(사용자)"><em class="hidden">상수도 원격검침 시스템(사용자)</em></a></h1>
+        </c:if>
+    </div>
+    <nav class="gnb" id="gnb">
+        <h2 class="hidden">메뉴</h2>
+			<ul>
+			   <c:forEach var="result" items="${list_headmenu}" varStatus="status">
+		            <li><a href="#LINK" onclick="javascript:goMenuPage(<c:out value="${result.menuNo}"/>)"><c:out value="${result.menuNm}"/></a></li>
+			   </c:forEach>
+			</ul>
+    </nav>
+    <ul class="user-wrap">
+        <li><a href="#modal-user" data-bs-toggle="modal"><i class="fas fa-user-circle"></i><c:out value='${LoginVO.name}'/></a></li>
+        <li><a href="#" onclick="document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
+            <form id="logout-form" action='<c:url value='/cmm/login/logout.do'/>' method="POST">
+               <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+            </form>
+        </li>
+    </ul>
+</header>
+
+<!-- modal-user -->
+<div class="modal fade" id="modal-user" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                	<h3>회원 정보</h3>
+                	<button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>상세정보</h4>
+                    <button type="button" class="btn btn-secondary btn-xsm float-right">수정</button>
+                    <div class="border-list-default">
+                        <div class="flex">
+                            <div class="thumbnail thumbnail-sm"></div>
+                            <div class="list-area">
+                            <%
+                                LoginVO loginVO = (LoginVO)session.getAttribute("LoginVO");
+
+                                if(loginVO == null){
+                            %>
+                                <ul>
+                                    <li>로그인정보 없음</li>
+                                    <li><a href="<c:url value='/cmm/login/LoginUsr.do'/>"><!--img src="<c:url value='/images/leftmenu/login.jpg' />" alt="" /-->로그인</a></li>
+                                    <li>로그인후 사용하십시오</li>
+                                </ul>
+                            <%
+                                }else{
+                            %>
+                                <c:set var="loginName" value="<%= loginVO.getName()%>"/>
+                                <c:set var="uniqId" value="<%= loginVO.getUniqId()%>"/>
+                                <ul class="list-area-item">
+                                    <li><a href="#LINK" onclick="fnMyPage(); return false;"><c:out value="${LoginVO.name}"/> 님</a></li>
+                                    <li>ID : <c:out value="${LoginVO.id }"/></li>
+                                    <li> 기관 1 / <c:out value="${LoginVO.deptId}"/></li>
+                                    <li>010-1234-5678</li>
+                                </ul>
+                            <%
+                                }
+                            %>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>최근게시물</h4>
+                    <div class="table-box table-hover">
+                        <table>
+                            <caption>테이블 기본</caption>
+                            <colgroup>
+                                <col style="width:5%;">
+                                <col style="width:15%;">
+                                <col style="width:auto;">
+                                <col style="width:15%;">
+                                <col style="width:10%;">
+                                <col style="width:10%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">순번</th>
+                                    <th scope="col">게시판명</th>
+                                    <th scope="col">제목</th>
+                                    <th scope="col">댓/답글</th>
+                                    <th scope="col">작성일시</th>
+                                    <th scope="col">본문</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>5</td>
+                                    <td>공지사항</td>
+                                    <td>제목</td>
+                                    <td>댓/답글</td>
+                                    <td>작성일시</td>
+                                   <td><a href="/cop/bbs/selectBoardList.do?bbsId=BBS01" class="btn btn-default btn-auto" title="공지사항"><i class="fas fa-external-link-alt"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>갤러리</td>
+                                    <td>제목</td>
+                                    <td>댓/답글</td>
+                                    <td>작성일시</td>
+                                    <td><a href="/cop/bbs/selectBoardList.do?bbsId=BBS02" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>묻고답하기</td>
+                                    <td>제목</td>
+                                    <td>댓/답글</td>
+                                    <td>작성일시</td>
+                                    <td><a href="/cop/bbs/selectBoardList.do?bbsId=BBS03" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+                                </tr>
+                                <!--
+                                <tr>
+                                    <td>2</td>
+                                    <td>게시판명</td>
+                                    <td>제목</td>
+                                    <td>댓/답글</td>
+                                    <td>작성일시</td>
+                                    <td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>게시판명</td>
+                                    <td>제목</td>
+                                    <td>댓/답글</td>
+                                    <td>작성일시</td>
+                                    <td><a href="#" class="btn btn-default btn-auto" title="새창으로 열립니다."><i class="fas fa-external-link-alt"></i></a></td>
+                                </tr>
+                                -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-area">
+                        <button type="button" class="btn btn-default btn-lg" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- header -->
+<!-- <div id="logoarea"> -->
+<%-- 	<h1><a href="<c:url value='/'/>cmm/login/actionMain.do"><img src="<c:url value='/'/>images/header/logo.png" alt="충청남도 지정문화재관리 시스템" /></a></h1> --%>
+<!-- </div> -->
+<!--div id="project_title">
+	<span class="maintitle">충청남도 </span><strong>문화재 내부업무 사이트</strong>
+</div-->

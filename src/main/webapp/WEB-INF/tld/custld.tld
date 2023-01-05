@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/j2ee/web-jsptaglibrary_2_0.xsd"
+version="2.0">
+
+    <description>create custom tld</description>
+    <display-name>custom tld</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>custld</short-name>
+    <uri>/WEB-INF/tld/custld.tld</uri>
+
+    <function>
+        <description>PageInfo</description>
+        <name>renderPageInfo</name>
+        <function-class>egovframework.appn.cmm.tld.PageInfo</function-class>
+        <function-signature>java.lang.String renderPageInfo(java.lang.String, java.lang.String)</function-signature>
+        <example>
+        ${custld:renderPageInfo(java.lang.String selectedValue, java.lang.String totCnt)}
+        </example>
+    </function>
+    <function>
+        <description>PageInfo</description>
+        <name>renderPageInfoWithoutPerPage</name>
+        <function-class>egovframework.appn.cmm.tld.PageInfo</function-class>
+        <function-signature>java.lang.String renderPageInfo(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+        <example>
+        ${custld:renderPageInfo(java.lang.String selectedValue, java.lang.String totCnt, java.lang.String selectAt)}
+        </example>
+    </function>
+
+    <function>
+        <description>PageInfo</description>
+        <name>renderPageInfoWithoutExcel</name>
+        <function-class>egovframework.appn.cmm.tld.PageInfo</function-class>
+        <function-signature>java.lang.String renderPageInfo(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+        <example>
+        ${custld:renderPageInfo(java.lang.String selectedValue, java.lang.String totCnt, java.lang.String selectAt)}
+        </example>
+    </function>
+</taglib>

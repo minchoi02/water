@@ -1,0 +1,82 @@
+@charset "utf-8";
+
+.user_login {width: 300px;
+}
+.user_login .user_login_ultop {
+    width: 100%;
+}
+.user_login .user_login_ultop ul {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.user_login .user_login_ultop ul li {
+	margin: 0;
+    padding: 0 0 5px;
+}
+.user_login .user_login_ultop ul li img {
+    vertical-align: middle;
+}
+.user_login .user_login_ultop ul li input {
+    vertical-align: middle;
+}
+.user_login .user_login_ultop ul li .input_style {
+    border-radius: 3px;
+    border:none;
+    height: 40px;
+    box-sizing:border-box;
+    padding: 0 0 0 13px;
+    width: 100%;
+    box-shadow:1px 1px rgba(0, 0, 0, 0.1);
+}
+.user_login .user_login_ultop ul li .input_style::placeholder {color:#cfcfcf;}
+.user_login .user_login_ultop .btn_style {
+    float: left;
+    height: 46px;
+    margin-left:5px; margin-top:1px;
+    width: 120px;
+}
+
+
+.user_login .user_login_btstyle {
+    float: left;
+    margin: 0;
+    padding: 14px 0 0 60px; 
+    width: 754px;
+}
+.user_login .user_login_btstyle .bt_ulstyle1 {
+    float: left;
+    width: 75px;
+}
+.user_login .user_login_btstyle .bt_ulstyle1 li {
+    background: url("../../images/member/bul_arrow.gif") no-repeat scroll 0 5px transparent;
+    color: #727475;
+    margin: 0 0 7px;
+    padding: 0 0 0 11px;
+}
+.user_login .user_login_btstyle .bt_ulstyle2 {
+    float: left;
+    width: 119px;
+}
+.user_login .user_login_btstyle .bt_ulstyle2 li {
+    margin: 0 0 7px;
+}
+.user_login .user_login_btstyle .bt_ulstyle2 li img {
+    vertical-align: middle;
+}
+
+/* 20210317 장주연 추가 */
+#wrap.login {background:linear-gradient(150deg, #dce5f0, #cdd7e5 70%); position:relative; height:100%;}
+.login_top {position:absolute; top:0; left:20px;}
+#login_wrap {position:absolute; left:50%; top:50%; transform: translate(-50%, -57%); text-align:center;}
+#login_title_div {float:none !important; padding-top:0 !important; padding-bottom:28px !important;}
+.user_login .user_login_btn {display:inline-block; width:100%; height:40px; background:#5699ef; border-radius:3px; color:#fff; text-align:center; font-weight:600; 
+	border:none; box-shadow:1px 1px rgba(0, 0, 0, 0.1); font-size:14px !important; cursor:pointer;}
+.user_login .user_login_btns {margin:7px 0 25px;}
+.user_login .user_login_btn2 {display:inline-block; margin-right:20px; color:#666; position:relative; font-weight:500;}
+.user_login .user_login_btn2.first {color:#0052ae;}
+.user_login .user_login_btn2.first:after {content:''; position:absolute; top:5px; right:-15px; width:1px; height:12px; background:#aaa;}
+.user_login .user_login_btn2.certi {padding-left:12px;}
+.user_login .user_login_btn2.certi:after {content:''; position:absolute; top:0; left:0; display:inline-block; width:4px; height:100%;
+	background:url(/images/login/login_certi_icon.png) no-repeat 0 62%;}
+.user_login .user_login_btn3 {background:#8b8b8b;}

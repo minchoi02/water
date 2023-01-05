@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZipManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Zip"     type="egovframework.appn.sys.code.zip.service.Zip"/>
+	<typeAlias  alias="ZipVO"   type="egovframework.appn.sys.code.zip.service.ZipVO"/>
+
+	<select id="ZipManage.selectZipList" parameterClass="ZipVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  ZIP_SN
+			     ,  ZIP_CD
+			     ,  CTPRVN_NM
+			     ,  SIGNGU_NM
+			     ,  EM_NM
+			     ,  RN_CD
+			     ,  RN_NM
+			     ,  BDNBR_MNNM
+			     ,  BDNBR_SLNO
+			     ,  DETAIL_BULD_NM
+			     ,  LEGALDONG_CD
+			     ,  LEGALDONG_NM
+			     ,  EMD_SN
+			     ,  LI_NM
+			     ,  LNM_MNNM
+			     ,  LNM_SLNO
+			  FROM  CMM_ZIP
+			 WHERE	1 = 1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[
+					RN_NM LIKE CONCAT('%', #searchKeyword#, '%')
+					OR EM_NM LIKE CONCAT('%', #searchKeyword#, '%')
+					OR LEGALDONG_NM LIKE CONCAT('%', #searchKeyword#, '%')
+					OR LI_NM LIKE CONCAT('%', #searchKeyword#, '%')
+					OR DETAIL_BULD_NM LIKE CONCAT('%', #searchKeyword#, '%')
+				]]>
+			</isEqual>
+			 LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+
+	<select id="ZipManage.selectZipListTotCnt" parameterClass="ZipVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  CMM_ZIP
+			 WHERE	1 = 1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[ZIP_SN = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[CTPRVN_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				<![CDATA[SIGNGU_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="4">
+				<![CDATA[EM_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="5">
+				<![CDATA[LI_NM LIKE CONCAT('%', #searchKeyword#, '%')]]>
+			</isEqual>
+	</select>
+
+</sqlMap>            

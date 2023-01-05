@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://www.ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ArticleComment">
+	<resultMap id="commentList" class="egovframework.appn.cop.cmt.service.CommentVO">
+		<result property="commentNo" column="CMNT_NO"/>
+		<result property="nttId" column="NTT_ID"/>
+		<result property="bbsId" column="BBS_ID"/>
+		<result property="wrterId" column="WRTR_ID"/>
+		<result property="wrterNm" column="WRTR_NM"/>
+		<result property="commentPassword" column="PASSWORD"/>
+		<result property="commentCn" column="CMNT"/>
+		<result property="useAt" column="USE_YN"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT"/>
+		<result property="frstRegisterNm" column="FRST_REGUSR_ID"/>
+	</resultMap>
+
+	<resultMap id="commentDetail" class="egovframework.appn.cop.cmt.service.CommentVO">
+		<result property="commentNo" column="CMNT_NO"/>
+		<result property="nttId" column="NTT_ID"/>
+		<result property="bbsId" column="BBS_ID"/>
+		<result property="wrterId" column="WRTR_ID"/>
+		<result property="wrterNm" column="WRTR_NM"/>
+		<result property="commentPassword" column="PASSWORD"/>
+		<result property="commentCn" column="CMNT"/>
+		<result property="useAt" column="USE_YN"/>
+		<result property="frstRegisterPnttm" column="FRST_REG_DT"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM"/>
+	</resultMap>
+
+	<select id="ArticleComment.selectArticleCommentList" parameterClass="egovframework.appn.cop.cmt.service.CommentVO" resultMap="commentList">
+
+			SELECT
+				a.CMNT_NO, a.NTT_ID, a.BBS_ID,
+				a.WRTR_ID, a.WRTR_NM, a.PASSWORD, a.CMNT, a.USE_YN,
+				TO_CHAR(a.FRST_REG_DT, 'YYYY-mm-dd HH24:MI:SS')
+				as FRST_REG_DT,
+				b.USER_NM as FRST_REGUSR_ID
+			FROM
+				Z_COMMENT_INFO a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGUSR_ID = b.ESNTL_ID
+			WHERE
+				a.BBS_ID = #bbsId# AND a.NTT_ID = #nttId#
+			AND
+				a.USE_YN = 'Y'
+			ORDER BY a.FRST_REG_DT ASC
+			LIMIT #subRecordCountPerPage# OFFSET #subFirstIndex#
+
+	</select>
+
+	<select id="ArticleComment.selectArticleCommentListCnt" parameterClass="egovframework.appn.cop.cmt.service.CommentVO" resultClass="java.lang.Integer">
+
+			SELECT
+				COUNT(CMNT_NO)
+			FROM
+				Z_COMMENT_INFO
+			WHERE
+				BBS_ID = #bbsId# AND NTT_ID = #nttId#
+			AND
+				USE_YN = 'Y'
+
+	</select>
+
+	<insert id="ArticleComment.insertArticleComment" parameterClass="egovframework.appn.cop.cmt.service.Comment">
+
+
+			INSERT INTO Z_COMMENT_INFO
+			(CMNT_NO, NTT_ID, BBS_ID, WRTR_ID, WRTR_NM, PASSWORD,
+			 CMNT, USE_YN,
+			 FRST_REGUSR_ID, FRST_REG_DT
+			 )
+			VALUES
+			( CAST(#commentNo# AS NUMERIC), #nttId#, #bbsId#, #wrterId#, #wrterNm#, #commentPassword#,
+			  #commentCn#, 'Y',
+			  #frstRegisterId#, NOW()
+			 )
+
+	</insert>
+
+	<update id="ArticleComment.deleteArticleComment" parameterClass="egovframework.appn.cop.cmt.service.CommentVO">
+
+			UPDATE Z_COMMENT_INFO
+			SET USE_YN = 'N'
+			WHERE CMNT_NO = CAST(#commentNo# AS NUMERIC)
+
+	</update>
+
+	<select id="ArticleComment.selectArticleCommentDetail" parameterClass="egovframework.appn.cop.cmt.service.CommentVO" resultMap="commentDetail">
+
+			SELECT
+				a.CMNT_NO, a.NTT_ID, a.BBS_ID,
+				a.WRTR_ID, a.WRTR_NM, a.PASSWORD, a.CMNT, a.USE_YN,
+				TO_CHAR(a.FRST_REG_DT, 'YYYY-mm-dd HH24:MI:SS')
+				as FRST_REG_DT,
+				b.USER_NM as FRST_REGISTER_NM
+			FROM
+				Z_COMMENT_INFO a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGUSR_ID = b.ESNTL_ID
+			WHERE
+				a.CMNT_NO = CAST(#commentNo# AS NUMERIC)
+
+
+	</select>
+
+ 	 <update id="ArticleComment.updateArticleComment" parameterClass="egovframework.appn.cop.cmt.service.Comment">
+
+			UPDATE Z_COMMENT_INFO SET
+				CMNT = #commentCn#,
+				LAST_UPDTUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_DT = NOW()
+			WHERE CMNT_NO = CAST(#commentNo# AS NUMERIC)
+
+ 	</update>
+
+</sqlMap>
